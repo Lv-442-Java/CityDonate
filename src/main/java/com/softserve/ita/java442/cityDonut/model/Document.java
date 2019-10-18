@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Table(name = "document")
 public class Document {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
