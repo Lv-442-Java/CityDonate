@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Builder
@@ -20,4 +21,7 @@ public class MediaType {
 
     @Column(name = "media_type", length = 5, nullable = false)
     private String media_type;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "mediaType")
+    private List<MediaType> mediaTypeList;
 }
