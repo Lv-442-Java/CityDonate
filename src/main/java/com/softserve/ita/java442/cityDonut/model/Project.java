@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
 @NoArgsConstructor
 @ToString(exclude = {"comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
 @Table(indexes = @Index(columnList = "name, realizationEndDate"))
