@@ -13,13 +13,13 @@ public class ProjectStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private long id;
 
     @NotNull
     @Column(name = "status")
     private String status;
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
@@ -40,7 +40,7 @@ public class ProjectStatus {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProjectStatus that = (ProjectStatus) o;
-        return id.equals(that.id) &&
+        return id == that.id &&
                 status.equals(that.status);
     }
 

@@ -14,7 +14,7 @@ public class StoryBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private long id;
 
     @Column(name="description", length=1000)
     private String description;
@@ -28,13 +28,13 @@ public class StoryBoard {
             CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
-    private Integer projectId;
+    private long projectId;
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -54,11 +54,11 @@ public class StoryBoard {
         this.date = date;
     }
 
-    public Integer getProjectId() {
+    public long getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(Integer projectId) {
+    public void setProjectId(long projectId) {
         this.projectId = projectId;
     }
 
@@ -67,10 +67,10 @@ public class StoryBoard {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StoryBoard that = (StoryBoard) o;
-        return id.equals(that.id) &&
+        return id == that.id &&
+                projectId == that.projectId &&
                 Objects.equals(description, that.description) &&
-                date.equals(that.date) &&
-                projectId.equals(that.projectId);
+                date.equals(that.date);
     }
 
     @Override
