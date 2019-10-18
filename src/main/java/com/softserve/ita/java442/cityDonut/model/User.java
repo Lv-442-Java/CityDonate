@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Data
-@NoArgsConctructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString(exclude = {"moderatorProjects", "userProjects", "comments", "donates"})
@@ -19,13 +19,13 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String lastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @ManyToOne(cascade = {
@@ -40,9 +40,9 @@ public class User {
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private List<Project> userProjects;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Donate> donates;
 }
