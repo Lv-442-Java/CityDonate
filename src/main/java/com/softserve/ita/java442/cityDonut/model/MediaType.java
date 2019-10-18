@@ -1,10 +1,13 @@
 package com.softserve.ita.java442.cityDonut.model;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
+@Builder
 @Table(name = "media_type")
 public class MediaType {
 
