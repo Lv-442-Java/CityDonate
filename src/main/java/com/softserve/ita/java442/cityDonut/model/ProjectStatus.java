@@ -13,14 +13,13 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="project_status")
+@Table(name = "project_status")
 public class ProjectStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
-    @Column(name = "status")
+    @Column(name = "status", length = 25, nullable = false)
     private String status;
 }
