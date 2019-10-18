@@ -5,7 +5,8 @@ import lombok.Builder;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "media")
+@Table(name = "media",
+        indexes = {@Index(name = "media_name_index", columnList = "name", unique = true)})
 @Builder
 public class Media {
 
