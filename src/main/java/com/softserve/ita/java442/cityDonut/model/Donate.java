@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Table(name="donate")
 public class Donate {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
