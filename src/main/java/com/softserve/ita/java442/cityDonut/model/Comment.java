@@ -34,7 +34,7 @@ public class Comment {
     public Comment() {
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
