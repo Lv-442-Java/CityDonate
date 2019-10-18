@@ -24,9 +24,7 @@ public class StoryBoard {
     private LocalDateTime date;
 
     @NotNull
-    @ManyToOne(cascade = {
-            CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private long projectId;
 
