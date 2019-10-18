@@ -1,62 +1,23 @@
 package com.softserve.ita.java442.cityDonut.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 @Entity
 @Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "media_type")
 public class MediaType {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
-    @NotNull
-    @Column(name = "name", length = 5)
-    private String name;
-
-    public MediaType() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MediaType that = (MediaType) o;
-        return id.equals(that.id) &&
-                name.equals(that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
-
-    @Override
-    public String toString() {
-        return "media_type{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
+    @Column(name = "media_type", length = 5, nullable = false)
+    private String media_type;
 }
