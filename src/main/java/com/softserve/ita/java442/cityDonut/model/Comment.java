@@ -1,13 +1,19 @@
 package com.softserve.ita.java442.cityDonut.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "comment")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,54 +37,4 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
-        return id.equals(comment.id) &&
-                description.equals(comment.description) &&
-                date.equals(comment.date);
-    }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", date=" + date +
-                '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, description, date);
-    }
 }
