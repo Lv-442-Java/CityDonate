@@ -1,8 +1,6 @@
 package com.softserve.ita.java442.cityDonut.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,13 +8,15 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString(callSuper = true, exclude = {"comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
 @Table(indexes = @Index(columnList = "name, realizationEndDate"))
 public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(nullable = false)
     private String name;
