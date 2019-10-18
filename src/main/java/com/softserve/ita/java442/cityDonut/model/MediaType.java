@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "media_type")
-public class media_type {
+public class MediaType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class media_type {
     @Column(name = "name", length = 5)
     private String name;
 
-    public media_type() {
+    public MediaType() {
     }
 
     public Long getId() {
@@ -39,7 +39,7 @@ public class media_type {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        media_type that = (media_type) o;
+        MediaType that = (MediaType) o;
         return id.equals(that.id) &&
                 name.equals(that.name);
     }
