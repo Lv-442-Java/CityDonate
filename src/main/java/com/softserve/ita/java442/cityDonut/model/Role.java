@@ -1,4 +1,5 @@
 package com.softserve.ita.java442.cityDonut.model;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
