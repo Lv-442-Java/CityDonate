@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface RoleRepository extends JpaRepository {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
 }
 
