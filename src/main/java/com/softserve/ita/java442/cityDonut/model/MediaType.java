@@ -21,7 +21,4 @@ public class MediaType {
 
     @Column(name = "media_type", length = 5, nullable = false)
     private String media_type;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "mediaType")
-    private List<Media> media;
 }
