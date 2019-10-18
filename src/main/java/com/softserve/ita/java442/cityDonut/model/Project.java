@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(callSuper = true, exclude = {"comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
+@ToString(exclude = {"comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
 @Table(indexes = @Index(columnList = "name, realizationEndDate"))
 public class Project {
 
