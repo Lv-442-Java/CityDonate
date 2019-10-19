@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = {"description", "media"})
+@ToString(exclude = {"media"})
 @Table(name = "story_board")
 public class StoryBoard {
 
