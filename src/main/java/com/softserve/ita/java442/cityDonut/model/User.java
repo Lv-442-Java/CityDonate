@@ -9,6 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = {"moderatorProjects", "userProjects", "comments", "donates"})
+@EqualsAndHashCode(exclude = {"firstName", "lastName", "password", "moderatorProjects", "userProjects", "users", "comments", "donates"})
 @Entity
 public class User {
 
