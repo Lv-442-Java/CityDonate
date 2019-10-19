@@ -78,13 +78,13 @@ public class Project {
             CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<Document> documents;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_has_project",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "project_has_category",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
