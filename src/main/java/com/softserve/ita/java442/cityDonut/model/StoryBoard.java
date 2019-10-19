@@ -1,9 +1,6 @@
 package com.softserve.ita.java442.cityDonut.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"description"})
 @Table(name = "story_board")
 public class StoryBoard {
 
@@ -27,7 +25,9 @@ public class StoryBoard {
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {
+            CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH},fetch = FetchType.EAGER)
     @JoinColumn(name = "project_id")
     private Project project;
 }
