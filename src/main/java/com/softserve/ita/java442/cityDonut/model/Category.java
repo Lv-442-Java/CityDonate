@@ -22,7 +22,7 @@ public class Category {
     @Column(name = "category", length = 35, nullable = false)
     private String category;
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Project> projects;
 
 }
