@@ -4,11 +4,14 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"description", "location", "locationLatitude", "locationLongitude", "creationDate", "publicationDate",
+        "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
 @NoArgsConstructor
 @ToString(exclude = {"comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
 @Table(indexes = @Index(columnList = "name, realizationEndDate"))
@@ -46,44 +49,44 @@ public class Project {
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+            CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "project_status_id")
     private ProjectStatus projectStatus;
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+            CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "owner_id")
     @Column(nullable = false)
     private User owner;
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<Donate> donates;
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<StoryBoard> storyBoards;
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<Media> media;
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<Document> documents;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_has_project",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "project_has_category",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
