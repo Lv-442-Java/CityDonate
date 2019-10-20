@@ -10,8 +10,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"categories"})
-@EqualsAndHashCode(exclude = {"categories"})
+@ToString(exclude = {"projects"})
+@EqualsAndHashCode(exclude = {"projects"})
 
 public class Category {
 
