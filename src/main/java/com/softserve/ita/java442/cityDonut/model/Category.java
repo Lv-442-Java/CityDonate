@@ -22,7 +22,10 @@ public class Category {
     @Column(name = "category", length = 35, nullable = false)
     private String category;
 
-    @ManyToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "project_has_category",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id"))
     private List<Project> projects;
 
 }
