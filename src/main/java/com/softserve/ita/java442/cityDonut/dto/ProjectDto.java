@@ -33,7 +33,7 @@ public class ProjectDto {
 
     private LocalDateTime realizationEndDate;
 
-    private ProjectStatusDto projectStatus;
+    private ProjectStatusDto projectStatusDto;
 
-    private UserDto owner;
+    private UserDto ownerDto;
 }
