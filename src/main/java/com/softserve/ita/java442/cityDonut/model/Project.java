@@ -75,10 +75,6 @@ public class Project {
             CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<Media> media;
 
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH}, fetch = FetchType.LAZY)
-    private List<Document> documents;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_has_project",
             joinColumns = @JoinColumn(name = "project_id"),
