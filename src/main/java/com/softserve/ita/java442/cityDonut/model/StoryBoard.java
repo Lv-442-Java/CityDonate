@@ -3,8 +3,8 @@ package com.softserve.ita.java442.cityDonut.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder

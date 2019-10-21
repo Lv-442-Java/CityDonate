@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
