@@ -56,4 +56,4 @@ build/
 
 ### Projects ###
 src/main/resources/static
-src/main/resources/*.properties
+#src/main/resources/*.properties
