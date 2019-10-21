@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CityDonutApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CityDonutApplication.class, args);
+		SpringApplication.run(CityDonutApplication.class,args);
 	}
 
 }
