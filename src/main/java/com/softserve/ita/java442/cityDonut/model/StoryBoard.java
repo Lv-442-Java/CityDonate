@@ -28,11 +28,11 @@ public class StoryBoard {
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+            CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     @OneToMany(mappedBy = "storyBoard", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH}, fetch = FetchType.LAZY)
+            CascadeType.REFRESH})
     private List<Media> media;
 }
