@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProjectStatusImpl implements ProjectStatusService {
+public class ProjectStatusServiceImpl implements ProjectStatusService {
 
     @Autowired
     ProjectStatusRepository projectStatusRepository;
