@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleDto {
+public class ProjectStatusDto {
 
     private long id;
 
-    private String role;
-
+    private String status;
 }

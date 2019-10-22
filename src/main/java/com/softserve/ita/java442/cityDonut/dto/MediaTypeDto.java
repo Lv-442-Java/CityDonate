@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleDto {
+public class MediaTypeDto {
 
-    private long id;
+        private long id;
 
-    private String role;
-
+        private String media_type;
 }
