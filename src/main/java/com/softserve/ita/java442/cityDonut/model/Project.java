@@ -14,7 +14,7 @@ import java.util.List;
         "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
 @NoArgsConstructor
 @ToString(exclude = {"comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
-@Table(indexes = @Index(columnList = "name, realizationEndDate"))
+@Table(indexes = @Index(columnList = "name, realization_end_date"))
 public class Project {
 
     @Id
@@ -56,8 +56,7 @@ public class Project {
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "owner_id")
-    @Column(nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
@@ -75,10 +74,6 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<Media> media;
-
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH}, fetch = FetchType.LAZY)
-    private List<Document> documents;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_has_project",

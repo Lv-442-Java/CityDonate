@@ -29,7 +29,7 @@ public class StoryBoard {
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     @OneToMany(mappedBy = "storyBoard", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
