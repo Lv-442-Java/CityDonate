@@ -1,8 +1,8 @@
 package com.softserve.ita.java442.cityDonut.mapper;
 
-public interface GeneralMapper<M,D> {
+public interface GeneralMapper<M, D> {
 
-    public D convertToDto(M model);
+    D convertToDto(M model);
 
-    public M convertToModel(D dto);
+    M convertToModel(D dto);
 }
