@@ -9,7 +9,6 @@ import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.repository.UserRepository;
 import com.softserve.ita.java442.cityDonut.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
