@@ -1,5 +1,7 @@
-package com.softserve.ita.java442.cityDonut.dto;
+package com.softserve.ita.java442.cityDonut.dto.comment;
 
+import com.softserve.ita.java442.cityDonut.dto.ProjectDto;
+import com.softserve.ita.java442.cityDonut.dto.user.UserForCommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,7 @@ public class CommentDto {
 
     private LocalDateTime date;
 
-    private ProjectDto projectDto;
+    private long projectId;
 
-    private UserDto userDto;
+     private UserForCommentDto userDto;
 }
