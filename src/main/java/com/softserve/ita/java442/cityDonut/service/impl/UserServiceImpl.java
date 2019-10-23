@@ -9,6 +9,8 @@ import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.repository.UserRepository;
 import com.softserve.ita.java442.cityDonut.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +19,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserEditMapper userEditMapper;
+
     @Override
     public UserEditDto update(UserEditDto userEditDto) {
         if (userEditDto != null) {
@@ -24,12 +29,12 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID);
         }
-        return UserEditMapper.convertToDto(userRepository.save(UserEditMapper.convertToEntity(userEditDto)));
+        return userEditMapper.convertToDto(userRepository.save(userEditMapper.convertToModel(userEditDto)));
     }
 
     @Override
     public UserEditDto findById(long id) {
-        return UserEditMapper.convertToDto(userRepository
+        return userEditMapper.convertToDto(userRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id)));
     }
@@ -44,8 +49,9 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID);
         }
-        if (user.getPassword().equals(userEditPasswordDto.getPassword())) {
-            user.setPassword(userEditPasswordDto.getNewPassword());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if (passwordEncoder.matches(userEditPasswordDto.getPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(userEditPasswordDto.getNewPassword()));
             userRepository.save(user);
         } else {
             throw new IncorrectPasswordException(ErrorMessage.INCORRECT_USER_PASSWORD);
