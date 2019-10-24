@@ -3,11 +3,13 @@ package com.softserve.ita.java442.cityDonut.mapper.category;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.model.Category;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryMapper implements GeneralMapper<Category,CategoryDto> {
+@Component
+public class CategoryMapper implements GeneralMapper<Category, CategoryDto> {
 
     @Override
     public CategoryDto convertToDto(Category category) {
