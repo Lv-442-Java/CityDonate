@@ -24,12 +24,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEditDto update(UserEditDto userEditDto) {
+        User user;
         if (userEditDto != null) {
-            findById(userEditDto.getId());
+            user = userRepository
+                    .findById(userEditDto.getId())
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + userEditDto.getId()));
         } else {
             throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID);
         }
-        return userEditMapper.convertToDto(userRepository.save(userEditMapper.convertToModel(userEditDto)));
+        user.setFirstName(userEditDto.getFirstName());
+        user.setLastName(userEditDto.getLastName());
+        user.setEmail(userEditDto.getEmail());
+        return userEditMapper.convertToDto(userRepository.save(user));
     }
 
     @Override
