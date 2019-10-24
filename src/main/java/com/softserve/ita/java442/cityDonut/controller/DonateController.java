@@ -1,6 +1,7 @@
 package com.softserve.ita.java442.cityDonut.controller;
 
 import com.softserve.ita.java442.cityDonut.dto.donateDto.DonateDto;
+import com.softserve.ita.java442.cityDonut.model.Project;
 import com.softserve.ita.java442.cityDonut.service.DonateService;
 import com.softserve.ita.java442.cityDonut.service.impl.DonateServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.awt.color.ProfileDataException;
 import java.util.List;
 
 @RestController
@@ -16,10 +18,14 @@ import java.util.List;
 
 public class DonateController {
 
+    @Autowired
     DonateServiceImpl donateService;
+
+
 
     @GetMapping("/project/{id}")
     public List<DonateDto> getProjectDonates(@PathVariable long id) {
         return donateService.getProjectDonates(id);
     }
+
 }

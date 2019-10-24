@@ -18,12 +18,17 @@ import java.util.Optional;
 @Service
 public class DonateServiceImpl implements DonateService {
 
-    @Autowired
+    private final
     DonateRepository donateRepository;
+
+    public DonateServiceImpl(DonateRepository donateRepository) {
+        this.donateRepository = donateRepository;
+    }
 
     @Override
     public List<DonateDto> getProjectDonates(long id) {
         List<Donate> donates = donateRepository.getByProjectId(id);
+        System.out.println(donates);
         List<DonateDto> donateDtos = new LinkedList<>();
         for (Donate donate: donates) {
             donateDtos.add(new DonateMapper().convertToDto(donate));

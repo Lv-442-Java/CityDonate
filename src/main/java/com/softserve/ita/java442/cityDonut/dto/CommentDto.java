@@ -18,5 +18,5 @@ public class CommentDto {
 
     private ProjectDto projectDto;
 
-    private UserDto userDto;
+    //private UserDto userDto;
 }
