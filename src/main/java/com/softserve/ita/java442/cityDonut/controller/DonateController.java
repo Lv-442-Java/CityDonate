@@ -13,13 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/v1/donate")
+
 public class DonateController {
 
-    @Autowired
     DonateServiceImpl donateService;
 
     @GetMapping("/project/{id}")
-    public List<DonateDto> getSumProjectDonate(@PathVariable long id) {
-        return donateService.getSumProjectDonate(id);
+    public List<DonateDto> getProjectDonates(@PathVariable long id) {
+        return donateService.getProjectDonates(id);
     }
 }
