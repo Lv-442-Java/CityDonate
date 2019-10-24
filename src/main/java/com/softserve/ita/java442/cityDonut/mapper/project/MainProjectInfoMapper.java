@@ -9,7 +9,9 @@ import com.softserve.ita.java442.cityDonut.mapper.user.UserNameMapper;
 import com.softserve.ita.java442.cityDonut.mapper.projectStatus.ProjectStatusMapper;
 import com.softserve.ita.java442.cityDonut.model.Donate;
 import com.softserve.ita.java442.cityDonut.model.Project;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MainProjectInfoMapper implements GeneralMapper<Project, MainProjectInfoDto> {
 
     private long countDonatedMoney(Project model){
