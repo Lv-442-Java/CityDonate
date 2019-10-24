@@ -42,6 +42,7 @@ target/
 *.iws
 *.iml
 *.ipr
+/classes
 
 ### NetBeans ###
 /nbproject/private/
@@ -50,6 +51,7 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
+
 
 ### VS Code ###
 .vscode/
