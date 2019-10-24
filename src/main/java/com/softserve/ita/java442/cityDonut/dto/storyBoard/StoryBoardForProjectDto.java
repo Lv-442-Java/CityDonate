@@ -14,8 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoryBoardForProjectDto {
+
     private long id;
+
     private String description;
+
     private LocalDateTime date;
+
     private List<MediaDto> media;
 }

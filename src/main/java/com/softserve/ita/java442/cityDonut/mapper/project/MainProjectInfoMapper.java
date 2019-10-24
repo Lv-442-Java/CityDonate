@@ -4,31 +4,42 @@ import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
+import com.softserve.ita.java442.cityDonut.mapper.projectStatus.ProjectStatusMapper;
 import com.softserve.ita.java442.cityDonut.mapper.storyBoard.StoryBoardForProjectMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserNameMapper;
-import com.softserve.ita.java442.cityDonut.mapper.projectStatus.ProjectStatusMapper;
 import com.softserve.ita.java442.cityDonut.model.Donate;
 import com.softserve.ita.java442.cityDonut.model.Project;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MainProjectInfoMapper implements GeneralMapper<Project, MainProjectInfoDto> {
 
-    private long countDonatedMoney(Project model){
+    @Autowired
+    ProjectStatusMapper projectStatusMapper;
+
+    @Autowired
+    UserNameMapper userNameMapper;
+
+    @Autowired
+    StoryBoardForProjectMapper storyBoardForProjectMapper;
+
+    @Autowired
+    MediaMapper mediaMapper;
+
+    @Autowired
+    CategoryMapper categoryMapper;
+
+    private long countDonatedMoney(Project model) {
         long donatedMoney = 0;
-        for(Donate donate:model.getDonates()){
-            donatedMoney+=donate.getSum();
+        for (Donate donate : model.getDonates()) {
+            donatedMoney += donate.getSum();
         }
         return donatedMoney;
     }
 
     @Override
     public MainProjectInfoDto convertToDto(Project model) {
-        ProjectStatusMapper projectStatusMapper = new ProjectStatusMapper();
-        UserNameMapper userNameMapper = new UserNameMapper();
-        StoryBoardForProjectMapper storyBoardForProjectMapper = new StoryBoardForProjectMapper();
-        MediaMapper mediaMapper = new MediaMapper();
-        CategoryMapper categoryMapper = new CategoryMapper();
         return MainProjectInfoDto.builder()
                 .id(model.getId())
                 .name(model.getName())
@@ -51,11 +62,6 @@ public class MainProjectInfoMapper implements GeneralMapper<Project, MainProject
 
     @Override
     public Project convertToModel(MainProjectInfoDto dto) {
-        ProjectStatusMapper projectStatusMapper = new ProjectStatusMapper();
-        UserNameMapper userNameMapper = new UserNameMapper();
-        StoryBoardForProjectMapper storyBoardForProjectMapper = new StoryBoardForProjectMapper();
-        MediaMapper mediaMapper = new MediaMapper();
-        CategoryMapper categoryMapper = new CategoryMapper();
         return Project.builder()
                 .id(dto.getId())
                 .name(dto.getName())

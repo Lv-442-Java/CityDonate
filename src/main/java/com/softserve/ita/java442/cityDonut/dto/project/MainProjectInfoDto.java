@@ -18,20 +18,36 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MainProjectInfoDto {
+
     private long id;
+
     private String name;
+
     private String description;
+
     private String location;
+
     private String locationLatitude;
+
     private String locationLongitude;
+
     private LocalDateTime publicationDate;
+
     private LocalDateTime donationEndDate;
+
     private LocalDateTime realizationEndDate;
+
     private ProjectStatusDto projectStatus;
+
     private UserNameDto owner;
+
     private List<StoryBoardForProjectDto> storyBoards;
+
     private List<MediaDto> media;
+
     private List<CategoryDto> categories;
+
     private long moneyNeeded;
+
     private long moneyDonated;
 }

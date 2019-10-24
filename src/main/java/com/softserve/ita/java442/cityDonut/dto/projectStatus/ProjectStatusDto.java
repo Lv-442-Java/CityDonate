@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class ProjectStatusDto {
 
     private long id;
+
     private String status;
 }

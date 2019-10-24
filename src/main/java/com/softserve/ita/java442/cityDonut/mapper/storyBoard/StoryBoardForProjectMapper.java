@@ -4,11 +4,17 @@ import com.softserve.ita.java442.cityDonut.dto.storyBoard.StoryBoardForProjectDt
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.StoryBoard;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class StoryBoardForProjectMapper implements GeneralMapper<StoryBoard, StoryBoardForProjectDto> {
+
+    @Autowired
+    MediaMapper mediaMapper;
 
     public List<StoryBoardForProjectDto> convertListToDto(List<StoryBoard> modelList) {
         List<StoryBoardForProjectDto> dtoList = new ArrayList<>();
@@ -28,7 +34,6 @@ public class StoryBoardForProjectMapper implements GeneralMapper<StoryBoard, Sto
 
     @Override
     public StoryBoardForProjectDto convertToDto(StoryBoard model) {
-        MediaMapper mediaMapper = new MediaMapper();
         return StoryBoardForProjectDto.builder()
                 .id(model.getId())
                 .date(model.getDate())
@@ -39,7 +44,6 @@ public class StoryBoardForProjectMapper implements GeneralMapper<StoryBoard, Sto
 
     @Override
     public StoryBoard convertToModel(StoryBoardForProjectDto dto) {
-        MediaMapper mediaMapper = new MediaMapper();
         return StoryBoard.builder()
                 .id(dto.getId())
                 .date(dto.getDate())

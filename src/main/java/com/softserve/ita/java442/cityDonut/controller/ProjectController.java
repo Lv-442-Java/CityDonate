@@ -18,7 +18,7 @@ public class ProjectController {
     ProjectServiceImpl projectService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<MainProjectInfoDto> getProjectById (@PathVariable long id){
+    public ResponseEntity<MainProjectInfoDto> getProjectById(@PathVariable long id) {
         return new ResponseEntity<>(projectService.getProjectById(id), HttpStatus.OK);
     }
 }
