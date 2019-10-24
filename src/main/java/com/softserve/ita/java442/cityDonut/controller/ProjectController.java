@@ -3,6 +3,8 @@ package com.softserve.ita.java442.cityDonut.controller;
 import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.service.impl.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +18,7 @@ public class ProjectController {
     ProjectServiceImpl projectService;
 
     @GetMapping("/{id}")
-    MainProjectInfoDto getProjectById (@PathVariable long id){
-        return projectService.getProjectById(id);
+    public ResponseEntity<MainProjectInfoDto> getProjectById (@PathVariable long id){
+        return new ResponseEntity<>(projectService.getProjectById(id), HttpStatus.OK);
     }
 }
