@@ -16,8 +16,12 @@ import java.util.List;
 public class PreviewProjectDto {
 
     private long id;
+
     private String name;
+
     private List<CategoryDto> categories;
+
     private ProjectStatusDto projectStatusDto;
+
     private long moneyNeeded;
 }
