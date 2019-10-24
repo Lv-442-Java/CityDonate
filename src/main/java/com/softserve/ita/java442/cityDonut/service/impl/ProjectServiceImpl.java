@@ -6,27 +6,37 @@ import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.PreviewProjectMapper;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
+    @Autowired
     ProjectRepository projectRepository;
+
+    @Autowired
     ProjectStatusServiceImpl projectStatusService;
+
+    @Autowired
     CategoryServiceImpl categoryService;
+
+    @Autowired
+    PreviewProjectMapper previewProjectMapper;
+
+    @Autowired
+    CategoryMapper categoryMapper;
 
     @Override
     public List<PreviewProjectDto> getFilteredProjects
             (List<String> categories, long moneyFrom, long moneyTo, String status) {
-        List<PreviewProjectDto> filteredProjects = PreviewProjectMapper.convertListToDto(
+        List<PreviewProjectDto> filteredProjects = previewProjectMapper.convertListToDto(
                 projectRepository.getProjectsByProjectStatusAndMoneyNeededBetween(
                         projectStatusService.getByStatus(status), moneyFrom, moneyTo));
         filterByCategories(filteredProjects,
-                CategoryMapper.convertListToDto(categoryService.getCategoriesByCategories(categories)));
+                categoryMapper.convertListToDto(categoryService.getCategoriesByCategories(categories)));
         return filteredProjects;
     }
 
