@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
+    Project getById(long id);
 
     Project findByOwnerAndId(User owner, long id);
 
