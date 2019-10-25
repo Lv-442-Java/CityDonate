@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/project")
+//@RequestMapping("/api/v1/project")
 public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
