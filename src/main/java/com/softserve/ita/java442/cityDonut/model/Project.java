@@ -47,6 +47,9 @@ public class Project {
     @Column(name = "realization_end_date")
     private LocalDateTime realizationEndDate;
 
+    @Column(name = "money_needed")
+    private long moneyNeeded;
+
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
