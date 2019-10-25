@@ -13,11 +13,6 @@ import lombok.NoArgsConstructor;
 public class CategoryDto {
 
     private long id;
-<<<<<<< HEAD:src/main/java/com/softserve/ita/java442/cityDonut/dto/CategoryDto.java
-    private String category;
-}
-=======
 
     private String category;
 }
->>>>>>> 9e2aeeafd8924c36de2724fc7d5beeda41fdfa5c:src/main/java/com/softserve/ita/java442/cityDonut/dto/category/CategoryDto.java
