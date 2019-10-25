@@ -1,9 +1,7 @@
-package com.softserve.ita.java442.cityDonut.mapper;
+package com.softserve.ita.java442.cityDonut.mapper.status;
 
-import com.softserve.ita.java442.cityDonut.dto.ProjectStatusDto;
 import com.softserve.ita.java442.cityDonut.dto.status.ProjectStatusDTO;
 import com.softserve.ita.java442.cityDonut.model.ProjectStatus;
-import org.modelmapper.ModelMapper;
 
 public class ProjectStatusMapper {
 

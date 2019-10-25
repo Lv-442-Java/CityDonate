@@ -49,13 +49,13 @@ public class Project {
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH})
+             CascadeType.REFRESH})
     @JoinColumn(name = "project_status_id")
     private ProjectStatus projectStatus;
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH})
+             CascadeType.REFRESH})
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
