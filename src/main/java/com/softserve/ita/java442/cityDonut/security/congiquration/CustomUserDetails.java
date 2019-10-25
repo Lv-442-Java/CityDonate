@@ -1,32 +1,33 @@
 package com.softserve.ita.java442.cityDonut.security.congiquration;
 
 import com.softserve.ita.java442.cityDonut.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
-public class CustomUserDetails  implements UserDetails {
+public class CustomUserDetails implements UserDetails {
     private User user;
-
+    @Autowired
     public CustomUserDetails(User user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-       return Collections.singleton( new SimpleGrantedAuthority("USER"));
+        return Collections.singleton(new SimpleGrantedAuthority(String.valueOf(user.getRole())));
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
         return user.getEmail();
-    }
-    @Override
-    public String getPassword() {
-        return user.getPassword();
     }
 
     @Override
