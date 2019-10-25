@@ -35,5 +35,5 @@ public class ProjectDto {
 
     private ProjectStatusDto projectStatusDto;
 
-    private UserDto ownerDto;
+    //private UserDto ownerDto;
 }

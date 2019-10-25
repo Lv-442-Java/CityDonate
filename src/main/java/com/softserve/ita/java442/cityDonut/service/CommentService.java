@@ -1,11 +1,10 @@
 package com.softserve.ita.java442.cityDonut.service;
 
-import com.softserve.ita.java442.cityDonut.dto.comment.CommentShowDto;
-
+import com.softserve.ita.java442.cityDonut.dto.comment.CommentDto;
 import java.util.List;
 
 public interface CommentService {
 
-    List<CommentShowDto> showComments(long projectId);
-
+    List<CommentDto> showComments(long projectId);
+    CommentDto sendComment(CommentDto comment);
 }
