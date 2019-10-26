@@ -2,7 +2,6 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.dto.comment.CommentDto;
 import com.softserve.ita.java442.cityDonut.mapper.CommentMapper;
-import com.softserve.ita.java442.cityDonut.mapper.UserForCommentMapper;
 import com.softserve.ita.java442.cityDonut.repository.CommentRepository;
 import com.softserve.ita.java442.cityDonut.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,6 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
     @Autowired
     private CommentMapper mapper;
-
-
 
     @Override
     public List<CommentDto> showComments(long projectId) {
