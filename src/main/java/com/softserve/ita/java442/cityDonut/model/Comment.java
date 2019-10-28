@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Builder
-@Getter
-@Setter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,5 +34,4 @@ public class Comment {
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
 }
