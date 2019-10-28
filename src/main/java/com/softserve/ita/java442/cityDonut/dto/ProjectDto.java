@@ -1,5 +1,6 @@
 package com.softserve.ita.java442.cityDonut.dto;
 
+import com.softserve.ita.java442.cityDonut.dto.projectStatus.ProjectStatusDto;
 import com.softserve.ita.java442.cityDonut.model.ProjectStatus;
 import com.softserve.ita.java442.cityDonut.model.User;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,7 @@ public class ProjectDto {
 
     private LocalDateTime realizationEndDate;
 
-    //private ProjectStatusDto projectStatusDto;
+    private ProjectStatusDto projectStatusDto;
 
-    //private UserDto ownerDto;
+
 }
