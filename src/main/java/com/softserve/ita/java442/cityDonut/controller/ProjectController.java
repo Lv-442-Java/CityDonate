@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/project")
+@RequestMapping("/api/v1")
 public class ProjectController {
 
     @Autowired
     private ProjectServiceImpl projectService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/project/{id}")
     public ResponseEntity<MainProjectInfoDto> getProjectById(@PathVariable long id) {
         return new ResponseEntity<>(projectService.getProjectById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/filter")
+    @GetMapping("/project/filter")
     public ResponseEntity<List<PreviewProjectDto>> filter(
             @RequestParam List<String> categories, long moneyFrom, long moneyTo, String status) {
         return new ResponseEntity<>(
