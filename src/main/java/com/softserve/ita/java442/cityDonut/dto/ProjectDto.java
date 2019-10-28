@@ -36,5 +36,4 @@ public class ProjectDto {
 
     private ProjectStatusDto projectStatusDto;
 
-
 }
