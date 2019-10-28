@@ -9,7 +9,8 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"name", "description", "location", "money_needed", "photos", "documents"})
+@EqualsAndHashCode(exclude = {"is_name_valid", "is_description_valid", "is_location_valid", "is_money_needed_valid",
+        "are_photos_valid", "are_documents_valid"})
 @ToString(exclude = {"project"})
 @Table(name = "fields_check")
 public class FieldsCheck {
