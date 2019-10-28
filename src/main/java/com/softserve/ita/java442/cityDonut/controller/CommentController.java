@@ -17,14 +17,11 @@ public class CommentController {
     @Autowired
     private CommentServiceImpl service;
 
-
-   @GetMapping("/all")
+    @GetMapping("/all")
     public ResponseEntity<List<CommentDto>> showAllComments(@PathVariable("id") long id){
 
-
-        //return service.showComments(id);
        return ResponseEntity.status(HttpStatus.OK).body(service.showComments(id));
-        //return  new ResponseEntity<>(service.showComments(id),HttpStatus.OK);
+
    }
 
    @PostMapping("/send")

@@ -20,7 +20,7 @@ public class CommentDto {
 
     private LocalDateTime date;
 
-    private ProjectForCommentDto projectDto;
+    private long projectId;
 
-     private UserForCommentDto userDto;
+    private long userId;
 }
