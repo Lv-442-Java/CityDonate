@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DonateDto {
+public class DonatesForProjectDto {
     private long id;
 
     private LocalDateTime date;

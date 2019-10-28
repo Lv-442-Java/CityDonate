@@ -1,13 +1,13 @@
 package com.softserve.ita.java442.cityDonut.mapper.donate;
 
-import com.softserve.ita.java442.cityDonut.dto.donateDto.DonateDto;
+import com.softserve.ita.java442.cityDonut.dto.donateDto.DonatesForProjectDto;
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.model.Donate;
 
-public class DonateMapper implements GeneralMapper<Donate, DonateDto> {
+public class DonateForProjectMapper implements GeneralMapper<Donate, DonatesForProjectDto> {
     @Override
-    public DonateDto convertToDto(Donate model) {
-        return DonateDto.builder()
+    public DonatesForProjectDto convertToDto(Donate model) {
+        return DonatesForProjectDto.builder()
                 .id(model.getId())
                 .date(model.getDate())
                 .sum(model.getSum())
@@ -17,7 +17,7 @@ public class DonateMapper implements GeneralMapper<Donate, DonateDto> {
     }
 
     @Override
-    public Donate convertToModel(DonateDto dto) {
+    public Donate convertToModel(DonatesForProjectDto dto) {
         return null;
     }
 
