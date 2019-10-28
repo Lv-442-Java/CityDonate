@@ -18,23 +18,23 @@ public class FieldsCheck {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
-    private boolean name;
+    @Column(name = "is_name_valid")
+    private boolean isNameValid;
 
-    @Column(name = "description")
-    private boolean description;
+    @Column(name = "is_description_valid")
+    private boolean isDescriptionValid;
 
-    @Column(name = "location")
-    private boolean location;
+    @Column(name = "is_location_valid")
+    private boolean isLocationValid;
 
-    @Column(name = "money_needed")
-    private boolean moneyNeeded;
+    @Column(name = "is_money_needed_valid")
+    private boolean isMoneyNeededValid;
 
-    @Column(name = "photos")
-    private boolean photos;
+    @Column(name = "are_photos_valid")
+    private boolean arePhotosValid;
 
-    @Column(name = "documents")
-    private boolean documents;
+    @Column(name = "are_documents_valid")
+    private boolean areDocumentsValid;
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
