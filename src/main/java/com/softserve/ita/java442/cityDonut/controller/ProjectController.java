@@ -17,6 +17,7 @@ import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 @RestController
@@ -41,7 +42,7 @@ public class ProjectController {
     String temp() {return "success get";}
 
     @PostMapping("/")
-    public ResponseEntity<NewProjectDTO> createProject(@RequestBody NewProjectDTO project) {
+    public ResponseEntity<NewProjectDTO> createProject(@Valid @RequestBody NewProjectDTO project) {
         return new ResponseEntity<>(
                 projectService.saveProject(project, /*user id*/ 1l),
                 HttpStatus.OK
