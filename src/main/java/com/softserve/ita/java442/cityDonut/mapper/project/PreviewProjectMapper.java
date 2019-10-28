@@ -15,10 +15,10 @@ import java.util.List;
 public class PreviewProjectMapper implements GeneralMapper<Project, PreviewProjectDto> {
 
     @Autowired
-    CategoryMapper categoryMapper;
+    private CategoryMapper categoryMapper;
 
     @Autowired
-    ProjectStatusMapper projectStatusMapper;
+    private ProjectStatusMapper projectStatusMapper;
 
     public List<PreviewProjectDto> convertListToDto(List<Project> projects) {
         List<PreviewProjectDto> previewProjectDtos = new ArrayList<>();

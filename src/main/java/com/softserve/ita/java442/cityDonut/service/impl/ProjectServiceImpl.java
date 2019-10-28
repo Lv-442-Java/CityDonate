@@ -19,22 +19,22 @@ import java.util.List;
 public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
-    ProjectRepository projectRepository;
+    private ProjectRepository projectRepository;
 
     @Autowired
-    ProjectStatusServiceImpl projectStatusService;
+    private ProjectStatusServiceImpl projectStatusService;
 
     @Autowired
-    CategoryServiceImpl categoryService;
+    private CategoryServiceImpl categoryService;
 
     @Autowired
-    PreviewProjectMapper previewProjectMapper;
+    private PreviewProjectMapper previewProjectMapper;
 
     @Autowired
-    CategoryMapper categoryMapper;
+    private CategoryMapper categoryMapper;
 
     @Autowired
-    MainProjectInfoMapper mainProjectInfoMapper;
+    private MainProjectInfoMapper mainProjectInfoMapper;
 
     @Override
     public MainProjectInfoDto getProjectById(long id) {
