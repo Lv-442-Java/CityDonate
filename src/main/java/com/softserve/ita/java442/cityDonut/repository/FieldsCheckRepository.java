@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface FieldsCheckRepository extends JpaRepository<FieldsCheck,Long> {
-    List<FieldsCheck> getAllByProject_Id(long project_id);
+    List<FieldsCheck> getAllByProjectId(long project_id);
 }

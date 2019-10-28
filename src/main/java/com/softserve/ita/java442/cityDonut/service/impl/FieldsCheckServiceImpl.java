@@ -21,6 +21,6 @@ public class FieldsCheckServiceImpl implements FieldsCheckService {
 
     @Override
     public List<FieldsCheckDto> getAllByProject_Id(long project_id) {
-        return fieldsCheckMapper.convertListToDto(fieldsCheckRepository.getAllByProject_Id(project_id));
+        return fieldsCheckMapper.convertListToDto(fieldsCheckRepository.getAllByProjectId(project_id));
     }
 }
