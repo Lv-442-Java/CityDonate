@@ -1,4 +1,4 @@
-package com.softserve.ita.java442.cityDonut;
+package com.softserve.ita.java442.cityDonut.dto.media;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "file")

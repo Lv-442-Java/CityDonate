@@ -2,7 +2,7 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
 import com.softserve.ita.java442.cityDonut.exception.MyFileNotFoundException;
-import com.softserve.ita.java442.cityDonut.FileStorageProperties;
+import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
