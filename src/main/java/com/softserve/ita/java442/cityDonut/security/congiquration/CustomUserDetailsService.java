@@ -1,9 +1,9 @@
 package com.softserve.ita.java442.cityDonut.security.congiquration;
 
+
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,8 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(email);
-        System.out.println("Result user "+user);
-        CustomUserDetails u = new CustomUserDetails(user);
+        System.out.println("User : "+user);
         return new CustomUserDetails(user);
     }
 }
