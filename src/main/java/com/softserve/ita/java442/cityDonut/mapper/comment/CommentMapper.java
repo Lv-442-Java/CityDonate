@@ -40,9 +40,7 @@ public class CommentMapper implements GeneralMapper<Comment, CommentDto> {
     }
 
     public List<CommentDto> convertListToDto(List<Comment> comments) {
-
         List<CommentDto> dtoList = new ArrayList<>();
-
         for (Comment comment : comments) {
             dtoList.add(convertToDto(comment));
         }

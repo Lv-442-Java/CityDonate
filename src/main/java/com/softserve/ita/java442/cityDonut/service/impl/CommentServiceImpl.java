@@ -19,21 +19,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDto> showComments(long projectId) {
-
         List<CommentDto> allComments;
-
         allComments = mapper.convertListToDto(commentRepository.getCommentsByProjectId(projectId));
-
         return allComments;
     }
 
     @Override
     public CommentDto sendComment(CommentDto comment) {
-
         CommentDto newComment;
-
         newComment = mapper.convertToDto(commentRepository.save(mapper.convertToModel(comment)));
-
         return newComment;
     }
 }

@@ -19,13 +19,11 @@ public class CommentController {
 
     @GetMapping("/all")
     public ResponseEntity<List<CommentDto>> showAllComments(@PathVariable("id") long id){
-
-       return ResponseEntity.status(HttpStatus.OK).body(service.showComments(id));
+        return ResponseEntity.status(HttpStatus.OK).body(service.showComments(id));
     }
 
     @PostMapping("/send")
     public ResponseEntity<CommentDto> sendComment(@RequestBody CommentDto comment){
-
-       return ResponseEntity.status(HttpStatus.OK).body(service.sendComment(comment));
+        return ResponseEntity.status(HttpStatus.OK).body(service.sendComment(comment));
    }
 }
