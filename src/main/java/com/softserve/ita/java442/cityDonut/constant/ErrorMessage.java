@@ -9,4 +9,5 @@ public class ErrorMessage {
     public static final String COULD_NOT_CREATE_FILE_DIRECTORY = "Could not create the directory where the uploaded files will be stored.";
     public static final String INVALID_CHARACTER = "Sorry! Filename contains invalid path sequence ";
     public static final String COULD_NOT_STORE_FILE = " could not be stored file. Please try again!";
+    public static final String NOT_DETERMINED_FILE_TYPE = "Could not determine file type.";
 }

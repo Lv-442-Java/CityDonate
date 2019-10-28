@@ -1,6 +1,8 @@
 package com.softserve.ita.java442.cityDonut.controller;
 
+import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
+import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +23,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/project")
 public class FileController {
-
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
     @Autowired
     private FileStorageServiceImpl fileStorageService;
@@ -58,7 +58,7 @@ public class FileController {
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
-            logger.info("Could not determine file type.");
+            throw new NotFoundException(ErrorMessage.NOT_DETERMINED_FILE_TYPE);
         }
 
         // Fallback to the default content type if type could not be determined
