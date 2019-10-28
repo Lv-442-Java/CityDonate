@@ -3,12 +3,18 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
+import com.softserve.ita.java442.cityDonut.dto.user.UserRegistrationDto;
+import com.softserve.ita.java442.cityDonut.exception.BadEmailException;
 import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
+import com.softserve.ita.java442.cityDonut.exception.InvalidEmailException;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
+import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
 import com.softserve.ita.java442.cityDonut.model.User;
+import com.softserve.ita.java442.cityDonut.repository.RoleRepository;
 import com.softserve.ita.java442.cityDonut.repository.UserRepository;
 import com.softserve.ita.java442.cityDonut.service.UserService;
+import com.softserve.ita.java442.cityDonut.validator.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,10 +23,19 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    UserRegistrationMapper userRegistrationMapper;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
     UserEditMapper userEditMapper;
+
+    @Autowired
+    EmailValidator emailValidator;
 
     @Override
     public UserEditDto update(UserEditDto userEditDto) {
@@ -62,5 +77,21 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new IncorrectPasswordException(ErrorMessage.INCORRECT_USER_PASSWORD);
         }
+    }
+
+    @Override
+    public UserRegistrationDto saveUser(UserRegistrationDto userRegistrationDto) {
+        if (!emailValidator.validateEmail(userRegistrationDto.getEmail())) {
+            throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
+        }
+        if (userRepository.findByEmail(userRegistrationDto.getEmail()) != null) {
+            throw new BadEmailException(ErrorMessage.INCORRECT_EMAIL);
+        }
+        User user = userRegistrationMapper.convertToModel(userRegistrationDto);
+        user.setRole(roleRepository.findByRole("user"));
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
+        return userRegistrationMapper.convertToDto(userRepository.save(user));
     }
 }
