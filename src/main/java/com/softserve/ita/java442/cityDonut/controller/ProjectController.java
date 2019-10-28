@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.softserve.ita.java442.cityDonut.dto.ProjectDto;
-import com.softserve.ita.java442.cityDonut.dto.ProjectStatusDto;
 import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDTO;
 import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDTO;
 import com.softserve.ita.java442.cityDonut.dto.user.UserDTO;
@@ -25,8 +23,8 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/v1/project")
 public class ProjectController {
 
-    @Autowired
-    ProjectServiceImpl projectService;
+    //@Autowired
+    //ProjectServiceImpl projectService;
 
     @Autowired
     private ProjectService projectService;
@@ -43,49 +41,19 @@ public class ProjectController {
     String temp() {return "success get";}
 
     @PostMapping("/")
-    NewProjectDTO newProject(@RequestBody NewProjectDTO project) {
-
-        System.out.println("IN PROJECT CONTROLLER");
-
-        //Do something with fields...
-
-        //Set creation date to now
-        project.setCreationDate(LocalDateTime.now());
-
-        //Set project status to 'not started'
-        //Get initial project status from project status service
-        project.setProjectStatusDTO(projectStatusService.getInitialStatus());
-
-        //Set user owner to project
-        long userId = 1l;
-        project.setOwnerDTO(new UserDTO(userId));
-
-        //Add project to the database using service
-        NewProjectDTO generaredProject = projectService.saveProject(project);
-
-        //return project with new {id}
-        return generaredProject;
+    public ResponseEntity<NewProjectDTO> createProject(@RequestBody NewProjectDTO project) {
+        return new ResponseEntity<>(
+                projectService.saveProject(project, /*user id*/ 1l),
+                HttpStatus.OK
+        );
     }
 
-    @PutMapping("/{id}")
-    EditedProjectDTO editProject(@RequestBody EditedProjectDTO project, @PathVariable long id) {
-
-        //get user id
-        long userId = 1l;
-
-        //get project by id and user id
-        NewProjectDTO oldProject = projectService.getProjectByUserAndProjectId(userId, id);
-
-        //exceprion if oldProject == null
-        if (oldProject == null) return null;
-
-        //set fields to the project
-        project.setId(id);
-
-        //Save project
-        EditedProjectDTO savedProject = projectService.editProject(project);
-
-        return savedProject;
+    @PutMapping("/{projectId}")
+    public ResponseEntity<EditedProjectDTO> editProject(@RequestBody EditedProjectDTO project, @PathVariable long projectId) {
+        return new ResponseEntity<>(
+                projectService.editProject(project, projectId, /*user id*/ 1l),
+                HttpStatus.OK
+        );
     }
 
 }

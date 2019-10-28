@@ -1,13 +1,22 @@
 package com.softserve.ita.java442.cityDonut.mapper.project;
 
 import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDTO;
+import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
+import com.softserve.ita.java442.cityDonut.mapper.category.CategoryNameMapper;
 import com.softserve.ita.java442.cityDonut.mapper.status.ProjectStatusMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserMapper;
 import com.softserve.ita.java442.cityDonut.model.Project;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class NewProjectMapper {
+@Component
+public class NewProjectMapper implements GeneralMapper<Project, NewProjectDTO> {
 
-    public static NewProjectDTO convertToDTO(Project project) {
+    @Autowired
+    CategoryNameMapper categoryNameMapper;
+
+    @Override
+    public NewProjectDTO convertToDto(Project project) {
         return NewProjectDTO.builder()
                 .id(project.getId())
                 .name(project.getName())
@@ -15,13 +24,12 @@ public class NewProjectMapper {
                 .location(project.getLocation())
                 .locationLatitude(project.getLocationLatitude())
                 .locationLongitude(project.getLocationLongitude())
-                .creationDate(project.getCreationDate())
-                .projectStatusDTO(ProjectStatusMapper.convertToDto(project.getProjectStatus()))
-                .ownerDTO(UserMapper.convertToDTO(project.getOwner()))
+                .categories(categoryNameMapper.convertListToDto(project.getCategories()))
                 .build();
     }
 
-    public static Project convertToModel(NewProjectDTO projectDTO) {
+    @Override
+    public Project convertToModel(NewProjectDTO projectDTO) {
         return Project.builder()
                 .id(projectDTO.getId())
                 .name(projectDTO.getName())
@@ -29,9 +37,7 @@ public class NewProjectMapper {
                 .location(projectDTO.getLocation())
                 .locationLatitude(projectDTO.getLocationLatitude())
                 .locationLongitude(projectDTO.getLocationLongitude())
-                .creationDate(projectDTO.getCreationDate())
-                .projectStatus(ProjectStatusMapper.convertToModel(projectDTO.getProjectStatusDTO()))
-                .owner(UserMapper.convertToModel(projectDTO.getOwnerDTO()))
+                .categories(categoryNameMapper.convertListToModel(projectDTO.getCategories()))
                 .build();
     }
 

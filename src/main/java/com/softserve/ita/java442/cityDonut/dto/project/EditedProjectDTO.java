@@ -1,5 +1,6 @@
 package com.softserve.ita.java442.cityDonut.dto.project;
 
+import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
 import com.softserve.ita.java442.cityDonut.dto.status.ProjectStatusDTO;
 import com.softserve.ita.java442.cityDonut.dto.user.UserDTO;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -26,5 +28,7 @@ public class EditedProjectDTO {
     private String locationLatitude;
 
     private String locationLongitude;
+
+    private List<CategoryNameDto> categories;
 
 }
