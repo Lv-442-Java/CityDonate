@@ -34,5 +34,4 @@ public class Comment {
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
 }

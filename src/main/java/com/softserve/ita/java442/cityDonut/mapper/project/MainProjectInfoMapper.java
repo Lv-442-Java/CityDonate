@@ -16,19 +16,19 @@ import org.springframework.stereotype.Component;
 public class MainProjectInfoMapper implements GeneralMapper<Project, MainProjectInfoDto> {
 
     @Autowired
-    ProjectStatusMapper projectStatusMapper;
+    private ProjectStatusMapper projectStatusMapper;
 
     @Autowired
-    UserNameMapper userNameMapper;
+    private UserNameMapper userNameMapper;
 
     @Autowired
-    StoryBoardForProjectMapper storyBoardForProjectMapper;
+    private StoryBoardForProjectMapper storyBoardForProjectMapper;
 
     @Autowired
-    MediaMapper mediaMapper;
+    private MediaMapper mediaMapper;
 
     @Autowired
-    CategoryMapper categoryMapper;
+    private CategoryMapper categoryMapper;
 
     private long countDonatedMoney(Project model) {
         long donatedMoney = 0;
