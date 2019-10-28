@@ -1,8 +1,9 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
-import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
-import com.softserve.ita.java442.cityDonut.exception.MyFileNotFoundException;
+import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
+import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
+import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -23,14 +24,14 @@ public class FileStorageServiceImpl implements FileStorageService {
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
+    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties)  {
+
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
-
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
-            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
+            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND);
         }
     }
 
@@ -42,7 +43,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         try {
             // Check if the file's name contains invalid characters
             if(fileName.contains("..")) {
-                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+                throw new FileStorageException(ErrorMessage.INVALID_CHARACTER + fileName);
             }
 
             // Copy file to the target location (Replacing existing file with the same name)
@@ -51,22 +52,19 @@ public class FileStorageServiceImpl implements FileStorageService {
 
             return fileName;
         } catch (IOException ex) {
-            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
+            throw new FileStorageException(fileName + ErrorMessage.COULD_NOT_STORE_FILE);
         }
     }
 
     @Override
-    public Resource loadFileAsResource(String fileName) {
-        try {
+    public Resource loadFileAsResource(String fileName) throws MalformedURLException {
+
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;
             } else {
-                throw new MyFileNotFoundException("File not found " + fileName);
+                throw new MalformedURLException(ErrorMessage.FILE_NOT_FOUND + fileName);
             }
-        } catch (MalformedURLException ex) {
-            throw new MyFileNotFoundException("File not found " + fileName, ex);
-        }
     }
 }

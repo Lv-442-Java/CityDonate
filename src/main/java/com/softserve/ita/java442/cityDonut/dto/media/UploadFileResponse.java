@@ -18,4 +18,6 @@ public class UploadFileResponse {
     private String fileType;
 
     private long size;
+
+
 }
