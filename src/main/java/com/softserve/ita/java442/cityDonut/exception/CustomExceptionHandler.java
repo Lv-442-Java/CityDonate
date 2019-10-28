@@ -36,6 +36,18 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
+    @ExceptionHandler(BadEmailException.class)
+    public final ResponseEntity badEmailException(WebRequest request){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(InvalidEmailException.class)
+    public final ResponseEntity invalidEmailException(WebRequest request){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse);
+    }
+
 
     private Map<String, Object> getErrorAttributes(WebRequest webRequest) {
         return new HashMap<>(errorAttributes.getErrorAttributes(webRequest, true));
