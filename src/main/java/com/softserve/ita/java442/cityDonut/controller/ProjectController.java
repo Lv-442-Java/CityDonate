@@ -1,7 +1,9 @@
 package com.softserve.ita.java442.cityDonut.controller;
 
+import com.softserve.ita.java442.cityDonut.dto.fieldsCheck.FieldsCheckDto;
 import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.project.PreviewProjectDto;
+import com.softserve.ita.java442.cityDonut.service.impl.FieldsCheckServiceImpl;
 import com.softserve.ita.java442.cityDonut.service.impl.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,9 @@ public class ProjectController {
     @Autowired
     private ProjectServiceImpl projectService;
 
+    @Autowired
+    private FieldsCheckServiceImpl fieldsCheckService;
+
     @GetMapping("/project/{id}")
     public ResponseEntity<MainProjectInfoDto> getProjectById(@PathVariable long id) {
         return new ResponseEntity<>(projectService.getProjectById(id), HttpStatus.OK);
@@ -27,6 +32,11 @@ public class ProjectController {
             @RequestParam List<String> categories, long moneyFrom, long moneyTo, String status) {
         return new ResponseEntity<>(
                 projectService.getFilteredProjects(categories, moneyFrom, moneyTo, status), HttpStatus.OK);
+    }
+
+    @GetMapping("/project/{id}/fields/valid")
+    public ResponseEntity<List<FieldsCheckDto>> getFieldsValidationInfo(@PathVariable long id){
+        return new ResponseEntity<>(fieldsCheckService.getAllByProject_Id(id),HttpStatus.OK);
     }
 
 }
