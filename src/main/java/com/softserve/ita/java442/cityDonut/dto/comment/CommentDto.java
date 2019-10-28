@@ -1,9 +1,6 @@
 package com.softserve.ita.java442.cityDonut.dto.comment;
 
-import com.softserve.ita.java442.cityDonut.dto.project.ProjectForCommentDto;
-import com.softserve.ita.java442.cityDonut.dto.user.UserForCommentDto;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Data

@@ -21,7 +21,7 @@ public class CommentMapper implements GeneralMapper<Comment, CommentDto> {
 
 
     @Override
-    public  CommentDto convertToDto(Comment model) {
+    public CommentDto convertToDto(Comment model) {
         return CommentDto.builder().id(model.getId())
                 .description(model.getDescription())
                 .date(model.getDate())
@@ -31,7 +31,7 @@ public class CommentMapper implements GeneralMapper<Comment, CommentDto> {
     }
 
     @Override
-    public  Comment convertToModel(CommentDto dto){
+    public Comment convertToModel(CommentDto dto) {
         return Comment.builder().id(dto.getId())
                 .date(dto.getDate()).description(dto.getDescription())
                 .user(userRepo.getUserById(dto.getUserId()))
@@ -39,11 +39,11 @@ public class CommentMapper implements GeneralMapper<Comment, CommentDto> {
                 .build();
     }
 
-    public List<CommentDto> convertListToDto(List<Comment> comments){
+    public List<CommentDto> convertListToDto(List<Comment> comments) {
 
-        List<CommentDto> dtoList =  new ArrayList<>();
+        List<CommentDto> dtoList = new ArrayList<>();
 
-        for (Comment comment : comments ) {
+        for (Comment comment : comments) {
             dtoList.add(convertToDto(comment));
         }
         return dtoList;

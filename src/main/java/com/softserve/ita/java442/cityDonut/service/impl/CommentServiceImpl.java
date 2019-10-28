@@ -28,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto sendComment(CommentDto comment){
+    public CommentDto sendComment(CommentDto comment) {
 
         CommentDto newComment;
 

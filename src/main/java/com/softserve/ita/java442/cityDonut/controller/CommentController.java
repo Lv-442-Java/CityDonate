@@ -21,10 +21,9 @@ public class CommentController {
     public ResponseEntity<List<CommentDto>> showAllComments(@PathVariable("id") long id){
 
        return ResponseEntity.status(HttpStatus.OK).body(service.showComments(id));
+    }
 
-   }
-
-   @PostMapping("/send")
+    @PostMapping("/send")
     public ResponseEntity<CommentDto> sendComment(@RequestBody CommentDto comment){
 
        return ResponseEntity.status(HttpStatus.OK).body(service.sendComment(comment));
