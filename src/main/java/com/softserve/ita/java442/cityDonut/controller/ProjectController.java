@@ -40,4 +40,9 @@ public class ProjectController {
     public ResponseEntity<List<FieldsCheckDto>> getFieldsValidationInfo(@PathVariable long id){
         return new ResponseEntity<>(fieldsCheckService.getAllByProject_Id(id),HttpStatus.OK);
     }
+
+    @PutMapping("/project/{id}/field/valid/change")
+    public ResponseEntity<FieldsCheckDto> updateFieldCheck(@RequestBody FieldsCheckDto fieldsCheckdto){
+        fieldsCheckService.
+    }
 }

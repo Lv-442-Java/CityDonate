@@ -20,7 +20,7 @@ public class FieldsCheckServiceImpl implements FieldsCheckService {
     private FieldsCheckMapper fieldsCheckMapper;
 
     @Override
-    public List<FieldsCheckDto> getAllByProject_Id(long project_id) {
+    public List<FieldsCheckDto> getAllByProjectId(long project_id) {
         return fieldsCheckMapper.convertListToDto(fieldsCheckRepository.getAllByProjectId(project_id));
     }
 }
