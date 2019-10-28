@@ -57,14 +57,18 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public Resource loadFileAsResource(String fileName) throws MalformedURLException {
+    public Resource loadFileAsResource(String fileName) {
 
+        try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;
             } else {
-                throw new MalformedURLException(ErrorMessage.FILE_NOT_FOUND + fileName);
+                throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + fileName);
             }
+        } catch (MalformedURLException ex) {
+            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + fileName);
+        }
     }
 }
