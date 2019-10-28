@@ -11,5 +11,4 @@ public class RegistrationController {
     @Autowired
     UserServiceImpl userServiceImpl;
 
-
 }
