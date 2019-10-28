@@ -6,22 +6,24 @@ import com.softserve.ita.java442.cityDonut.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserRegistrationMapper implements GeneralMapper<User,UserForRegistrationMapper> {
+public class UserRegistrationMapper implements GeneralMapper<User, UserRegistrationDto> {
 
     @Override
-    public UserForRegistrationMapper convertToDto(User model) {
+    public UserRegistrationDto convertToDto(User model) {
         return UserRegistrationDto.builder()
-                .id(model.getId())
                 .firstName(model.getFirstName())
                 .lastName(model.getLastName())
-                .build();    }
+                .email(model.getEmail())
+                .build();
+    }
 
     @Override
-    public User convertToModel(UserForRegistrationMapper dto) {
-        return  User.builder()
-                .id(dto.getId())
+    public User convertToModel(UserRegistrationDto dto) {
+        return User.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
+                .email(dto.getEmail())
+                .password(dto.getPassword())
                 .build();
     }
 }
