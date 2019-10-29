@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/registration")
 public class RegistrationController {
+
     @Autowired
     UserServiceImpl userServiceimpl;
+
     @PostMapping("/")
     public ResponseEntity<UserRegistrationDto> registration(@RequestBody UserRegistrationDto dto) {
         System.out.println(dto);
