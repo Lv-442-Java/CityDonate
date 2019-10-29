@@ -20,7 +20,6 @@ public class RegistrationController {
 
     @PostMapping("/")
     public ResponseEntity<UserRegistrationDto> registration(@RequestBody UserRegistrationDto dto) {
-        System.out.println(dto);
         return ResponseEntity.status(HttpStatus.OK).body(userServiceimpl.saveUser(dto));
     }
 }
