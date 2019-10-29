@@ -20,14 +20,4 @@ public class DonateForProjectMapper implements GeneralMapper<Donate, DonatesForP
     public Donate convertToModel(DonatesForProjectDto dto) {
         return null;
     }
-
-//    public DonateDto convertToDto(Donate model, User user) {
-//        return DonateDto.builder()
-//                .id(model.getId())
-//                .date(model.getDate())
-//                .sum(model.getSum())
-//                .userFirstName(user.getFirstName())
-//                .userSecondName(user.getLastName())
-//                .build();
-//    }
 }
