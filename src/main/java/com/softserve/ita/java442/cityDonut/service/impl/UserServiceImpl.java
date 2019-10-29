@@ -23,19 +23,19 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    RoleRepository roleRepository;
+    private UserRegistrationMapper userRegistrationMapper;
 
     @Autowired
-    UserRegistrationMapper userRegistrationMapper;
+    private EmailValidator emailValidator;
 
     @Autowired
-    UserRepository userRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
-    UserEditMapper userEditMapper;
+    private UserRepository userRepository;
 
     @Autowired
-    EmailValidator emailValidator;
+    private UserEditMapper userEditMapper;
 
     @Override
     public UserEditDto update(UserEditDto userEditDto) {
