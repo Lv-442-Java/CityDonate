@@ -1,8 +1,8 @@
 package com.softserve.ita.java442.cityDonut.controller;
 
 import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
-import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDTO;
-import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDTO;
+import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDto;
+import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDto;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class ProjectController {
     String temp() {return "success get";}
 
     @PostMapping("/")
-    public ResponseEntity<NewProjectDTO> createProject(@Valid @RequestBody NewProjectDTO project) {
+    public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project) {
         return new ResponseEntity<>(
                 projectService.saveProject(project, /*user id*/ 1L),
                 HttpStatus.OK
@@ -35,7 +35,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{projectId}")
-    public ResponseEntity<EditedProjectDTO> editProject(@RequestBody EditedProjectDTO project, @PathVariable long projectId) {
+    public ResponseEntity<EditedProjectDto> editProject(@RequestBody EditedProjectDto project, @PathVariable long projectId) {
         return new ResponseEntity<>(
                 projectService.editProject(project, projectId, /*user id*/ 1L),
                 HttpStatus.OK

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectStatusDTO {
+public class ProjectStatusDto {
 
     private long id;
 

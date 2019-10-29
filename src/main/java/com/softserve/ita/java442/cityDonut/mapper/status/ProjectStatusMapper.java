@@ -1,18 +1,21 @@
 package com.softserve.ita.java442.cityDonut.mapper.status;
 
-import com.softserve.ita.java442.cityDonut.dto.status.ProjectStatusDTO;
+import com.softserve.ita.java442.cityDonut.dto.status.ProjectStatusDto;
+import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.model.ProjectStatus;
 
-public class ProjectStatusMapper {
+public class ProjectStatusMapper implements GeneralMapper<ProjectStatus, ProjectStatusDto> {
 
-    public static ProjectStatusDTO convertToDto(ProjectStatus projectStatus) {
-        return ProjectStatusDTO.builder()
+    @Override
+    public ProjectStatusDto convertToDto(ProjectStatus projectStatus) {
+        return ProjectStatusDto.builder()
                 .id(projectStatus.getId())
                 .status(projectStatus.getStatus())
                 .build();
     }
 
-    public static ProjectStatus convertToModel(ProjectStatusDTO projectStatusDto) {
+    @Override
+    public ProjectStatus convertToModel(ProjectStatusDto projectStatusDto) {
         return ProjectStatus.builder()
                 .id(projectStatusDto.getId())
                 .status(projectStatusDto.getStatus())

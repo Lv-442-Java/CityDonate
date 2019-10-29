@@ -2,9 +2,9 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
-import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDTO;
+import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDto;
 import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
-import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDTO;
+import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDto;
 import com.softserve.ita.java442.cityDonut.exception.CategoryNotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.ProjectNotFoundException;
@@ -58,22 +58,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public NewProjectDTO saveProject(NewProjectDTO projectDto, long userId) {
+    public NewProjectDto saveProject(NewProjectDto projectDto, long userId) {
         Project projectModel = createProjectModelFromDtoData(projectDto, userId);
         projectModel.setCategories(getValidCategoriesFromCategoriesDto(projectDto.getCategories()));
         Project resultOfQuery = projectRepository.save(projectModel);
-        NewProjectDTO result = newProjectMapper.convertToDto(resultOfQuery);
+        NewProjectDto result = newProjectMapper.convertToDto(resultOfQuery);
         projectRepository.flush();
         return result;
     }
 
     @Override
-    public EditedProjectDTO editProject(EditedProjectDTO projectDto, long projectId, long userId) {
+    public EditedProjectDto editProject(EditedProjectDto projectDto, long projectId, long userId) {
         Project oldProject = getProjectValidatedByOwner(projectId, userId);
         setDataToEditedProjectModel(oldProject, projectDto);
         oldProject.setCategories(getValidCategoriesFromCategoriesDto(projectDto.getCategories()));
         Project resultOfQuery = projectRepository.save(oldProject);
-        EditedProjectDTO result = editedProjectMapper.convertToDto(resultOfQuery);
+        EditedProjectDto result = editedProjectMapper.convertToDto(resultOfQuery);
         projectRepository.flush();
         return result;
     }
@@ -90,7 +90,7 @@ public class ProjectServiceImpl implements ProjectService {
                         ErrorMessage.CATEGORY_NOT_FOUND_BY_NAME + categoryNameDto.getCategory()));
     }
 
-    private Project createProjectModelFromDtoData(NewProjectDTO project, long userId) {
+    private Project createProjectModelFromDtoData(NewProjectDto project, long userId) {
         Project projectModel = newProjectMapper.convertToModel(project);
         projectModel.setCreationDate(LocalDateTime.now());
         projectModel.setProjectStatus(projectStatusRepository.getOne(userId));
@@ -103,7 +103,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException(ErrorMessage.USER_HAS_NOT_PROJECT_WITH_ID + projectId));
     }
 
-    private void setDataToEditedProjectModel(Project destination, EditedProjectDTO source) {
+    private void setDataToEditedProjectModel(Project destination, EditedProjectDto source) {
         destination.setName(source.getName());
         destination.setDescription(source.getDescription());
         destination.setLocation(source.getLocation());

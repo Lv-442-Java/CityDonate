@@ -1,24 +1,21 @@
 package com.softserve.ita.java442.cityDonut.mapper.project;
 
-import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDTO;
-import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDTO;
+import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDto;
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.mapper.category.CategoryNameMapper;
-import com.softserve.ita.java442.cityDonut.mapper.status.ProjectStatusMapper;
-import com.softserve.ita.java442.cityDonut.mapper.user.UserMapper;
 import com.softserve.ita.java442.cityDonut.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EditedProjectMapper implements GeneralMapper<Project, EditedProjectDTO> {
+public class EditedProjectMapper implements GeneralMapper<Project, EditedProjectDto> {
 
     @Autowired
     CategoryNameMapper categoryNameMapper;
 
     @Override
-    public EditedProjectDTO convertToDto(Project project) {
-        return EditedProjectDTO.builder()
+    public EditedProjectDto convertToDto(Project project) {
+        return EditedProjectDto.builder()
                 .id(project.getId())
                 .name(project.getName())
                 .description(project.getDescription())
@@ -30,7 +27,7 @@ public class EditedProjectMapper implements GeneralMapper<Project, EditedProject
     }
 
     @Override
-    public Project convertToModel(EditedProjectDTO projectDTO) {
+    public Project convertToModel(EditedProjectDto projectDTO) {
         return Project.builder()
                 .id(projectDTO.getId())
                 .name(projectDTO.getName())

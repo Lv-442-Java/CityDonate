@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewProjectDTO {
+public class EditedProjectDto {
 
     private long id;
 
