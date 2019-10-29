@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface FieldsCheckService {
     List<FieldsCheckDto> getAllByProjectId(long project_id);
+
+    FieldsCheckDto update(FieldsCheckDto fieldsCheckDto);
 }
