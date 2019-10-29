@@ -1,4 +1,4 @@
-package com.softserve.ita.java442.cityDonut.security.congiquration;
+package com.softserve.ita.java442.cityDonut.security;
 
 import com.softserve.ita.java442.cityDonut.model.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,14 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class CustomUserDetails implements UserDetails {
+public class UserPrincipal implements UserDetails {
     private User user;
 
-    public CustomUserDetails(User user) {
+    public UserPrincipal(User user) {
         this.user = user;
     }
 
@@ -22,7 +20,6 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().getRole()));
-        System.out.println("User role: "+authorities);
         return authorities;
     }
 
@@ -34,7 +31,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        System.out.println("User email: "+user.getEmail());
+        System.out.println("User password "+user.getEmail());
         return user.getEmail();
     }
 
@@ -57,6 +54,4 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-
 }

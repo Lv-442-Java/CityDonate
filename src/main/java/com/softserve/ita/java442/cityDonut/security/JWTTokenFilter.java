@@ -1,4 +1,4 @@
-package com.softserve.ita.java442.cityDonut.security.congiquration;
+package com.softserve.ita.java442.cityDonut.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,25 +12,21 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class JwtTokenFilter extends GenericFilterBean {
-
-    private JwtTokenProvider jwtTokenProvider;
-    private String TOKEN;
-
+public class JWTTokenFilter extends GenericFilterBean {
+    private JWTTokenProvider jwtTokenProvider;
     @Autowired
-    public JwtTokenFilter(JwtTokenProvider jwtTokenProvider){
+    public JWTTokenFilter(JWTTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        TOKEN =  jwtTokenProvider.resolveToken((HttpServletRequest) servletRequest);
-
-        if(TOKEN != null && jwtTokenProvider.validateToken(TOKEN)){
-            Authentication authentication = jwtTokenProvider.getAuthentication(TOKEN);
-        if(authentication != null)
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-        filterChain.doFilter(servletRequest,servletResponse);
+        String token = jwtTokenProvider.resolveToken((HttpServletRequest) servletRequest);
+         if(token != null && jwtTokenProvider.validateToken(token)){
+             Authentication authentication = jwtTokenProvider.getAuthentication(token);
+             if(authentication != null)
+                 SecurityContextHolder.getContext().setAuthentication(authentication);
+         }
+         filterChain.doFilter(servletRequest,servletResponse);
     }
 }
