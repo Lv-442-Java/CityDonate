@@ -1,4 +1,3 @@
-
 package com.softserve.ita.java442.cityDonut.dto.category;
 
 import lombok.AllArgsConstructor;
