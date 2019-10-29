@@ -13,8 +13,4 @@ public class ProjectStatusImpl implements ProjectStatusService {
     @Autowired
     ProjectStatusRepository projectStatusRepository;
 
-    @Override
-    public ProjectStatusDTO getInitialStatus() {
-        return ProjectStatusMapper.convertToDto(projectStatusRepository.getOne(1l));
-    }
 }

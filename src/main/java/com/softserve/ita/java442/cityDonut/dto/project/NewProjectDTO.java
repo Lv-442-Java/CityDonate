@@ -1,17 +1,13 @@
 package com.softserve.ita.java442.cityDonut.dto.project;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-import com.softserve.ita.java442.cityDonut.dto.UserDto;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
-import com.softserve.ita.java442.cityDonut.dto.status.ProjectStatusDTO;
-import com.softserve.ita.java442.cityDonut.dto.user.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data

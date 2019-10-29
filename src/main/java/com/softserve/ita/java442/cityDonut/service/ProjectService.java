@@ -8,7 +8,7 @@ import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDTO;
 public interface ProjectService {
     MainProjectInfoDto getProjectById(long id);
 
-    public NewProjectDTO saveProject(NewProjectDTO project, long userId);
+    NewProjectDTO saveProject(NewProjectDTO project, long userId);
 
     EditedProjectDTO editProject(EditedProjectDTO project, long projectId, long userId);
 }
