@@ -9,9 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,9 +35,15 @@ public class NewProjectDTO {
     @Size(max = 255)
     private String location;
 
-    private String locationLatitude;
+    @Digits(integer = 9, fraction = 6)
+    @DecimalMin("-180.0")
+    @DecimalMax("180.0")
+    private double locationLatitude;
 
-    private String locationLongitude;
+    @Digits(integer = 9, fraction = 6)
+    @DecimalMin("-180.0")
+    @DecimalMax("180.0")
+    private double locationLongitude;
 
     private List<CategoryNameDto> categories;
 

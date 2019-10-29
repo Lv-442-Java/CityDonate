@@ -104,7 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
         destination.setName(source.getName());
         destination.setDescription(source.getDescription());
         destination.setLocation(source.getLocation());
-        destination.setLocationLatitude(source.getLocation());
+        destination.setLocationLatitude(source.getLocationLatitude());
         destination.setLocationLongitude(source.getLocationLongitude());
     }
 }

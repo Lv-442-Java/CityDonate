@@ -25,9 +25,9 @@ public class EditedProjectDTO {
 
     private String location;
 
-    private String locationLatitude;
+    private double locationLatitude;
 
-    private String locationLongitude;
+    private double locationLongitude;
 
     private List<CategoryNameDto> categories;
 
