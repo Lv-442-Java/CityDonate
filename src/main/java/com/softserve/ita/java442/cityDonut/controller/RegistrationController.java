@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RegistrationController {
 
     @Autowired
-    UserServiceImpl userServiceimpl;
+    private UserServiceImpl userServiceimpl;
 
     @PostMapping("/")
     public ResponseEntity<UserRegistrationDto> registration(@RequestBody UserRegistrationDto dto) {
