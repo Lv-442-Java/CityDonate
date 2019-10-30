@@ -66,8 +66,21 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 errorList,
                 HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(BadEmailException.class)
+    public final ResponseEntity badEmailException(WebRequest request){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(InvalidEmailException.class)
+    public final ResponseEntity invalidEmailException(WebRequest request){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse);
+    }
+
 
     private Map<String, Object> getErrorAttributes(WebRequest webRequest) {
         return new HashMap<>(errorAttributes.getErrorAttributes(webRequest, true));
     }
+
 }
