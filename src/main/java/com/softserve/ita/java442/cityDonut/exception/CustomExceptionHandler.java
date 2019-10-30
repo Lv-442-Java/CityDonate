@@ -41,6 +41,18 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
+    @ExceptionHandler(ProjectNotFoundException.class)
+    public final ResponseEntity projectNotFoundException(WebRequest request){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public final ResponseEntity categoryNotFoundException(WebRequest request){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
     @ExceptionHandler(MalformedURLException.class)
     public final ResponseEntity malformedURLException(WebRequest request){
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
