@@ -2,6 +2,9 @@ package com.softserve.ita.java442.cityDonut.controller;
 
 import com.softserve.ita.java442.cityDonut.dto.fieldsCheck.FieldsCheckDto;
 import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
+import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDto;
+import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDto;
+import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import com.softserve.ita.java442.cityDonut.dto.project.PreviewProjectDto;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
@@ -13,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -40,4 +45,24 @@ public class ProjectController {
     public ResponseEntity<List<FieldsCheckDto>> getFieldsValidationInfo(@PathVariable long id){
         return new ResponseEntity<>(fieldsCheckService.getAllByProject_Id(id),HttpStatus.OK);
     }
+
+    @GetMapping("/project")
+    String temp() {return "success get";}
+
+    @PostMapping("/project")
+    public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project) {
+        return new ResponseEntity<>(
+                projectService.saveProject(project, /*user id*/ 1L),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/project/{projectId}")
+    public ResponseEntity<EditedProjectDto> editProject(@RequestBody EditedProjectDto project, @PathVariable long projectId) {
+        return new ResponseEntity<>(
+                projectService.editProject(project, projectId, /*user id*/ 1L),
+                HttpStatus.OK
+        );
+    }
+
 }
