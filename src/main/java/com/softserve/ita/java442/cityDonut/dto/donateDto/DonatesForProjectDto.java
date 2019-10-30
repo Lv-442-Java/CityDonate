@@ -13,12 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class DonatesForProjectDto {
     private long id;
-
     private LocalDateTime date;
-
     private double sum;
-
     private String userFirstName;
-
     private String userLastName;
 }

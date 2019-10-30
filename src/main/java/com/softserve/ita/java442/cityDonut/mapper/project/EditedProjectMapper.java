@@ -23,6 +23,7 @@ public class EditedProjectMapper implements GeneralMapper<Project, EditedProject
                 .locationLatitude(project.getLocationLatitude())
                 .locationLongitude(project.getLocationLongitude())
                 .categories(categoryNameMapper.convertListToDto(project.getCategories()))
+                .moneyNeeded(project.getMoneyNeeded())
                 .build();
     }
 
@@ -36,6 +37,7 @@ public class EditedProjectMapper implements GeneralMapper<Project, EditedProject
                 .locationLatitude(projectDTO.getLocationLatitude())
                 .locationLongitude(projectDTO.getLocationLongitude())
                 .categories(categoryNameMapper.convertListToModel(projectDTO.getCategories()))
+                .moneyNeeded(projectDTO.getMoneyNeeded())
                 .build();
     }
 

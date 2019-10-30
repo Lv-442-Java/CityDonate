@@ -13,6 +13,9 @@ import java.util.List;
 @EqualsAndHashCode(exclude = {"firstName", "lastName", "password", "moderatorProjects", "userProjects", "users", "comments", "donates"})
 @Entity
 public class User {
+    public enum UserStatus{
+        ACTIVATE, NOT_ACTIVATE
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +32,10 @@ public class User {
 
     @Column(nullable = false, length = 100)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private UserStatus status;
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
