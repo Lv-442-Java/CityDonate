@@ -20,7 +20,6 @@ import java.util.Map;
 
 @RestController
 public class AuthenticationController {
-    private String name;
     @Autowired
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
