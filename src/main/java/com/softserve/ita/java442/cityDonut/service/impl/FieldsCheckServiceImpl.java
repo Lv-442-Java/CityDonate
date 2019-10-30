@@ -9,6 +9,7 @@ import com.softserve.ita.java442.cityDonut.repository.FieldsCheckRepository;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class FieldsCheckServiceImpl implements FieldsCheckService {
     }
 
     @Override
+    @Transactional
     public FieldsCheckDto update(FieldsCheckDto fieldsCheckDto) {
         FieldsCheck fieldsCheck;
         fieldsCheck = fieldsCheckRepository
