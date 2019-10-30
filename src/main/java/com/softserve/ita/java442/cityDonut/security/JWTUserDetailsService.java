@@ -17,9 +17,8 @@ public class JWTUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
         User user = userService.findUserByEmail(userEmail);
-        System.out.println("User "+user);
-        if(user == null)
-            throw new  UsernameNotFoundException("User with this email "+userEmail+" not found!");
+        if (user == null)
+            throw new UsernameNotFoundException("User with this email " + userEmail + " not found!");
         return new UserPrincipal(user);
     }
 }

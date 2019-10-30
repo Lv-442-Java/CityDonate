@@ -25,13 +25,11 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        System.out.println("User password "+user.getPassword());
         return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        System.out.println("User password "+user.getEmail());
         return user.getEmail();
     }
 
@@ -53,5 +51,9 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User getUser() {
+        return this.user;
     }
 }

@@ -1,7 +1,6 @@
 package com.softserve.ita.java442.cityDonut.security.confiquration;
 
 import com.softserve.ita.java442.cityDonut.security.JWTConfiguration;
-import com.softserve.ita.java442.cityDonut.security.JWTTokenFilter;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableJpaRepositories(basePackages = "com")
@@ -37,9 +36,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/auth").permitAll()
-                .antMatchers("/auth/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/auth/user/**").hasAnyAuthority("USER","MODERATOR")
+                .antMatchers("/auth/admin").hasAuthority("ADMIN")
+                .antMatchers("/auth/user").hasAnyAuthority("USER", "MODERATOR")
                 .and()
-                .apply(new JWTConfiguration(jwtTokenProvider));
+                .apply(new JWTConfiguration(jwtTokenProvider))
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/");
+
     }
 }

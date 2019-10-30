@@ -1,7 +1,6 @@
 package com.softserve.ita.java442.cityDonut.security;
 
 import com.softserve.ita.java442.cityDonut.model.User;
-import com.softserve.ita.java442.cityDonut.repository.UserRepository;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import exeption.JwtAuthenticationExeption;
 import io.jsonwebtoken.*;
@@ -11,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -39,7 +37,6 @@ public class JWTTokenProvider {
         SECRET = Base64.getEncoder().encodeToString(SECRET.getBytes());
     }
 
-    //create token
     public String generateToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
         claims.put("roles", user.getRole().getRole());
@@ -56,14 +53,12 @@ public class JWTTokenProvider {
                 .compact();
     }
 
-
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(getUserEmail(token));
-        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
-                userDetails.getPassword(), userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails,
+                "", userDetails.getAuthorities());
     }
 
-    // we get userEmail like a unique value
     public String getUserEmail(String token) {
         return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody().getSubject();
     }
@@ -93,7 +88,7 @@ public class JWTTokenProvider {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return  new BCryptPasswordEncoder();
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
     }
 }
