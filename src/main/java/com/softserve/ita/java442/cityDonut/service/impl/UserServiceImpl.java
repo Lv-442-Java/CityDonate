@@ -25,6 +25,9 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     @Autowired
+    private MailSenderImpl mailSender;
+
+    @Autowired
     private UserActivationRequestRepository userActivationRequestRepository;
 
     @Autowired
@@ -95,6 +98,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRegistrationDto registerUser(UserRegistrationDto userRegistrationDto) {
+
         if (!emailValidator.validateEmail(userRegistrationDto.getEmail())) {
             throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
         }
@@ -114,6 +118,12 @@ public class UserServiceImpl implements UserService {
         UserActivationRequest userActivationRequest = new UserActivationRequest(user.getId());
         userActivationRequestRepository.save(userActivationRequest);
 
+        String activationCode = userActivationRequest.getActivationCode();
+        String url = "localhost:8080/api/v1/registration/activate?activationCode=";
+        String message = String.format("Welcome to CityDonate. To activate your account follow link: " + url + activationCode);
+        mailSender.send(user.getEmail(), "Activation Code", message);
+
         return userRegistrationMapper.convertToDto(user);
+
     }
 }
