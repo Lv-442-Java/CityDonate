@@ -46,10 +46,10 @@ public class ProjectController {
         return new ResponseEntity<>(fieldsCheckService.getAllByProject_Id(id),HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping("/project")
     String temp() {return "success get";}
 
-    @PostMapping("/")
+    @PostMapping("/project")
     public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project) {
         return new ResponseEntity<>(
                 projectService.saveProject(project, /*user id*/ 1L),
@@ -57,7 +57,7 @@ public class ProjectController {
         );
     }
 
-    @PutMapping("/{projectId}")
+    @PutMapping("/project/{projectId}")
     public ResponseEntity<EditedProjectDto> editProject(@RequestBody EditedProjectDto project, @PathVariable long projectId) {
         return new ResponseEntity<>(
                 projectService.editProject(project, projectId, /*user id*/ 1L),
