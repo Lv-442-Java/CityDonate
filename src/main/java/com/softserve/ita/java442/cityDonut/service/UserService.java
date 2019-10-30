@@ -11,8 +11,9 @@ public interface UserService {
 
     UserEditDto findById(long id);
 
-    UserRegistrationDto saveUser(UserRegistrationDto userRegistrationDto);
+    UserRegistrationDto registerUser(UserRegistrationDto userRegistrationDto);
 
     void changePassword(UserEditPasswordDto userEditPasswordDto);
 
+    User activateUserByCode(String activationCode);
 }
