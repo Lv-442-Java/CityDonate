@@ -38,7 +38,7 @@ public class DonateController {
 
     @GetMapping("/project/{id}/user/{userId}")
     public ResponseEntity<List<DonatesForProjectDto>> getUserDonatesByProject(@PathVariable long id, @PathVariable long userId) {
-        List<DonatesForProjectDto> donatesForProjectDtos = donateService.getUserDaontesByProject(id, userId);
+        List<DonatesForProjectDto> donatesForProjectDtos = donateService.getUserDonatesByProject(id, userId);
         return new ResponseEntity<>(donatesForProjectDtos, HttpStatus.OK);
     }
 
