@@ -29,12 +29,9 @@ public class StoryBoardServiceImpl implements StoryBoardService {
     }
 
     public StoryBoardDto createStoryBoard(StoryBoardDto storyBoard){
-        //StoryBoardDto newStoryBoard;
-        StoryBoard storyBoard1 = mapper.convertToModel(storyBoard);
-        StoryBoard save = storyBoardRepository.save(storyBoard1);
-        StoryBoardDto storyBoardDto = mapper.convertToDto(save);
-        //newStoryBoard = mapper.convertToDto(storyBoardRepository.save(mapper.convertToModel(storyBoard)));
-        return storyBoardDto;
+        StoryBoardDto newStoryBoard;
+        newStoryBoard = mapper.convertToDto(storyBoardRepository.save(mapper.convertToModel(storyBoard)));
+        return  newStoryBoard;
     }
 
     public StoryBoardDto editStoryBoard(StoryBoardDto storyBoardDto){
@@ -56,7 +53,4 @@ public class StoryBoardServiceImpl implements StoryBoardService {
 
         return mapper.convertToDto(storyBoardRepository.save(model));
     }
-
-
-
 }

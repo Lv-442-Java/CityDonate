@@ -35,9 +35,4 @@ public class StoryBoardController {
     public ResponseEntity<StoryBoardDto> editStoryBoard(@RequestBody StoryBoardDto storyBoardDto){
         return ResponseEntity.status(HttpStatus.OK).body(service. editStoryBoard(storyBoardDto));
     }
-
-
-
-
-
 }

@@ -16,7 +16,6 @@ public class StoryBoardMapper implements GeneralMapper<StoryBoard, StoryBoardDto
     @Autowired
     ProjectRepository projectRepository;
 
-
     @Override
     public StoryBoardDto convertToDto(StoryBoard model) {
         return StoryBoardDto.builder()

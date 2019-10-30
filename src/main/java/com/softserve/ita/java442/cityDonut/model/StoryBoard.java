@@ -41,5 +41,4 @@ public class StoryBoard {
 
     @Column(name = "money_spent")
     private long moneySpent;
-
 }
