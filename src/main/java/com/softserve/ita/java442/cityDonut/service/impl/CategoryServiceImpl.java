@@ -18,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getCategoriesByIds(List<Long> categoryIds) {
         List<Category> requiredCategories = new ArrayList<>();
-        categoryIds.forEach((categoryId)-> requiredCategories.add(categoryRepository.getOne(categoryId)));
+        categoryIds.forEach((categoryId) -> requiredCategories.add(categoryRepository.getOne(categoryId)));
         return requiredCategories;
     }
 }
