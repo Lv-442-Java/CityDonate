@@ -37,8 +37,12 @@ public class DonateController {
     }
 
     @GetMapping("/project/{id}/user/{userId}")
-    public ResponseEntity<List<DonatesForProjectDto>> getUserDonatesByProject(@PathVariable long id, @PathVariable long userId) {
-        List<DonatesForProjectDto> donatesForProjectDtos = donateService.getUserDonatesByProject(id, userId);
+    public ResponseEntity<List<DonatesForProjectDto>> getUserDonatesByProject(@PathVariable long id,
+                                                                              @PathVariable long userId,
+                                                                              @PageableDefault(sort = {"date", "sum"},
+                                                                                      direction = Sort.Direction.ASC)
+                                                                                      Pageable pageable) {
+        List<DonatesForProjectDto> donatesForProjectDtos = donateService.getUserDonatesByProject(id, userId, pageable);
         return new ResponseEntity<>(donatesForProjectDtos, HttpStatus.OK);
     }
 

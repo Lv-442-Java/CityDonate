@@ -30,8 +30,8 @@ public class DonateServiceImpl implements DonateService {
     }
 
     @Override
-    public List<DonatesForProjectDto> getUserDonatesByProject(long id, long userId) {
-        List<Donate> donates = donateRepository.getByProjectIdAndUserId(id,userId);
+    public List<DonatesForProjectDto> getUserDonatesByProject(long id, long userId, Pageable pageable) {
+        List<Donate> donates = donateRepository.getByProjectIdAndUserId(id, userId, pageable);
         List<DonatesForProjectDto> donatesForProjectDtos = new LinkedList<>();
         for (Donate donate : donates) {
             donatesForProjectDtos.add(new DonateForProjectMapper().convertToDto(donate));

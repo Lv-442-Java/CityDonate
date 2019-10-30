@@ -8,5 +8,5 @@ import java.util.List;
 public interface DonateService {
     List<DonatesForProjectDto> getProjectDonates(long id, Pageable pageable);
 
-    List<DonatesForProjectDto> getUserDonatesByProject(long id, long userId);
+    List<DonatesForProjectDto> getUserDonatesByProject(long id, long userId, Pageable pageable);
 }

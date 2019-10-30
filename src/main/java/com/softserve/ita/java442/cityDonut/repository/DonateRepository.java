@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface DonateRepository extends JpaRepository<Donate, Long> {
     List<Donate> getByProjectId(long id, Pageable pageable);
-    List<Donate> getByProjectIdAndUserId(long id, long userId);
+    List<Donate> getByProjectIdAndUserId(long id, long userId, Pageable pageable);
 }
