@@ -29,11 +29,11 @@ public class Project {
 
     private String location;
 
-    @Column(name = "location_latitude", length = 9)
-    private String locationLatitude;
+    @Column(name = "location_latitude", precision = 9, scale = 6)
+    private double locationLatitude;
 
-    @Column(name = "location_longitude", length = 9)
-    private String locationLongitude;
+    @Column(name = "location_longitude", precision = 9, scale = 6)
+    private double locationLongitude;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -52,13 +52,13 @@ public class Project {
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH})
+             CascadeType.REFRESH})
     @JoinColumn(name = "project_status_id")
     private ProjectStatus projectStatus;
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH})
+             CascadeType.REFRESH})
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
