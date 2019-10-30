@@ -42,6 +42,10 @@ public class NewProjectDto {
     @DecimalMax(value = "180.0", message = ErrorMessage.PROJECT_LOCATION_PARAM_RANGE_ERROR)
     private double locationLongitude;
 
+    @Min(value = 0L, message = ErrorMessage.PROJECT_BUDGET_ERROR)
+    @Max(value = 10000000000L, message = ErrorMessage.PROJECT_BUDGET_ERROR)
+    private long moneyNeeded;
+
     private List<CategoryNameDto> categories;
 
 }
