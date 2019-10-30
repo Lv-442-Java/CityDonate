@@ -29,6 +29,7 @@ import com.softserve.ita.java442.cityDonut.repository.ProjectStatusRepository;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -114,6 +115,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public NewProjectDto saveProject(NewProjectDto projectDto, long userId) {
         Project projectModel = createProjectModelFromDtoData(projectDto, userId);
         projectModel.setCategories(getValidCategoriesFromCategoriesDto(projectDto.getCategories()));
@@ -124,6 +126,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public EditedProjectDto editProject(EditedProjectDto projectDto, long projectId, long userId) {
         Project oldProject = getProjectValidatedByOwner(projectId, userId);
         setDataToEditedProjectModel(oldProject, projectDto);
