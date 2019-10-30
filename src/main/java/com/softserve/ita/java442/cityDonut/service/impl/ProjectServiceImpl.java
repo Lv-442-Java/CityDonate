@@ -4,15 +4,21 @@ import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
 import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.project.PreviewProjectDto;
+import com.softserve.ita.java442.cityDonut.dto.project.ProjectByUserDonateDto;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.MainProjectInfoMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.PreviewProjectMapper;
+import com.softserve.ita.java442.cityDonut.mapper.project.ProjectByUserDonateMapper;
+import com.softserve.ita.java442.cityDonut.model.DonatedUserProject;
+import com.softserve.ita.java442.cityDonut.model.Project;
+import com.softserve.ita.java442.cityDonut.repository.DonatedUserProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -36,6 +42,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private MainProjectInfoMapper mainProjectInfoMapper;
 
+    @Autowired
+    private DonatedUserProjectRepository donatedUserProjectRepository;
+
+    @Autowired
+    private ProjectByUserDonateMapper projectByUserDonateMapper;
+
     @Override
     public MainProjectInfoDto getProjectById(long id) {
         MainProjectInfoDto mainProjectInfoDto;
@@ -56,6 +68,17 @@ public class ProjectServiceImpl implements ProjectService {
         filterByCategories(filteredProjects,
                 categoryMapper.convertListToDto(categoryService.getCategoriesByCategories(categories)));
         return filteredProjects;
+    }
+
+    @Override
+    public List<ProjectByUserDonateDto> getDonatedUserProject(long id) {
+        List<DonatedUserProject> donatedUserProjects = donatedUserProjectRepository.findDonatedUserProject(id);
+        List<ProjectByUserDonateDto> projectByUserDonateDtos = new LinkedList<>();
+        for (DonatedUserProject donatedUserProject: donatedUserProjects) {
+            Project project = projectRepository.getById(donatedUserProject.getProjectId());
+            projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(project,donatedUserProject));
+        }
+        return projectByUserDonateDtos;
     }
 
     private void filterByCategories(List<PreviewProjectDto> previewProjectDtos, List<CategoryDto> categoryDtos) {
