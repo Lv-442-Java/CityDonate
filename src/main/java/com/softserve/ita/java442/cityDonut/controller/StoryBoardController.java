@@ -20,10 +20,6 @@ public class StoryBoardController {
     public ResponseEntity<StoryBoardDto> getStoryBoardByProject(@PathVariable("id") long projectId){
         return ResponseEntity.status(HttpStatus.OK).body(service.getStoryBoardByProject(projectId));
     }
-//    @PostMapping("/create")
-//    public ResponseEntity<StoryBoardDto> createStoryBoard(@RequestBody StoryBoardDto storyBoardDto){
-//        return ResponseEntity.status(HttpStatus.OK).body(service.createStoryBoard(storyBoardDto));
-//    }
 
     @PostMapping("/create")
     public ResponseEntity<StoryBoardDto> createStoryBoard(@RequestBody StoryBoardDto storyBoardDto){
