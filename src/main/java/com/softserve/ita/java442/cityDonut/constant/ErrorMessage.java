@@ -23,4 +23,6 @@ public class ErrorMessage {
     public static final String PROJECT_LOCATION_PARAM_RANGE_ERROR = "location param must be a decimal number in range (-180; 180)";
     public static final String PROJECT_LOCATION_PARAM_FORMAT_ERROR = "location param can contain only 6 digits after decimal point";
     public static final String PROJECT_BUDGET_ERROR = "project budget must be greater than 0 and less than 10000000000";
+    public static final String FIELD_CANT_BE_NULL = "The field can`t be null";
+    public static final String INCORRECT_SIZE = "Length should be between 4 and 50 symbols";
 }

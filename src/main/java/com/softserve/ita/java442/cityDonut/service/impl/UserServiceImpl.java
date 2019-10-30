@@ -20,6 +20,7 @@ import com.softserve.ita.java442.cityDonut.validator.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -46,6 +47,7 @@ public class UserServiceImpl implements UserService {
     private UserEditMapper userEditMapper;
 
     @Override
+    @Transactional
     public UserEditDto update(UserEditDto userEditDto) {
         User user;
         if (userEditDto != null) {
@@ -54,6 +56,9 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + userEditDto.getId()));
         } else {
             throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID);
+        }
+        if (!emailValidator.validateEmail(userEditDto.getEmail())) {
+            throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
         }
         user.setFirstName(userEditDto.getFirstName());
         user.setLastName(userEditDto.getLastName());
@@ -69,6 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changePassword(UserEditPasswordDto userEditPasswordDto) {
         User user;
         if (userEditPasswordDto != null) {

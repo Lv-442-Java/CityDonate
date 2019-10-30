@@ -8,12 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping("/{id}")
     public UserEditDto getUser(@PathVariable("id") Long id) {
@@ -22,7 +24,7 @@ public class UserController {
 
     @PutMapping()
     public ResponseEntity<UserEditDto> updateUser(
-            @RequestBody UserEditDto userEditDto) {
+            @Valid @RequestBody UserEditDto userEditDto) {
         userService.update(userEditDto);
         return new ResponseEntity<>(userEditDto, HttpStatus.OK);
     }
