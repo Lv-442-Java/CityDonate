@@ -6,7 +6,7 @@ public class ErrorMessage {
     public static final String INCORRECT_USER_PASSWORD = "The user`s password is incorrect: ";
 
     public static final String FILE_NOT_FOUND= "File not found: ";
-    public static final String COULD_NOT_CREATE_FILE_DIRECTORY = "Could not create the directory where the uploaded files will be stored.";
+    public static final String FIELD_INFO_NOT_FOUND_BY_ID = "No field info exists by this id";
     public static final String INVALID_CHARACTER = "Sorry! Filename contains invalid path sequence ";
     public static final String COULD_NOT_STORE_FILE = " could not be stored file. Please try again!";
     public static final String NOT_DETERMINED_FILE_TYPE = "Could not determine file type.";
@@ -22,5 +22,4 @@ public class ErrorMessage {
     public static final String PROJECT_LOCATION_SIZE_ERROR = "the project location must be less than 255 symbols";
     public static final String PROJECT_LOCATION_PARAM_RANGE_ERROR = "location param must be a decimal number in range (-180; 180)";
     public static final String PROJECT_LOCATION_PARAM_FORMAT_ERROR = "location param can contain only 6 digits after decimal point";
-
 }
