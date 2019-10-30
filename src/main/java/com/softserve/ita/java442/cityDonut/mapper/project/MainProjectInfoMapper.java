@@ -52,8 +52,6 @@ public class MainProjectInfoMapper implements GeneralMapper<Project, MainProject
                 .realizationEndDate(model.getRealizationEndDate())
                 .projectStatus(projectStatusMapper.convertToDto(model.getProjectStatus()))
                 .owner(userNameMapper.convertToDto(model.getOwner()))
-                .storyBoards(storyBoardForProjectMapper.convertListToDto(model.getStoryBoards()))
-                .media(mediaMapper.convertListToDto(model.getMedia()))
                 .categories(categoryMapper.convertListToDto(model.getCategories()))
                 .moneyDonated(countDonatedMoney(model))
                 .moneyNeeded(model.getMoneyNeeded())
@@ -74,8 +72,6 @@ public class MainProjectInfoMapper implements GeneralMapper<Project, MainProject
                 .realizationEndDate(dto.getRealizationEndDate())
                 .projectStatus(projectStatusMapper.convertToModel(dto.getProjectStatus()))
                 .owner(userNameMapper.convertToModel(dto.getOwner()))
-                .storyBoards(storyBoardForProjectMapper.convertListToModel(dto.getStoryBoards()))
-                .media(mediaMapper.convertListToModel(dto.getMedia()))
                 .categories(categoryMapper.convertListToModel(dto.getCategories()))
                 .moneyNeeded(dto.getMoneyNeeded())
                 .build();

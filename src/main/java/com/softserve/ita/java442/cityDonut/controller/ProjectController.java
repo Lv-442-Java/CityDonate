@@ -8,8 +8,6 @@ import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import com.softserve.ita.java442.cityDonut.dto.project.PreviewProjectDto;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
-import com.softserve.ita.java442.cityDonut.service.impl.FieldsCheckServiceImpl;
-import com.softserve.ita.java442.cityDonut.service.impl.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +40,13 @@ public class ProjectController {
     }
 
     @GetMapping("/project/{id}/fields/valid")
-    public ResponseEntity<List<FieldsCheckDto>> getFieldsValidationInfo(@PathVariable long id){
-        return new ResponseEntity<>(fieldsCheckService.getAllByProject_Id(id),HttpStatus.OK);
+    public ResponseEntity<List<FieldsCheckDto>> getFieldsValidationInfo(@PathVariable long id) {
+        return new ResponseEntity<>(fieldsCheckService.getAllByProjectId(id), HttpStatus.OK);
+    }
+
+    @PutMapping("/project/field/valid/change")
+    public ResponseEntity<FieldsCheckDto> updateFieldCheck(@RequestBody FieldsCheckDto fieldsCheckDto) {
+        return new ResponseEntity<>(fieldsCheckService.update(fieldsCheckDto), HttpStatus.OK);
     }
 
     @GetMapping("/project")
