@@ -1,9 +1,7 @@
 package com.softserve.ita.java442.cityDonut.dto.project;
 
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
-import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.dto.projectStatus.ProjectStatusDto;
-import com.softserve.ita.java442.cityDonut.dto.storyBoard.StoryBoardForProjectDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserNameDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +25,9 @@ public class MainProjectInfoDto {
 
     private String location;
 
-    private String locationLatitude;
+    private double locationLatitude;
 
-    private String locationLongitude;
+    private double locationLongitude;
 
     private LocalDateTime publicationDate;
 
@@ -40,10 +38,6 @@ public class MainProjectInfoDto {
     private ProjectStatusDto projectStatus;
 
     private UserNameDto owner;
-
-    private List<StoryBoardForProjectDto> storyBoards;
-
-    private List<MediaDto> media;
 
     private List<CategoryDto> categories;
 
