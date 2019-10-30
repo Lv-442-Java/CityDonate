@@ -1,7 +1,7 @@
 package com.softserve.ita.java442.cityDonut.controller;
 
 import com.softserve.ita.java442.cityDonut.dto.authentication.AuthenticationRequestDto;
-import com.softserve.ita.java442.cityDonut.exeption.IncorrectPasswordException;
+import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
 import com.softserve.ita.java442.cityDonut.service.impl.UserServiceImpl;
