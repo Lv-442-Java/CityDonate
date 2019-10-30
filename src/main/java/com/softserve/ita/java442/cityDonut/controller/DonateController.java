@@ -7,13 +7,15 @@ import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/donate")
-
+@RequestMapping(path = "/api/v1/donates")
 public class DonateController {
 
     @Autowired
@@ -31,6 +33,6 @@ public class DonateController {
     @GetMapping("/user/{id}")
     public ResponseEntity<List<ProjectByUserDonateDto>> getDonatedUserProject(@PathVariable long id) {
         List<ProjectByUserDonateDto> projectByUserDonateDtos = projectService.getDonatedUserProject(id);
-        return new  ResponseEntity<>(projectByUserDonateDtos, HttpStatus.OK);
+        return new ResponseEntity<>(projectByUserDonateDtos, HttpStatus.OK);
     }
 }
