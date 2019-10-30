@@ -62,19 +62,19 @@ public class ProjectServiceImpl implements ProjectService {
     private DonatedUserProjectRepository donatedUserProjectRepository;
 
     @Autowired
-    ProjectStatusRepository projectStatusRepository;
+    private ProjectStatusRepository projectStatusRepository;
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private ProjectByUserDonateMapper projectByUserDonateMapper;
 
     @Autowired
-    NewProjectMapper newProjectMapper;
+    private NewProjectMapper newProjectMapper;
 
     @Autowired
-    EditedProjectMapper editedProjectMapper;
+    private EditedProjectMapper editedProjectMapper;
 
     @Override
     public MainProjectInfoDto getProjectById(long id) {
