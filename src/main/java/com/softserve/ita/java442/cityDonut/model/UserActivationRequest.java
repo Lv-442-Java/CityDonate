@@ -28,4 +28,3 @@ public class UserActivationRequest {
         this.userId = userId;
     }
 }
-

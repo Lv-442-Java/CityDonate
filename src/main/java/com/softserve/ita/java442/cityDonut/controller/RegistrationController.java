@@ -23,6 +23,5 @@ public class RegistrationController {
     public ResponseEntity<Void> activate(@RequestParam(name = "activationCode")String activationCode){
         userServiceimpl.activateUserByCode(activationCode);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
     }
 }

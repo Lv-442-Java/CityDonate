@@ -124,6 +124,5 @@ public class UserServiceImpl implements UserService {
         mailSender.send(user.getEmail(), "Activation Code", message);
 
         return userRegistrationMapper.convertToDto(user);
-
     }
 }
