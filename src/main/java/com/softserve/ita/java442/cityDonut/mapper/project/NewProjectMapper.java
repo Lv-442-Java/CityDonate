@@ -22,6 +22,7 @@ public class NewProjectMapper implements GeneralMapper<Project, NewProjectDto> {
                 .location(project.getLocation())
                 .locationLatitude(project.getLocationLatitude())
                 .locationLongitude(project.getLocationLongitude())
+                .moneyNeeded(project.getMoneyNeeded())
                 .categories(categoryNameMapper.convertListToDto(project.getCategories()))
                 .build();
     }
@@ -35,6 +36,7 @@ public class NewProjectMapper implements GeneralMapper<Project, NewProjectDto> {
                 .location(projectDTO.getLocation())
                 .locationLatitude(projectDTO.getLocationLatitude())
                 .locationLongitude(projectDTO.getLocationLongitude())
+                .moneyNeeded(projectDTO.getMoneyNeeded())
                 .categories(categoryNameMapper.convertListToModel(projectDTO.getCategories()))
                 .build();
     }
