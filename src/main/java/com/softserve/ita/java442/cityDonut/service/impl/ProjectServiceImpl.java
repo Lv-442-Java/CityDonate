@@ -26,7 +26,9 @@ import com.softserve.ita.java442.cityDonut.model.Project;
 import com.softserve.ita.java442.cityDonut.repository.DonatedUserProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectStatusRepository;
+import com.softserve.ita.java442.cityDonut.service.CategoryService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
+import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,10 +47,10 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectStatusServiceImpl projectStatusService;
+    private ProjectStatusService projectStatusService;
 
     @Autowired
-    private CategoryServiceImpl categoryService;
+    private CategoryService categoryService;
 
     @Autowired
     private PreviewProjectMapper previewProjectMapper;
@@ -90,12 +92,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<PreviewProjectDto> getFilteredProjects
-            (List<String> categories, long moneyFrom, long moneyTo, String status) {
+            (List<Long> categoryIds, long moneyFrom, long moneyTo, Long statusId) {
         List<PreviewProjectDto> filteredProjects = previewProjectMapper.convertListToDto(
                 projectRepository.getProjectsByProjectStatusAndMoneyNeededBetween(
-                        projectStatusService.getByStatus(status), moneyFrom, moneyTo));
+                        projectStatusService.getById(statusId), moneyFrom, moneyTo));
         filterByCategories(filteredProjects,
-                categoryMapper.convertListToDto(categoryService.getCategoriesByCategories(categories)));
+                categoryMapper.convertListToDto(categoryService.getCategoriesByIds(categoryIds)));
         return filteredProjects;
     }
 

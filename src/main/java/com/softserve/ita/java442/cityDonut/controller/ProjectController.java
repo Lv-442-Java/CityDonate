@@ -34,7 +34,7 @@ public class ProjectController {
 
     @GetMapping("/project/filter")
     public ResponseEntity<List<PreviewProjectDto>> filter(
-            @RequestParam List<String> categories, long moneyFrom, long moneyTo, String status) {
+            @RequestParam List<Long> categories, long moneyFrom, long moneyTo, Long status) {
         return new ResponseEntity<>(
                 projectService.getFilteredProjects(categories, moneyFrom, moneyTo, status), HttpStatus.OK);
     }

@@ -13,6 +13,6 @@ public interface ProjectService {
     MainProjectInfoDto getProjectById(long id);
     NewProjectDto saveProject(NewProjectDto project, long userId);
     EditedProjectDto editProject(EditedProjectDto project, long projectId, long userId);
-    List<PreviewProjectDto> getFilteredProjects(List<String> categories, long moneyFrom, long moneyTo, String status);
+    List<PreviewProjectDto> getFilteredProjects(List<Long> categoryIds, long moneyFrom, long moneyTo, Long statusId);
     List<ProjectByUserDonateDto> getDonatedUserProject(long id);
 }
