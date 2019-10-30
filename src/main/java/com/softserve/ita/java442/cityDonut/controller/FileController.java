@@ -4,8 +4,6 @@ import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -24,8 +22,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/project")
 public class FileController {
 
-    @Autowired
     private FileStorageServiceImpl fileStorageService;
+    @Autowired
+    public FileController(FileStorageServiceImpl fileStorageService) {
+        this.fileStorageService = fileStorageService;
+    }
 
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
