@@ -200,16 +200,15 @@ public class ProjectServiceImpl implements ProjectService {
             throw new NotEnoughPermission(ErrorMessage.NOT_ENOUGH_PERMISSION);
         }
         List<User> moderatorList = project.getModerators();
+        if (moderatorList.size()==0 ){
+            ProjectStatus projectStatus = projectStatusRepository.getProjectStatusByStatus("на перевірці");
+            if (projectStatus==null){
+                throw new NotFoundException(ErrorMessage.PROJECT_STATUS_NOT_FOUND);
+            }
+            project.setProjectStatus(projectStatus);
+        }
         moderatorList.add(user);
         project.setModerators(moderatorList);
         return mainProjectInfoMapper.convertToDto(projectRepository.save(project));
-    }
-
-    @Override
-    public void changeProjectStatus(long project_id, ProjectStatus projectStatus) {
-        Project project = projectRepository.findById(project_id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID + project_id));
-        project.setProjectStatus(projectStatus);
-        projectRepository.save(project);
     }
 }

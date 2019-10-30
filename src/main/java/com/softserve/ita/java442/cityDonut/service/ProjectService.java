@@ -19,7 +19,4 @@ public interface ProjectService {
     List<ProjectInfoDto> getFreeProject();
 
     MainProjectInfoDto addModeratorToProject(long project_id, long moderator_id);
-
-    void changeProjectStatus(long project_id, ProjectStatus projectStatus);
-
 }

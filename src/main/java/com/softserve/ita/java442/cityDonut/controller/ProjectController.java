@@ -72,9 +72,7 @@ public class ProjectController {
 
     @PutMapping("/project/{id}/addToModerate/{moderator_id}")
     public ResponseEntity<MainProjectInfoDto> setModeratorToProject(@PathVariable("id") long id, @PathVariable("moderator_id") long moderatorId) {
-        MainProjectInfoDto mainProjectInfoDto = projectService.addModeratorToProject(id, moderatorId);
-        System.out.println(mainProjectInfoDto);
-        return new ResponseEntity<>(mainProjectInfoDto, HttpStatus.OK);
+        return new ResponseEntity<>(projectService.addModeratorToProject(id, moderatorId), HttpStatus.OK);
     }
 
 }
