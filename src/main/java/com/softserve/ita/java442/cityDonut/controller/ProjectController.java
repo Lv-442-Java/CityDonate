@@ -1,11 +1,8 @@
 package com.softserve.ita.java442.cityDonut.controller;
 
 import com.softserve.ita.java442.cityDonut.dto.fieldsCheck.FieldsCheckDto;
-import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
-import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDto;
-import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDto;
+import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
-import com.softserve.ita.java442.cityDonut.dto.project.PreviewProjectDto;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +63,18 @@ public class ProjectController {
                 projectService.editProject(project, projectId, /*user id*/ 1L),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/projects/free")
+    public ResponseEntity<List<ProjectInfoDto>> getAllFreeProjects() {
+        return new ResponseEntity<>(projectService.getFreeProject(), HttpStatus.OK);
+    }
+
+    @PutMapping("/project/{id}/addToModerate/{moderator_id}")
+    public ResponseEntity<MainProjectInfoDto> setModeratorToProject(@PathVariable("id") long id, @PathVariable("moderator_id") long moderatorId) {
+        MainProjectInfoDto mainProjectInfoDto = projectService.addModeratorToProject(id, moderatorId);
+        System.out.println(mainProjectInfoDto);
+        return new ResponseEntity<>(mainProjectInfoDto, HttpStatus.OK);
     }
 
 }
