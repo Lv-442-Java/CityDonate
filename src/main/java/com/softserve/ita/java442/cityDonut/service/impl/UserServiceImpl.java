@@ -11,7 +11,9 @@ import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
 import com.softserve.ita.java442.cityDonut.model.User;
+import com.softserve.ita.java442.cityDonut.model.UserActivationRequest;
 import com.softserve.ita.java442.cityDonut.repository.RoleRepository;
+import com.softserve.ita.java442.cityDonut.repository.UserActivationRequestRepository;
 import com.softserve.ita.java442.cityDonut.repository.UserRepository;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import com.softserve.ita.java442.cityDonut.validator.EmailValidator;
@@ -21,6 +23,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private MailSenderImpl mailSender;
+
+    @Autowired
+    private UserActivationRequestRepository userActivationRequestRepository;
 
     @Autowired
     private UserRegistrationMapper userRegistrationMapper;
@@ -80,7 +88,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRegistrationDto saveUser(UserRegistrationDto userRegistrationDto) {
+    public User activateUserByCode(String activationCode) {
+        UserActivationRequest userActivationRequest = userActivationRequestRepository.findByActivationCode(activationCode);
+        User user = userRepository.getUserById(userActivationRequest.getUserId());
+        user.setStatus(User.UserStatus.ACTIVATE);
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public UserRegistrationDto registerUser(UserRegistrationDto userRegistrationDto) {
+
         if (!emailValidator.validateEmail(userRegistrationDto.getEmail())) {
             throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
         }
@@ -89,9 +107,22 @@ public class UserServiceImpl implements UserService {
         }
         User user = userRegistrationMapper.convertToModel(userRegistrationDto);
         user.setRole(roleRepository.findByRole("user"));
+
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        return userRegistrationMapper.convertToDto(userRepository.save(user));
+        user.setStatus(User.UserStatus.NOT_ACTIVATE);
+
+        user = userRepository.save(user);
+
+        UserActivationRequest userActivationRequest = new UserActivationRequest(user.getId());
+        userActivationRequestRepository.save(userActivationRequest);
+
+        String activationCode = userActivationRequest.getActivationCode();
+        String url = "localhost:8080/api/v1/registration/activate?activationCode=";
+        String message = String.format("Welcome to CityDonate. To activate your account follow link: " + url + activationCode);
+        mailSender.send(user.getEmail(), "Activation Code", message);
+
+        return userRegistrationMapper.convertToDto(user);
     }
 }
