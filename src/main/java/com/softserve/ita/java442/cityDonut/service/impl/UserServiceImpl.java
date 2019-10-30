@@ -1,5 +1,6 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
+import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
@@ -10,12 +11,16 @@ import com.softserve.ita.java442.cityDonut.exception.InvalidEmailException;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
-import com.softserve.ita.java442.cityDonut.model.User;
+import com.softserve.ita.java442.cityDonut.model.UserActivationRequest;
 import com.softserve.ita.java442.cityDonut.repository.RoleRepository;
+import com.softserve.ita.java442.cityDonut.repository.UserActivationRequestRepository;
 import com.softserve.ita.java442.cityDonut.repository.UserRepository;
+import com.softserve.ita.java442.cityDonut.security.UserPrincipal;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import com.softserve.ita.java442.cityDonut.validator.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,20 +28,27 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    private MailSenderImpl mailSender;
+    private UserActivationRequestRepository userActivationRequestRepository;
     private UserRegistrationMapper userRegistrationMapper;
-
-    @Autowired
     private EmailValidator emailValidator;
-
-    @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private UserEditMapper userEditMapper;
+    @Autowired
+    public UserServiceImpl(MailSenderImpl mailSender,
+                           UserActivationRequestRepository userActivationRequestRepository,
+                           UserRegistrationMapper userRegistrationMapper,
+                           EmailValidator emailValidator, RoleRepository roleRepository,
+                           UserRepository userRepository, UserEditMapper userEditMapper) {
+        this.mailSender = mailSender;
+        this.userActivationRequestRepository = userActivationRequestRepository;
+        this.userRegistrationMapper = userRegistrationMapper;
+        this.emailValidator = emailValidator;
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.userEditMapper = userEditMapper;
+    }
 
     @Override
     @Transactional
@@ -86,7 +98,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRegistrationDto saveUser(UserRegistrationDto userRegistrationDto) {
+    public User activateUserByCode(String activationCode) {
+        UserActivationRequest userActivationRequest = userActivationRequestRepository.findByActivationCode(activationCode);
+        User user = userRepository.getUserById(userActivationRequest.getUserId());
+        user.setStatus(User.UserStatus.ACTIVATE);
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public UserRegistrationDto registerUser(UserRegistrationDto userRegistrationDto) {
+
         if (!emailValidator.validateEmail(userRegistrationDto.getEmail())) {
             throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
         }
@@ -95,9 +117,33 @@ public class UserServiceImpl implements UserService {
         }
         User user = userRegistrationMapper.convertToModel(userRegistrationDto);
         user.setRole(roleRepository.findByRole("user"));
+
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        return userRegistrationMapper.convertToDto(userRepository.save(user));
+        user.setStatus(User.UserStatus.NOT_ACTIVATE);
+
+        user = userRepository.save(user);
+
+        UserActivationRequest userActivationRequest = new UserActivationRequest(user.getId());
+        userActivationRequestRepository.save(userActivationRequest);
+
+        String activationCode = userActivationRequest.getActivationCode();
+        String url = "localhost:8080/api/v1/registration/activate?activationCode=";
+        String message = String.format("Welcome to CityDonate. To activate your account follow link: " + url + activationCode);
+        mailSender.send(user.getEmail(), "Activation Code", message);
+
+        return userRegistrationMapper.convertToDto(user);
+    }
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        return principal.getUser();
     }
 }

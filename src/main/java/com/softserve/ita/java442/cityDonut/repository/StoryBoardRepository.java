@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StoryBoardRepository extends JpaRepository<StoryBoard, Long> {
+    StoryBoard getStoryBoardByProject_Id(long projectId);
 }

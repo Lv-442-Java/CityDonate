@@ -35,4 +35,10 @@ public class StoryBoard {
     @OneToMany(mappedBy = "storyBoard", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})
     private List<Media> media;
+
+    @Column(name = "is_verified", nullable = false)
+    private boolean isVerified;
+
+    @Column(name = "money_spent")
+    private long moneySpent;
 }
