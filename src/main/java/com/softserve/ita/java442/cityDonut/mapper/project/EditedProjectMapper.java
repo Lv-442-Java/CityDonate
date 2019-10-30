@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class EditedProjectMapper implements GeneralMapper<Project, EditedProjectDto> {
 
     @Autowired
-    CategoryNameMapper categoryNameMapper;
+    private CategoryNameMapper categoryNameMapper;
 
     @Override
     public EditedProjectDto convertToDto(Project project) {
