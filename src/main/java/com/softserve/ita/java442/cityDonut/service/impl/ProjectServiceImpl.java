@@ -14,6 +14,9 @@ import com.softserve.ita.java442.cityDonut.model.DonatedUserProject;
 import com.softserve.ita.java442.cityDonut.model.Project;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.repository.CategoryRepository;
+import com.softserve.ita.java442.cityDonut.mapper.project.PreviewProjectMapper;
+import com.softserve.ita.java442.cityDonut.mapper.project.ProjectByUserDonateMapper;
+import com.softserve.ita.java442.cityDonut.model.DonatedUserProject;
 import com.softserve.ita.java442.cityDonut.repository.DonatedUserProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectStatusRepository;
@@ -89,12 +92,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectByUserDonateDto> getDonatedUserProject(long id) {
-        List<DonatedUserProject> donatedUserProjects = donatedUserProjectRepository.findDonatedUserProject(id);
+    public List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable) {
+        List<DonatedUserProject> donatedUserProjects = donatedUserProjectRepository.findDonatedUserProject(id, pageable);
         List<ProjectByUserDonateDto> projectByUserDonateDtos = new LinkedList<>();
-        for (DonatedUserProject donatedUserProject : donatedUserProjects) {
-            Project project = projectRepository.getById(donatedUserProject.getProjectId());
-            projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(project, donatedUserProject));
+        for (DonatedUserProject donatedUserProject: donatedUserProjects) {
+            projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(donatedUserProject));
         }
         return projectByUserDonateDtos;
     }

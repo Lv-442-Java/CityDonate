@@ -17,7 +17,7 @@ public class DonatedUserProject {
 
     private double sum;
 
-    private long projectId;
+    private Project project;
 
     private long userId;
 
