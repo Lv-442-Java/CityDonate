@@ -12,6 +12,8 @@ import com.softserve.ita.java442.cityDonut.service.StoryBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StoryBoardServiceImpl implements StoryBoardService {
 
@@ -24,8 +26,11 @@ public class StoryBoardServiceImpl implements StoryBoardService {
     @Autowired
     private MediaMapper mediaMapper;
 
-    public StoryBoardDto getStoryBoardByProject(long projectId){
-        return mapper.convertToDto(storyBoardRepository.getStoryBoardByProject_Id(projectId));
+
+    public List<StoryBoardDto> getStoryBoardsByProject(long projectId){
+        List<StoryBoardDto> storyBoardDtos;
+        storyBoardDtos =  mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_Id(projectId));
+        return storyBoardDtos;
     }
 
     public StoryBoardDto createStoryBoard(StoryBoardDto storyBoard){

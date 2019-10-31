@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping(path = "/api/v1/{id}/storyboard")
@@ -17,8 +19,8 @@ public class StoryBoardController {
     private StoryBoardServiceImpl service;
 
     @GetMapping()
-    public ResponseEntity<StoryBoardDto> getStoryBoardByProject(@PathVariable("id") long projectId){
-        return ResponseEntity.status(HttpStatus.OK).body(service.getStoryBoardByProject(projectId));
+    public ResponseEntity<List<StoryBoardDto>> getStoryBoardByProject(@PathVariable("id") long projectId){
+        return ResponseEntity.status(HttpStatus.OK).body(service.getStoryBoardsByProject(projectId));
     }
 
     @PostMapping("/create")
