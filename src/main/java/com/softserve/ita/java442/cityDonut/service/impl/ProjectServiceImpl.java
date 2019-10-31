@@ -22,12 +22,12 @@ import com.softserve.ita.java442.cityDonut.repository.CategoryRepository;
 import com.softserve.ita.java442.cityDonut.mapper.project.PreviewProjectMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.ProjectByUserDonateMapper;
 import com.softserve.ita.java442.cityDonut.model.DonatedUserProject;
-import com.softserve.ita.java442.cityDonut.model.Project;
 import com.softserve.ita.java442.cityDonut.repository.DonatedUserProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectStatusRepository;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +36,6 @@ import java.util.List;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -100,12 +99,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectByUserDonateDto> getDonatedUserProject(long id) {
-        List<DonatedUserProject> donatedUserProjects = donatedUserProjectRepository.findDonatedUserProject(id);
+    public List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable) {
+        List<DonatedUserProject> donatedUserProjects = donatedUserProjectRepository.findDonatedUserProject(id, pageable);
         List<ProjectByUserDonateDto> projectByUserDonateDtos = new LinkedList<>();
         for (DonatedUserProject donatedUserProject: donatedUserProjects) {
-            Project project = projectRepository.getById(donatedUserProject.getProjectId());
-            projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(project,donatedUserProject));
+            projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(donatedUserProject));
         }
         return projectByUserDonateDtos;
     }

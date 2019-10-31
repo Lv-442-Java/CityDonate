@@ -27,28 +27,31 @@ public class DonateController {
     @Autowired
     private ProjectService projectService;
 
-    @GetMapping("/project/{id}")
+    @GetMapping("/projects/{id}")
     public ResponseEntity<List<DonatesForProjectDto>> getProjectDonates(@PathVariable long id,
-                                                                        @PageableDefault(sort = {"date", "sum"},
+                                                                        @PageableDefault(sort = {"date"},
                                                                                 direction = Sort.Direction.DESC)
                                                                                 Pageable pageable) {
         List<DonatesForProjectDto> donatesForProjectDtos = donateService.getProjectDonates(id, pageable);
         return new ResponseEntity<>(donatesForProjectDtos, HttpStatus.OK);
     }
 
-    @GetMapping("/project/{id}/user/{userId}")
+    @GetMapping("/projects/{id}/users/{userId}")
     public ResponseEntity<List<DonatesForProjectDto>> getUserDonatesByProject(@PathVariable long id,
                                                                               @PathVariable long userId,
-                                                                              @PageableDefault(sort = {"date", "sum"},
-                                                                                      direction = Sort.Direction.ASC)
+                                                                              @PageableDefault(sort = {"date"},
+                                                                                      direction = Sort.Direction.DESC)
                                                                                       Pageable pageable) {
         List<DonatesForProjectDto> donatesForProjectDtos = donateService.getUserDonatesByProject(id, userId, pageable);
         return new ResponseEntity<>(donatesForProjectDtos, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<List<ProjectByUserDonateDto>> getDonatedUserProject(@PathVariable long id) {
-        List<ProjectByUserDonateDto> projectByUserDonateDtos = projectService.getDonatedUserProject(id);
+    @GetMapping("/projects/users/{id}")
+    public ResponseEntity<List<ProjectByUserDonateDto>> getDonatedUserProject(@PathVariable long id,
+                                                                              @PageableDefault(sort = {"id"},
+                                                                                    direction = Sort.Direction.ASC)
+                                                                                    Pageable pageable) {
+        List<ProjectByUserDonateDto> projectByUserDonateDtos = projectService.getDonatedUserProject(id, pageable);
         return new ResponseEntity<>(projectByUserDonateDtos, HttpStatus.OK);
     }
 }
