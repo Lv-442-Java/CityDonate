@@ -5,6 +5,7 @@ import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +30,10 @@ public class ProjectController {
 
     @GetMapping("/project/filter")
     public ResponseEntity<List<PreviewProjectDto>> filter(
-            @RequestParam List<Long> categories, long moneyFrom, long moneyTo, Long status) {
+            @RequestParam List<Long> categories, long status, long moneyFrom, long moneyTo,
+            Pageable pageable) {
         return new ResponseEntity<>(
-                projectService.getFilteredProjects(categories, moneyFrom, moneyTo, status), HttpStatus.OK);
+                projectService.getFilteredProjects(categories, status, moneyFrom, moneyTo, pageable), HttpStatus.OK);
     }
 
     @GetMapping("/project/{id}/fields/valid")
