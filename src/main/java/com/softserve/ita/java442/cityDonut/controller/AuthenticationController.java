@@ -37,25 +37,27 @@ public class AuthenticationController {
     @RequestMapping(value = "/auth")
     public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
-            String userEmail = requestDto.getUserEmail();
+            String userEmail = requestDto.getUserEmail(),
+            userPassword = requestDto.getPassword();
             User user = userService.findUserByEmail(userEmail);
 
             if (user == null) {
                 throw new UserPrincipalNotFoundException("User with email " + userEmail.toUpperCase() + "not found!");
-            } else if (passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+            } else if (passwordEncoder.matches(userPassword, user.getPassword())) {
+                int a = 1;
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail,
-                        requestDto.getPassword()));
-            } else
+                        userPassword));
+            } else {
                 throw new IncorrectPasswordException("Incorrect user password!");
-
+            }
             String token = jwtTokenProvider.generateToken(user);
             Map<Object, Object> response = new HashMap<>();
             response.put("userName", user.getEmail());
             response.put("token", token);
 
             return ResponseEntity.ok(response);
-
         } catch (AuthenticationException | UserPrincipalNotFoundException e) {
+            e.printStackTrace();
             throw new BadCredentialsException("Invalid email or password");
         }
     }
