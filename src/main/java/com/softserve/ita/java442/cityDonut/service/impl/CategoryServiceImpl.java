@@ -16,16 +16,9 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public Category getCategoryByCategory(String category) {
-        return categoryRepository.getCategoryByCategory(category);
-    }
-
-    @Override
-    public List<Category> getCategoriesByCategories(List<String> categoryNames) {
+    public List<Category> getCategoriesByIds(List<Long> categoryIds) {
         List<Category> requiredCategories = new ArrayList<>();
-        for (String categoryName : categoryNames) {
-            requiredCategories.add(getCategoryByCategory(categoryName));
-        }
+        categoryIds.forEach((categoryId) -> requiredCategories.add(categoryRepository.getOne(categoryId)));
         return requiredCategories;
     }
 }

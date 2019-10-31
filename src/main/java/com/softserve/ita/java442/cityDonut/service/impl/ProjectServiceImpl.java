@@ -12,8 +12,11 @@ import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.*;
 import com.softserve.ita.java442.cityDonut.model.*;
 import com.softserve.ita.java442.cityDonut.repository.*;
+import com.softserve.ita.java442.cityDonut.service.CategoryService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
+import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +32,10 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectStatusServiceImpl projectStatusService;
+    private ProjectStatusService projectStatusService;
 
     @Autowired
-    private CategoryServiceImpl categoryService;
+    private CategoryService categoryService;
 
     @Autowired
     private PreviewProjectMapper previewProjectMapper;
@@ -80,22 +83,21 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<PreviewProjectDto> getFilteredProjects
-            (List<String> categories, long moneyFrom, long moneyTo, String status) {
+            (List<Long> categoryIds, long moneyFrom, long moneyTo, Long statusId) {
         List<PreviewProjectDto> filteredProjects = previewProjectMapper.convertListToDto(
                 projectRepository.getProjectsByProjectStatusAndMoneyNeededBetween(
-                        projectStatusService.getByStatus(status), moneyFrom, moneyTo));
+                        projectStatusService.getById(statusId), moneyFrom, moneyTo));
         filterByCategories(filteredProjects,
-                categoryMapper.convertListToDto(categoryService.getCategoriesByCategories(categories)));
+                categoryMapper.convertListToDto(categoryService.getCategoriesByIds(categoryIds)));
         return filteredProjects;
     }
 
     @Override
-    public List<ProjectByUserDonateDto> getDonatedUserProject(long id) {
-        List<DonatedUserProject> donatedUserProjects = donatedUserProjectRepository.findDonatedUserProject(id);
+    public List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable) {
+        List<DonatedUserProject> donatedUserProjects = donatedUserProjectRepository.findDonatedUserProject(id, pageable);
         List<ProjectByUserDonateDto> projectByUserDonateDtos = new LinkedList<>();
         for (DonatedUserProject donatedUserProject : donatedUserProjects) {
-            Project project = projectRepository.getById(donatedUserProject.getProjectId());
-            projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(project, donatedUserProject));
+            projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(donatedUserProject));
         }
         return projectByUserDonateDtos;
     }
@@ -200,9 +202,9 @@ public class ProjectServiceImpl implements ProjectService {
             throw new NotEnoughPermission(ErrorMessage.NOT_ENOUGH_PERMISSION);
         }
         List<User> moderatorList = project.getModerators();
-        if (moderatorList.size()==0 ){
+        if (moderatorList.size() == 0) {
             ProjectStatus projectStatus = projectStatusRepository.getProjectStatusByStatus("на перевірці");
-            if (projectStatus==null){
+            if (projectStatus == null) {
                 throw new NotFoundException(ErrorMessage.PROJECT_STATUS_NOT_FOUND);
             }
             project.setProjectStatus(projectStatus);

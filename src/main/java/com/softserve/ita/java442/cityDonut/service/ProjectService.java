@@ -1,7 +1,7 @@
 package com.softserve.ita.java442.cityDonut.service;
 
 import com.softserve.ita.java442.cityDonut.dto.project.*;
-import com.softserve.ita.java442.cityDonut.model.ProjectStatus;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,11 +12,12 @@ public interface ProjectService {
 
     EditedProjectDto editProject(EditedProjectDto project, long projectId, long userId);
 
-    List<PreviewProjectDto> getFilteredProjects(List<String> categories, long moneyFrom, long moneyTo, String status);
+    List<PreviewProjectDto> getFilteredProjects(List<Long> categoryIds, long moneyFrom, long moneyTo, Long statusId);
 
-    List<ProjectByUserDonateDto> getDonatedUserProject(long id);
+    List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable);
 
     List<ProjectInfoDto> getFreeProject();
 
     MainProjectInfoDto addModeratorToProject(long project_id, long moderator_id);
+
 }
