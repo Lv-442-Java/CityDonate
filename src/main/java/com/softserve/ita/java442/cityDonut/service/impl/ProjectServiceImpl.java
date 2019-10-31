@@ -1,21 +1,16 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
-import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDto;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
-import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
-import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDto;
+import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
+import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.exception.CategoryNotFoundException;
-import com.softserve.ita.java442.cityDonut.dto.project.PreviewProjectDto;
-import com.softserve.ita.java442.cityDonut.dto.project.ProjectByUserDonateDto;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.ProjectNotFoundException;
-import com.softserve.ita.java442.cityDonut.mapper.project.EditedProjectMapper;
 import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
-import com.softserve.ita.java442.cityDonut.mapper.project.MainProjectInfoMapper;
-import com.softserve.ita.java442.cityDonut.mapper.project.NewProjectMapper;
+import com.softserve.ita.java442.cityDonut.mapper.project.*;
 import com.softserve.ita.java442.cityDonut.model.Category;
+import com.softserve.ita.java442.cityDonut.model.DonatedUserProject;
 import com.softserve.ita.java442.cityDonut.model.Project;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.repository.CategoryRepository;
@@ -25,17 +20,18 @@ import com.softserve.ita.java442.cityDonut.model.DonatedUserProject;
 import com.softserve.ita.java442.cityDonut.repository.DonatedUserProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectStatusRepository;
+import com.softserve.ita.java442.cityDonut.service.CategoryService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
+import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -44,10 +40,10 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectStatusServiceImpl projectStatusService;
+    private ProjectStatusService projectStatusService;
 
     @Autowired
-    private CategoryServiceImpl categoryService;
+    private CategoryService categoryService;
 
     @Autowired
     private PreviewProjectMapper previewProjectMapper;
@@ -81,7 +77,7 @@ public class ProjectServiceImpl implements ProjectService {
         MainProjectInfoDto mainProjectInfoDto;
         try {
             mainProjectInfoDto = mainProjectInfoMapper.convertToDto(projectRepository.getById(id));
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             throw new NotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID);
         }
         return mainProjectInfoDto;
@@ -89,12 +85,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<PreviewProjectDto> getFilteredProjects
-            (List<String> categories, long moneyFrom, long moneyTo, String status) {
+            (List<Long> categoryIds, long moneyFrom, long moneyTo, Long statusId) {
         List<PreviewProjectDto> filteredProjects = previewProjectMapper.convertListToDto(
                 projectRepository.getProjectsByProjectStatusAndMoneyNeededBetween(
-                        projectStatusService.getByStatus(status), moneyFrom, moneyTo));
+                        projectStatusService.getById(statusId), moneyFrom, moneyTo));
         filterByCategories(filteredProjects,
-                categoryMapper.convertListToDto(categoryService.getCategoriesByCategories(categories)));
+                categoryMapper.convertListToDto(categoryService.getCategoriesByIds(categoryIds)));
         return filteredProjects;
     }
 
