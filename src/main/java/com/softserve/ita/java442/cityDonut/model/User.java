@@ -44,8 +44,8 @@ public class User {
     private Role role;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_has_project",
-            joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "moderator_has_project",
+            joinColumns = @JoinColumn(name = "moderator_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id"))
     private List<Project> moderatorProjects;
 

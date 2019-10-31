@@ -1,7 +1,7 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
-import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserRegistrationDto;
@@ -11,10 +11,10 @@ import com.softserve.ita.java442.cityDonut.exception.InvalidEmailException;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
+import com.softserve.ita.java442.cityDonut.model.Project;
+import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.model.UserActivationRequest;
-import com.softserve.ita.java442.cityDonut.repository.RoleRepository;
-import com.softserve.ita.java442.cityDonut.repository.UserActivationRequestRepository;
-import com.softserve.ita.java442.cityDonut.repository.UserRepository;
+import com.softserve.ita.java442.cityDonut.repository.*;
 import com.softserve.ita.java442.cityDonut.security.UserPrincipal;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import com.softserve.ita.java442.cityDonut.validator.EmailValidator;
@@ -25,6 +25,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -32,22 +35,27 @@ public class UserServiceImpl implements UserService {
     private UserActivationRequestRepository userActivationRequestRepository;
     private UserRegistrationMapper userRegistrationMapper;
     private EmailValidator emailValidator;
-    private RoleRepository roleRepository;
     private UserRepository userRepository;
     private UserEditMapper userEditMapper;
+    private ProjectRepository projectRepository;
+    private RoleRepository roleRepository;
+
     @Autowired
     public UserServiceImpl(MailSenderImpl mailSender,
                            UserActivationRequestRepository userActivationRequestRepository,
                            UserRegistrationMapper userRegistrationMapper,
-                           EmailValidator emailValidator, RoleRepository roleRepository,
-                           UserRepository userRepository, UserEditMapper userEditMapper) {
+                           EmailValidator emailValidator,
+                           UserRepository userRepository,RoleRepository roleRepository,
+                           UserEditMapper userEditMapper,
+                           ProjectRepository projectRepository) {
         this.mailSender = mailSender;
         this.userActivationRequestRepository = userActivationRequestRepository;
         this.userRegistrationMapper = userRegistrationMapper;
         this.emailValidator = emailValidator;
-        this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.userEditMapper = userEditMapper;
+        this.projectRepository = projectRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -135,6 +143,7 @@ public class UserServiceImpl implements UserService {
 
         return userRegistrationMapper.convertToDto(user);
     }
+
     @Override
     public User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
@@ -145,5 +154,32 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         return principal.getUser();
+    }
+
+    @Override
+    public List<ProjectInfoDto> getProjects(long id) {
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
+        List<Project> projects;
+        List<ProjectInfoDto> list = new ArrayList<>();
+        if (user.getRole().equals(roleRepository.findByRole("user"))) {
+            projects = projectRepository.getAllByOwner(user);
+        } else {
+            List<User> moderators = new ArrayList<>();
+            moderators.add(user);
+            projects = projectRepository.findAllByModeratorsIn(moderators);
+        }
+        for (Project project : projects) {
+            ProjectInfoDto projectInfoDto = ProjectInfoDto.builder()
+                    .id(project.getId())
+                    .name(project.getName())
+                    .creationDate(project.getCreationDate())
+                    .ownerFirstName(project.getOwner().getFirstName())
+                    .ownerLastName(project.getOwner().getLastName())
+                    .build();
+            list.add(projectInfoDto);
+        }
+        return list;
     }
 }
