@@ -13,7 +13,7 @@ public class ProjectStatusServiceImpl implements ProjectStatusService {
     private ProjectStatusRepository projectStatusRepository;
 
     @Override
-    public ProjectStatus getByStatus(String status) {
-        return projectStatusRepository.getProjectStatusByStatus(status);
+    public ProjectStatus getById(Long id) {
+        return projectStatusRepository.getOne(id);
     }
 }

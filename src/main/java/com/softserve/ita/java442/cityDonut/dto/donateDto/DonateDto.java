@@ -11,10 +11,15 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DonatesForProjectDto {
+public class DonateDto {
+
     private long id;
+
     private LocalDateTime date;
+
     private double sum;
-    private String userFirstName;
-    private String userLastName;
+
+    private long userId;
+
+    private long projectId;
 }

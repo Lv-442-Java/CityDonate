@@ -1,41 +1,28 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
-import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDto;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
-import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
-import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDto;
+import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
+import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.exception.CategoryNotFoundException;
-import com.softserve.ita.java442.cityDonut.dto.project.PreviewProjectDto;
-import com.softserve.ita.java442.cityDonut.dto.project.ProjectByUserDonateDto;
+import com.softserve.ita.java442.cityDonut.exception.NotEnoughPermission;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.ProjectNotFoundException;
-import com.softserve.ita.java442.cityDonut.mapper.project.EditedProjectMapper;
 import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
-import com.softserve.ita.java442.cityDonut.mapper.project.MainProjectInfoMapper;
-import com.softserve.ita.java442.cityDonut.mapper.project.NewProjectMapper;
-import com.softserve.ita.java442.cityDonut.model.Category;
-import com.softserve.ita.java442.cityDonut.model.Project;
-import com.softserve.ita.java442.cityDonut.model.User;
-import com.softserve.ita.java442.cityDonut.repository.CategoryRepository;
-import com.softserve.ita.java442.cityDonut.mapper.project.PreviewProjectMapper;
-import com.softserve.ita.java442.cityDonut.mapper.project.ProjectByUserDonateMapper;
-import com.softserve.ita.java442.cityDonut.model.DonatedUserProject;
-import com.softserve.ita.java442.cityDonut.model.Project;
-import com.softserve.ita.java442.cityDonut.repository.DonatedUserProjectRepository;
-import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
-import com.softserve.ita.java442.cityDonut.repository.ProjectStatusRepository;
+import com.softserve.ita.java442.cityDonut.mapper.project.*;
+import com.softserve.ita.java442.cityDonut.model.*;
+import com.softserve.ita.java442.cityDonut.repository.*;
+import com.softserve.ita.java442.cityDonut.service.CategoryService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
+import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -45,10 +32,10 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectStatusServiceImpl projectStatusService;
+    private ProjectStatusService projectStatusService;
 
     @Autowired
-    private CategoryServiceImpl categoryService;
+    private CategoryService categoryService;
 
     @Autowired
     private PreviewProjectMapper previewProjectMapper;
@@ -77,12 +64,18 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private EditedProjectMapper editedProjectMapper;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public MainProjectInfoDto getProjectById(long id) {
         MainProjectInfoDto mainProjectInfoDto;
         try {
             mainProjectInfoDto = mainProjectInfoMapper.convertToDto(projectRepository.getById(id));
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             throw new NotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID);
         }
         return mainProjectInfoDto;
@@ -90,22 +83,18 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<PreviewProjectDto> getFilteredProjects
-            (List<String> categories, long moneyFrom, long moneyTo, String status) {
-        List<PreviewProjectDto> filteredProjects = previewProjectMapper.convertListToDto(
-                projectRepository.getProjectsByProjectStatusAndMoneyNeededBetween(
-                        projectStatusService.getByStatus(status), moneyFrom, moneyTo));
-        filterByCategories(filteredProjects,
-                categoryMapper.convertListToDto(categoryService.getCategoriesByCategories(categories)));
-        return filteredProjects;
+            (List<Long> categoryIds, long statusId, long moneyFrom, long moneyTo, Pageable pageable) {
+        return previewProjectMapper.convertListToDto(
+                projectRepository.getFilteredProjects(categoryService.getCategoriesByIds(categoryIds),
+                        projectStatusService.getById(statusId), moneyFrom, moneyTo, pageable));
     }
 
     @Override
-    public List<ProjectByUserDonateDto> getDonatedUserProject(long id) {
-        List<DonatedUserProject> donatedUserProjects = donatedUserProjectRepository.findDonatedUserProject(id);
+    public List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable) {
+        List<DonatedUserProject> donatedUserProjects = donatedUserProjectRepository.findDonatedUserProject(id, pageable);
         List<ProjectByUserDonateDto> projectByUserDonateDtos = new LinkedList<>();
-        for (DonatedUserProject donatedUserProject: donatedUserProjects) {
-            Project project = projectRepository.getById(donatedUserProject.getProjectId());
-            projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(project,donatedUserProject));
+        for (DonatedUserProject donatedUserProject : donatedUserProjects) {
+            projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(donatedUserProject));
         }
         return projectByUserDonateDtos;
     }
@@ -169,5 +158,56 @@ public class ProjectServiceImpl implements ProjectService {
         destination.setLocationLatitude(source.getLocationLatitude());
         destination.setLocationLongitude(source.getLocationLongitude());
         destination.setMoneyNeeded(source.getMoneyNeeded());
+    }
+
+    @Override
+    public List<ProjectInfoDto> getFreeProject() {
+        String neededStatus = "очікує підтвердження";
+        ProjectStatus projectStatus = projectStatusRepository.getProjectStatusByStatus(neededStatus);
+        if (projectStatus == null) {
+            throw new NotFoundException(ErrorMessage.PROJECT_STATUS_NOT_FOUND + neededStatus);
+        }
+        List<Project> projects = projectRepository.findProjectsByProjectStatus(projectStatus);
+        List<ProjectInfoDto> list = new ArrayList<>();
+        for (Project project : projects) {
+            ProjectInfoDto projectInfoDto = ProjectInfoDto.builder()
+                    .id(project.getId())
+                    .name(project.getName())
+                    .creationDate(project.getCreationDate())
+                    .ownerFirstName(project.getOwner().getFirstName())
+                    .ownerLastName(project.getOwner().getLastName())
+                    .build();
+            list.add(projectInfoDto);
+        }
+        return list;
+    }
+
+    @Override
+    @Transactional
+    public MainProjectInfoDto addModeratorToProject(long project_id, long moderator_id) {
+        Project project = projectRepository.findById(project_id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID + project_id));
+        User user = userRepository
+                .findById(moderator_id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + moderator_id));
+        String userRole = "user";
+        Role role = roleRepository.findByRole(userRole);
+        if (role == null) {
+            throw new NotFoundException(ErrorMessage.ROLE_NOT_FOUND + userRole);
+        }
+        if (user.getRole().equals(roleRepository.findByRole("user"))) {
+            throw new NotEnoughPermission(ErrorMessage.NOT_ENOUGH_PERMISSION);
+        }
+        List<User> moderatorList = project.getModerators();
+        if (moderatorList.size() == 0) {
+            ProjectStatus projectStatus = projectStatusRepository.getProjectStatusByStatus("на перевірці");
+            if (projectStatus == null) {
+                throw new NotFoundException(ErrorMessage.PROJECT_STATUS_NOT_FOUND);
+            }
+            project.setProjectStatus(projectStatus);
+        }
+        moderatorList.add(user);
+        project.setModerators(moderatorList);
+        return mainProjectInfoMapper.convertToDto(projectRepository.save(project));
     }
 }

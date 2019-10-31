@@ -1,21 +1,17 @@
 package com.softserve.ita.java442.cityDonut.controller;
 
 import com.softserve.ita.java442.cityDonut.dto.fieldsCheck.FieldsCheckDto;
-import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
-import com.softserve.ita.java442.cityDonut.dto.project.EditedProjectDto;
-import com.softserve.ita.java442.cityDonut.dto.project.NewProjectDto;
-import com.softserve.ita.java442.cityDonut.service.ProjectService;
-import com.softserve.ita.java442.cityDonut.dto.project.PreviewProjectDto;
+import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -34,9 +30,10 @@ public class ProjectController {
 
     @GetMapping("/project/filter")
     public ResponseEntity<List<PreviewProjectDto>> filter(
-            @RequestParam List<String> categories, long moneyFrom, long moneyTo, String status) {
+            @RequestParam List<Long> categories, long status, long moneyFrom, long moneyTo,
+            Pageable pageable) {
         return new ResponseEntity<>(
-                projectService.getFilteredProjects(categories, moneyFrom, moneyTo, status), HttpStatus.OK);
+                projectService.getFilteredProjects(categories, status, moneyFrom, moneyTo, pageable), HttpStatus.OK);
     }
 
     @GetMapping("/project/{id}/fields/valid")
@@ -50,7 +47,9 @@ public class ProjectController {
     }
 
     @GetMapping("/project")
-    String temp() {return "success get";}
+    String temp() {
+        return "success get";
+    }
 
     @PostMapping("/project")
     public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project) {
@@ -66,6 +65,16 @@ public class ProjectController {
                 projectService.editProject(project, projectId, /*user id*/ 1L),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/projects/free")
+    public ResponseEntity<List<ProjectInfoDto>> getAllFreeProjects() {
+        return new ResponseEntity<>(projectService.getFreeProject(), HttpStatus.OK);
+    }
+
+    @PutMapping("/project/{id}/addToModerate/{moderator_id}")
+    public ResponseEntity<MainProjectInfoDto> setModeratorToProject(@PathVariable("id") long id, @PathVariable("moderator_id") long moderatorId) {
+        return new ResponseEntity<>(projectService.addModeratorToProject(id, moderatorId), HttpStatus.OK);
     }
 
 }

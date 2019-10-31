@@ -11,9 +11,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"description", "location", "locationLatitude", "locationLongitude", "creationDate", "publicationDate",
-        "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
+        "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "media", "documents", "moderators", "categories"})
 @NoArgsConstructor
-@ToString(exclude = {"comments", "donates", "storyBoards", "media", "documents", "users", "categories"})
+@ToString(exclude = {"comments", "donates", "storyBoards", "media", "documents", "moderators", "categories"})
 @Table(indexes = @Index(columnList = "name, realization_end_date"))
 public class Project {
 
@@ -79,10 +79,10 @@ public class Project {
     private List<Media> media;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_has_project",
+    @JoinTable(name = "moderator_has_project",
             joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> users;
+            inverseJoinColumns = @JoinColumn(name = "moderator_id"))
+    private List<User> moderators;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "project_has_category",
