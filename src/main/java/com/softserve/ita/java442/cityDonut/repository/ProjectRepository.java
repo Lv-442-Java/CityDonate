@@ -19,6 +19,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     Optional<Project> findByOwnerAndId(User owner, long id);
 
+    List<Project> findProjectsByProjectStatus(ProjectStatus projectStatus);
+
+    List<Project> getAllByOwner(User user);
+
+    List<Project> findAllByModeratorsIn(List<User> moderators);
+
     @Query("select p from Project p where " +
             "(select count (distinct c) FROM p.categories c where c in (:categories) ) >= " +
             "(select count (distinct c) FROM Category c where c in (:categories))" +
