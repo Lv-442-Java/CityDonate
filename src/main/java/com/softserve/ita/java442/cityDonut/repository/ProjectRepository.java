@@ -16,4 +16,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<Project> findByOwnerAndId(User owner, long id);
 
     List<Project> getProjectsByProjectStatusAndMoneyNeededBetween(ProjectStatus status, long moneyFrom, long moneyTo);
+
+    List<Project> findProjectsByProjectStatus(ProjectStatus projectStatus);
+
+    List<Project> getAllByOwner(User user);
+
+    List<Project> findAllByModeratorsIn(List<User> moderators);
 }
