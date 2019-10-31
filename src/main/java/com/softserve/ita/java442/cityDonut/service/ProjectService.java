@@ -12,7 +12,7 @@ public interface ProjectService {
 
     EditedProjectDto editProject(EditedProjectDto project, long projectId, long userId);
 
-    List<PreviewProjectDto> getFilteredProjects(List<Long> categoryIds, long moneyFrom, long moneyTo, Long statusId);
+    List<PreviewProjectDto> getFilteredProjects(List<Long> categoryIds, long statusId, long moneyFrom, long moneyTo, Pageable pageable);
 
     List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable);
 
