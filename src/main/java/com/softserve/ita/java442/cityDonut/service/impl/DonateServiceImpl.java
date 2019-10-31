@@ -1,9 +1,11 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.dto.donateDto.DonateDto;
 import com.softserve.ita.java442.cityDonut.dto.donateDto.DonatesForProjectDto;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.donate.DonateForProjectMapper;
+import com.softserve.ita.java442.cityDonut.mapper.donate.DonateMapper;
 import com.softserve.ita.java442.cityDonut.model.Donate;
 import com.softserve.ita.java442.cityDonut.repository.DonateRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
@@ -24,6 +26,9 @@ public class DonateServiceImpl implements DonateService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private DonateMapper donateMapper;
 
     @Override
     public List<DonatesForProjectDto> getProjectDonates(long id, Pageable pageable) {
@@ -49,6 +54,13 @@ public class DonateServiceImpl implements DonateService {
             donatesForProjectDtos.add(new DonateForProjectMapper().convertToDto(donate));
         }
         return donatesForProjectDtos;
+    }
+
+    @Override
+    public DonateDto createDonate(DonateDto donateDto) {
+        DonateDto dto;
+        dto = donateMapper.convertToDto(donateRepository.save(donateMapper.convertToModel(donateDto)));
+        return dto;
     }
 
     private boolean projectExists(long id) {
