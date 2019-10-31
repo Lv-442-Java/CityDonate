@@ -120,7 +120,8 @@ public class UserServiceImpl implements UserService {
 
         String activationCode = userActivationRequest.getActivationCode();
         String url = "localhost:8080/api/v1/registration/activate?activationCode=";
-        String message = String.format("Welcome to CityDonate. To activate your account follow link: " + url + activationCode);
+        String message = String.format("Welcome to CityDonate. To activate your account follow link: "+url+activationCode);
+
         mailSender.send(user.getEmail(), "Activation Code", message);
 
         return userRegistrationMapper.convertToDto(user);
