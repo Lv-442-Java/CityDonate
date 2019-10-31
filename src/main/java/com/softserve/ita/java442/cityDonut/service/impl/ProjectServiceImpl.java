@@ -21,6 +21,7 @@ import com.softserve.ita.java442.cityDonut.service.CategoryService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,13 +82,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<PreviewProjectDto> getFilteredProjects
-            (List<Long> categoryIds, long moneyFrom, long moneyTo, Long statusId) {
-        List<PreviewProjectDto> filteredProjects = previewProjectMapper.convertListToDto(
-                projectRepository.getProjectsByProjectStatusAndMoneyNeededBetween(
-                        projectStatusService.getById(statusId), moneyFrom, moneyTo));
-        filterByCategories(filteredProjects,
-                categoryMapper.convertListToDto(categoryService.getCategoriesByIds(categoryIds)));
-        return filteredProjects;
+            (List<Long> categoryIds, long statusId, long moneyFrom, long moneyTo, Pageable pageable) {
+        return previewProjectMapper.convertListToDto(
+                projectRepository.getFilteredProjects(categoryService.getCategoriesByIds(categoryIds),
+                        projectStatusService.getById(statusId), moneyFrom, moneyTo, pageable));
     }
 
     @Override
