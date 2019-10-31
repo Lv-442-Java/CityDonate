@@ -2,7 +2,7 @@ package com.softserve.ita.java442.cityDonut.security;
 
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.service.UserService;
-import exeption.JwtAuthenticationExeption;
+import com.softserve.ita.java442.cityDonut.exception.JwtAuthenticationExeption;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
