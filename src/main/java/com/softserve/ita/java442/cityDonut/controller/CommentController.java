@@ -23,7 +23,7 @@ public class CommentController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<CommentDto> sendComment(@RequestBody CommentDto comment){
-        return ResponseEntity.status(HttpStatus.OK).body(service.sendComment(comment));
+    public ResponseEntity<CommentDto> sendComment(@RequestBody CommentDto comment, @PathVariable("id") long id){
+        return ResponseEntity.status(HttpStatus.OK).body(service.sendComment(comment, id));
    }
 }
