@@ -86,7 +86,7 @@ public class ProjectServiceImpl implements ProjectService {
             (List<Long> categoryIds, long statusId, long moneyFrom, long moneyTo, Pageable pageable) {
         return previewProjectMapper.convertListToDto(
                 projectRepository.getFilteredProjects(categoryService.getCategoriesByIds(categoryIds),
-                        projectStatusService.getById(statusId), moneyFrom, moneyTo, pageable));
+                        projectStatusService.getById(statusId), moneyFrom, moneyTo,categoryIds.size(), pageable));
     }
 
     @Override
