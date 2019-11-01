@@ -2,28 +2,43 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
+import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
+import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
+import com.softserve.ita.java442.cityDonut.model.Media;
+import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
-
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties)  {
+    FileStorageServiceImpl fileStorage;
+    @Autowired
+    private MediaMapper mediaMapper;
+    @Autowired
+    private MediaRepository mediaRepository;
+
+    @Autowired
+    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
 
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
@@ -36,23 +51,39 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public String storeFile(MultipartFile file) {
-        // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
-            // Check if the file's name contains invalid characters
-            if(fileName.contains("..")) {
+            if (fileName.contains("..")) {
                 throw new FileStorageException(ErrorMessage.INVALID_CHARACTER + fileName);
             }
-
-            // Copy file to the target location (Replacing existing file with the same name)
+            MediaDto mediaDto = new MediaDto();
+            mediaDto.setName(fileName);
+            mediaDto.setExtension(mediaDto.getFileExtension(fileName));
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            return fileName;
+            fileStorage.saveMedia(mediaDto);
+            List<String> name = Arrays.asList(mediaDto.getName(), mediaDto.getExtension());
+            String joinedWithDot = String.join(".", name);
+            return joinedWithDot;
         } catch (IOException ex) {
             throw new FileStorageException(fileName + ErrorMessage.COULD_NOT_STORE_FILE);
         }
+    }
+
+    @Transactional
+    public MediaDto saveMedia(MediaDto mediaDto) {
+        Media mediaModel = createMediaModelFromDtoData(mediaDto);
+        Media resultOfQuery = mediaRepository.save(mediaModel);
+        MediaDto result = mediaMapper.convertToDto(resultOfQuery);
+        mediaRepository.flush();
+        return result;
+    }
+
+    private Media createMediaModelFromDtoData(MediaDto mediaDto) {
+        Media mediaModel = mediaMapper.convertToModel(mediaDto);
+        mediaModel.setCreationDate(LocalDateTime.now());
+        return mediaModel;
     }
 
     @Override
@@ -61,7 +92,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
+            if (resource.exists()) {
                 return resource;
             } else {
                 throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + fileName);

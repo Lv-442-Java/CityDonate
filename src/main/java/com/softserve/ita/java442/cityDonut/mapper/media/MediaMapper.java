@@ -32,6 +32,8 @@ public class MediaMapper implements GeneralMapper<Media, MediaDto> {
         return MediaDto.builder()
                 .id(model.getId())
                 .name(model.getName())
+                .extension(model.getExtension())
+                .fileId(model.getFileId())
                 .build();
     }
 
@@ -40,6 +42,8 @@ public class MediaMapper implements GeneralMapper<Media, MediaDto> {
         return Media.builder()
                 .id(dto.getId())
                 .name(dto.getName())
+                .extension(dto.getExtension())
+               // .fileId(dto.getFileId())
                 .build();
     }
 }
