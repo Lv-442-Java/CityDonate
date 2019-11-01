@@ -9,7 +9,6 @@ import com.softserve.ita.java442.cityDonut.repository.FieldsCheckRepository;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,11 +23,14 @@ public class FieldsCheckServiceImpl implements FieldsCheckService {
 
     @Override
     public List<FieldsCheckDto> getAllByProjectId(long project_id) {
-        return fieldsCheckMapper.convertListToDto(fieldsCheckRepository.getAllByProjectId(project_id));
+        List<FieldsCheck> fieldsCheckList = fieldsCheckRepository.getAllByProjectId(project_id);
+        if (fieldsCheckList.isEmpty()) {
+            throw new NotFoundException(ErrorMessage.FIELD_INFO_NOT_FOUND_BY_PROJECT_ID);
+        }
+        return fieldsCheckMapper.convertListToDto(fieldsCheckList);
     }
 
     @Override
-    @Transactional
     public FieldsCheckDto update(FieldsCheckDto fieldsCheckDto) {
         FieldsCheck fieldsCheck;
         fieldsCheck = fieldsCheckRepository
