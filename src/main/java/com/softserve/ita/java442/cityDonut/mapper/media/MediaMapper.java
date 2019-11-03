@@ -43,7 +43,7 @@ public class MediaMapper implements GeneralMapper<Media, MediaDto> {
                 .id(dto.getId())
                 .name(dto.getName())
                 .extension(dto.getExtension())
-               // .fileId(dto.getFileId())
+                .fileId(dto.getFileId())
                 .build();
     }
 }

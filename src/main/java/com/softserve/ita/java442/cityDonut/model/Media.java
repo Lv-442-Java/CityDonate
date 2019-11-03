@@ -6,8 +6,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "media",
-        indexes = {@Index(name = "media_name_index", columnList = "name", unique = true)})
+//@Table(name = "media",
+//        indexes = {@Index(name = "file_id", columnList = "file_id", unique = true)})
+@Table(name = "media")
 @Builder
 @Data
 @AllArgsConstructor
@@ -26,7 +27,7 @@ public class Media {
     @Column(name = "extension", length = 5, nullable = false)
     private String extension;
 
-    @Column(name = "file_id", length = 5, nullable = false)
+    @Column(name = "file_id", length = 36, nullable = false)
     private String fileId;
 
     @Column(name = "create_date")

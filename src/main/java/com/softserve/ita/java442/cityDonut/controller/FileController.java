@@ -5,6 +5,7 @@ import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,6 +32,7 @@ public class FileController {
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorageService.storeFile(file);
+
         String download = "/downloadFile/";
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(download)
@@ -52,21 +54,30 @@ public class FileController {
     @GetMapping("/downloadFile/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         Resource resource = fileStorageService.loadFileAsResource(fileName);
-
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
             throw new NotFoundException(ErrorMessage.NOT_DETERMINED_FILE_TYPE);
         }
-
         if(contentType == null) {
             contentType = "application/octet-stream";
         }
-
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
+
+   // @GetMapping("/downloadFile/{fileId}")
+ //   public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) {
+   //     // Load file from database
+   //     DBFile dbFile = DBFileStorageService.getFile(fileId);
+    //    Resource resource = (Resource) fileStorageService.getFile(fileId);
+    //    return ResponseEntity.ok()
+     //           .contentType(MediaType.parseMediaType(dbFile.getFileType()))
+    //            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dbFile.getFileName() + "\"")
+    //            .body(new ByteArrayResource(dbFile.getData()));
+   // }
+
 }

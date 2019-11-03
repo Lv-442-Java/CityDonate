@@ -1,9 +1,12 @@
 package com.softserve.ita.java442.cityDonut.dto.media;
 
+import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
+import com.softserve.ita.java442.cityDonut.model.Media;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Column;
 import java.time.LocalDateTime;
@@ -23,9 +26,7 @@ public class MediaDto {
 
     private LocalDateTime creationDate;
 
-    public String getFileExtension(String fileName) {
-        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
-            return fileName.substring(fileName.lastIndexOf(".") + 1);
-        else return "";
-    }
+    @Autowired
+    private MediaMapper mediaMapper;
+
 }

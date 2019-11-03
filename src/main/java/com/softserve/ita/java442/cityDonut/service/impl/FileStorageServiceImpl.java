@@ -4,7 +4,6 @@ import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
-import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Media;
 import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,20 +20,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
     private final Path fileStorageLocation;
-
     @Autowired
     FileStorageServiceImpl fileStorage;
+
     @Autowired
-    private MediaMapper mediaMapper;
+    MediaServiceImpl mediaService;
+
     @Autowired
-    private MediaRepository mediaRepository;
+    MediaRepository mediaRepository;
 
     @Autowired
     public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
@@ -58,32 +55,17 @@ public class FileStorageServiceImpl implements FileStorageService {
                 throw new FileStorageException(ErrorMessage.INVALID_CHARACTER + fileName);
             }
             MediaDto mediaDto = new MediaDto();
-            mediaDto.setName(fileName);
-            mediaDto.setExtension(mediaDto.getFileExtension(fileName));
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+//            mediaDto.setName(fileName);
+//            mediaDto.setFileId(generateFileId());
+//            mediaDto.setExtension(getFileExtension(fileName));
+            mediaService.saveMedia(mediaDto, fileName);
+            String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
+            Path targetLocation = this.fileStorageLocation.resolve(FileIdWithExt);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-            fileStorage.saveMedia(mediaDto);
-            List<String> name = Arrays.asList(mediaDto.getName(), mediaDto.getExtension());
-            String joinedWithDot = String.join(".", name);
-            return joinedWithDot;
+            return fileName;
         } catch (IOException ex) {
             throw new FileStorageException(fileName + ErrorMessage.COULD_NOT_STORE_FILE);
         }
-    }
-
-    @Transactional
-    public MediaDto saveMedia(MediaDto mediaDto) {
-        Media mediaModel = createMediaModelFromDtoData(mediaDto);
-        Media resultOfQuery = mediaRepository.save(mediaModel);
-        MediaDto result = mediaMapper.convertToDto(resultOfQuery);
-        mediaRepository.flush();
-        return result;
-    }
-
-    private Media createMediaModelFromDtoData(MediaDto mediaDto) {
-        Media mediaModel = mediaMapper.convertToModel(mediaDto);
-        mediaModel.setCreationDate(LocalDateTime.now());
-        return mediaModel;
     }
 
     @Override
@@ -101,4 +83,22 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + fileName);
         }
     }
+
+    public Media getFile(String fileId) {
+        return mediaRepository.findById(fileId);
+
+        ///дописати ексепшн
+         //       .orElseThrow(() -> new MyFileNotFoundException("File not found with id " + fileId));
+    }
+
+//    private String getFileExtension(String fileName) {
+//        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+//            return fileName.substring(fileName.lastIndexOf(".") + 1);
+//        else return "";
+//    }
+//
+//    private String generateFileId(){
+//        UUID uuid = UUID.randomUUID();
+//        return uuid.toString();
+//    }
 }
