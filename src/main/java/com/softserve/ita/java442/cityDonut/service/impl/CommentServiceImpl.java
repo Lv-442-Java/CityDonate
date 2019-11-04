@@ -25,8 +25,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto sendComment(CommentDto comment) {
-        CommentDto newComment;
+    public CommentDto sendComment(CommentDto comment, long id) {
+        CommentDto newComment = new CommentDto();
+        newComment.setProjectId(id);
         newComment = mapper.convertToDto(commentRepository.save(mapper.convertToModel(comment)));
         return newComment;
     }
