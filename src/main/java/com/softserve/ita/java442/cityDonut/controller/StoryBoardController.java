@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "/api/v1/{id}/storyboard")
+@RequestMapping(path = "/api/v1/project/{id}/storyboard")
 public class StoryBoardController {
 
     @Autowired
@@ -23,13 +23,13 @@ public class StoryBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(service.getStoryBoardsByProject(projectId));
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<StoryBoardDto> createStoryBoard(@RequestBody StoryBoardDto storyBoardDto){
         StoryBoardDto storyBoard = service.createStoryBoard(storyBoardDto);
         return new ResponseEntity<>(storyBoard, HttpStatus.OK);
     }
 
-    @PutMapping("/edit")
+    @PutMapping()
     public ResponseEntity<StoryBoardDto> editStoryBoard(@RequestBody StoryBoardDto storyBoardDto){
         return ResponseEntity.status(HttpStatus.OK).body(service. editStoryBoard(storyBoardDto));
     }
