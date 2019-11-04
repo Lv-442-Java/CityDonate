@@ -72,9 +72,9 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.getFreeProject(), HttpStatus.OK);
     }
 
-    @PutMapping("/project/{id}/addToModerate/{moderator_id}")
-    public ResponseEntity<MainProjectInfoDto> setModeratorToProject(@PathVariable("id") long id, @PathVariable("moderator_id") long moderatorId) {
-        return new ResponseEntity<>(projectService.addModeratorToProject(id, moderatorId), HttpStatus.OK);
+    @PutMapping("/project/{id}/addToModerate")
+    public ResponseEntity<MainProjectInfoDto> setModeratorToProject(@PathVariable("id") long id) {
+        return new ResponseEntity<>(projectService.addModeratorToProject(id), HttpStatus.OK);
     }
 
 }

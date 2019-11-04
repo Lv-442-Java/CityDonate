@@ -61,14 +61,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserEditDto update(UserEditDto userEditDto) {
-        User user;
-        if (userEditDto != null) {
-            user = userRepository
-                    .findById(userEditDto.getId())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + userEditDto.getId()));
-        } else {
-            throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID);
-        }
+        User user = getCurrentUser();
         if (!emailValidator.validateEmail(userEditDto.getEmail())) {
             throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
         }
@@ -79,23 +72,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEditDto findById(long id) {
-        return userEditMapper.convertToDto(userRepository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id)));
+    public UserEditDto getUserEditDto() {
+        return userEditMapper.convertToDto(getCurrentUser());
     }
 
     @Override
     @Transactional
     public void changePassword(UserEditPasswordDto userEditPasswordDto) {
-        User user;
-        if (userEditPasswordDto != null) {
-            user = userRepository
-                    .findById(userEditPasswordDto.getId())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + userEditPasswordDto.getId()));
-        } else {
-            throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID);
-        }
+        User user = getCurrentUser();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         if (passwordEncoder.matches(userEditPasswordDto.getPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(userEditPasswordDto.getNewPassword()));
@@ -157,10 +141,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ProjectInfoDto> getProjects(long id) {
-        User user = userRepository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
+    public List<ProjectInfoDto> getProjects() {
+        User user = getCurrentUser();
         List<Project> projects;
         List<ProjectInfoDto> list = new ArrayList<>();
         if (user.getRole().equals(roleRepository.findByRole("user"))) {

@@ -15,6 +15,7 @@ import com.softserve.ita.java442.cityDonut.repository.*;
 import com.softserve.ita.java442.cityDonut.service.CategoryService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
+import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public MainProjectInfoDto getProjectById(long id) {
@@ -184,18 +188,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public MainProjectInfoDto addModeratorToProject(long project_id, long moderator_id) {
+    public MainProjectInfoDto addModeratorToProject(long project_id) {
         Project project = projectRepository.findById(project_id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID + project_id));
-        User user = userRepository
-                .findById(moderator_id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + moderator_id));
+        User user = userService.getCurrentUser();
         String userRole = "user";
         Role role = roleRepository.findByRole(userRole);
         if (role == null) {
             throw new NotFoundException(ErrorMessage.ROLE_NOT_FOUND + userRole);
         }
-        if (user.getRole().equals(roleRepository.findByRole("user"))) {
+        if (user.getRole().equals(roleRepository.findByRole(userRole))) {
             throw new NotEnoughPermission(ErrorMessage.NOT_ENOUGH_PERMISSION);
         }
         List<User> moderatorList = project.getModerators();

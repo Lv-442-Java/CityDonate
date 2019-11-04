@@ -17,6 +17,7 @@ public class UserEditDto {
 
     private long id;
 
+    @NotNull(message = ErrorMessage.FIELD_CANT_BE_NULL)
     private String email;
 
     @Size(
