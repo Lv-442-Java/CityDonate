@@ -6,6 +6,7 @@ public class ErrorMessage {
     public static final String PROJECT_NOT_FOUND_BY_ID = "The project does not exist by this id";
     public static final String INCORRECT_USER_PASSWORD = "The user`s password is incorrect: ";
     public static final String FILE_NOT_FOUND = "File not found: ";
+    public static final String FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID = "File not found in DB: ";
     public static final String FIELD_INFO_NOT_FOUND_BY_ID = "No field info exists by this id";
     public static final String FIELD_INFO_NOT_FOUND_BY_PROJECT_ID = "No field info exists by this project id";
     public static final String INVALID_CHARACTER = "Sorry! Filename contains invalid path sequence ";

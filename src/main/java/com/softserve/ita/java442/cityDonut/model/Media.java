@@ -6,8 +6,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-//@Table(name = "media",
-//        indexes = {@Index(name = "file_id", columnList = "file_id", unique = true)})
 @Table(name = "media")
 @Builder
 @Data

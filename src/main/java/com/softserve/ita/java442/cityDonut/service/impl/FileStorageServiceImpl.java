@@ -4,6 +4,8 @@ import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
+import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
+import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Media;
 import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
@@ -20,12 +22,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
     private final Path fileStorageLocation;
     @Autowired
+
     FileStorageServiceImpl fileStorage;
 
     @Autowired
@@ -33,6 +35,9 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Autowired
     MediaRepository mediaRepository;
+
+    @Autowired
+    MediaMapper mediaMapper;
 
     @Autowired
     public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
@@ -47,17 +52,14 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public String storeFile(MultipartFile file) {
+    public String storeFile(MultipartFile file, long projectId) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
+        MediaDto mediaDto = new MediaDto();
         try {
             if (fileName.contains("..")) {
                 throw new FileStorageException(ErrorMessage.INVALID_CHARACTER + fileName);
             }
-            MediaDto mediaDto = new MediaDto();
-//            mediaDto.setName(fileName);
-//            mediaDto.setFileId(generateFileId());
-//            mediaDto.setExtension(getFileExtension(fileName));
+            mediaDto.setProjectId(projectId);
             mediaService.saveMedia(mediaDto, fileName);
             String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
             Path targetLocation = this.fileStorageLocation.resolve(FileIdWithExt);
@@ -68,11 +70,11 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    @Override
-    public Resource loadFileAsResource(String fileName) {
-
+    public Resource loadFileAsResource(String fileName, long projectId) {
+        MediaDto mediaDto = mediaMapper.convertToDto(getFile(fileName, projectId));
         try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
+            Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;
@@ -84,21 +86,11 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    public Media getFile(String fileId) {
-        return mediaRepository.findById(fileId);
-
-        ///дописати ексепшн
-         //       .orElseThrow(() -> new MyFileNotFoundException("File not found with id " + fileId));
+    public Media getFile(String fileName, long projectId) {
+        Media media = mediaRepository.findByNameAndProjectId(fileName, projectId);
+        if (media == null) {
+            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + projectId);
+        }
+        return media;
     }
-
-//    private String getFileExtension(String fileName) {
-//        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
-//            return fileName.substring(fileName.lastIndexOf(".") + 1);
-//        else return "";
-//    }
-//
-//    private String generateFileId(){
-//        UUID uuid = UUID.randomUUID();
-//        return uuid.toString();
-//    }
 }

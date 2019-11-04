@@ -5,7 +5,6 @@ import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,18 +19,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/project")
+@RequestMapping("/api/v1/project/{project_id}")
 public class FileController {
 
     private FileStorageServiceImpl fileStorageService;
+
     @Autowired
     public FileController(FileStorageServiceImpl fileStorageService) {
         this.fileStorageService = fileStorageService;
     }
 
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        String fileName = fileStorageService.storeFile(file);
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("project_id") long project_id) {
+
+        String fileName = fileStorageService.storeFile(file, project_id);
 
         String download = "/downloadFile/";
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -44,23 +45,24 @@ public class FileController {
     }
 
     @PostMapping("/uploadMultipleFiles")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @PathVariable("project_id") long project_id) {
         return Arrays.asList(files)
                 .stream()
-                .map(file -> uploadFile(file))
+                .map(file -> uploadFile(file, project_id))
                 .collect(Collectors.toList());
     }
 
+
     @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+    public ResponseEntity<Resource> downloadFile(@PathVariable("project_id") long project_id, HttpServletRequest request, @PathVariable String fileName) {
+        Resource resource = fileStorageService.loadFileAsResource(fileName, project_id);
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
             throw new NotFoundException(ErrorMessage.NOT_DETERMINED_FILE_TYPE);
         }
-        if(contentType == null) {
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
         return ResponseEntity.ok()
@@ -68,16 +70,4 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
-
-   // @GetMapping("/downloadFile/{fileId}")
- //   public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) {
-   //     // Load file from database
-   //     DBFile dbFile = DBFileStorageService.getFile(fileId);
-    //    Resource resource = (Resource) fileStorageService.getFile(fileId);
-    //    return ResponseEntity.ok()
-     //           .contentType(MediaType.parseMediaType(dbFile.getFileType()))
-    //            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dbFile.getFileName() + "\"")
-    //            .body(new ByteArrayResource(dbFile.getData()));
-   // }
-
 }
