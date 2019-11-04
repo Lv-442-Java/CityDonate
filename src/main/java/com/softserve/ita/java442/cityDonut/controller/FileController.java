@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/project/{project_id}")
+@RequestMapping("/api/v1/project/{id}")
 public class FileController {
 
     private FileStorageServiceImpl fileStorageService;
@@ -30,9 +30,9 @@ public class FileController {
     }
 
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("project_id") long project_id) {
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("id") long id) {
 
-        String fileName = fileStorageService.storeFile(file, project_id);
+        String fileName = fileStorageService.storeFile(file, id);
 
         String download = "/downloadFile/";
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -45,17 +45,16 @@ public class FileController {
     }
 
     @PostMapping("/uploadMultipleFiles")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @PathVariable("project_id") long project_id) {
+    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @PathVariable("id") long id) {
         return Arrays.asList(files)
                 .stream()
-                .map(file -> uploadFile(file, project_id))
+                .map(file -> uploadFile(file, id))
                 .collect(Collectors.toList());
     }
 
-
     @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("project_id") long project_id, HttpServletRequest request, @PathVariable String fileName) {
-        Resource resource = fileStorageService.loadFileAsResource(fileName, project_id);
+    public ResponseEntity<Resource> downloadFile(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileName) {
+        Resource resource = fileStorageService.loadFileAsResource(fileName, id);
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
