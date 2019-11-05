@@ -30,8 +30,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "(select count (distinct c) FROM Category c where c in (:categories))" +
             "AND p.projectStatus = :projectStatus AND p.moneyNeeded between :moneyFrom and :moneyTo")
     List<Project> getFilteredProjects(@Param("categories") List<Category> categories,
-                                          @Param("projectStatus") ProjectStatus projectStatus,
-                                          @Param("moneyFrom") long moneyFrom,
-                                          @Param("moneyTo") long moneyTo,
-                                          Pageable pageable);
+                                      @Param("projectStatus") ProjectStatus projectStatus,
+                                      @Param("moneyFrom") long moneyFrom,
+                                      @Param("moneyTo") long moneyTo,
+                                      Pageable pageable);
 }
