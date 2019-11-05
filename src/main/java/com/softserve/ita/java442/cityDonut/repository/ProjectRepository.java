@@ -26,12 +26,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findAllByModeratorsIn(List<User> moderators);
 
     @Query("select p from Project p where " +
-            "(select count (distinct c) FROM p.categories c where c in (:categories) ) >= " +
-            "(select count (distinct c) FROM Category c where c in (:categories))" +
+            "(select count (distinct c) FROM p.categories c where c in (:categories) ) >= :categoriesSize " +
             "AND p.projectStatus = :projectStatus AND p.moneyNeeded between :moneyFrom and :moneyTo")
     List<Project> getFilteredProjects(@Param("categories") List<Category> categories,
                                       @Param("projectStatus") ProjectStatus projectStatus,
                                       @Param("moneyFrom") long moneyFrom,
                                       @Param("moneyTo") long moneyTo,
+                                      @Param("categoriesSize") long categoriesSize,
                                       Pageable pageable);
 }

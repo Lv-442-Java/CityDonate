@@ -11,19 +11,19 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "/api/v1/{id}/comment")
+@RequestMapping(path = "/api/v1/project/{id}/comment")
 public class CommentController {
 
     @Autowired
     private CommentServiceImpl service;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<CommentDto>> showAllComments(@PathVariable("id") long id){
         return ResponseEntity.status(HttpStatus.OK).body(service.showComments(id));
     }
 
-    @PostMapping("/send")
-    public ResponseEntity<CommentDto> sendComment(@RequestBody CommentDto comment){
-        return ResponseEntity.status(HttpStatus.OK).body(service.sendComment(comment));
+    @PostMapping()
+    public ResponseEntity<CommentDto> sendComment(@RequestBody CommentDto comment, @PathVariable("id") long id){
+        return ResponseEntity.status(HttpStatus.OK).body(service.sendComment(comment, id));
    }
 }
