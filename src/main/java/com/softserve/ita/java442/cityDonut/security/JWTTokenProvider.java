@@ -2,7 +2,7 @@ package com.softserve.ita.java442.cityDonut.security;
 
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.service.UserService;
-import exeption.JwtAuthenticationExeption;
+import com.softserve.ita.java442.cityDonut.exception.JwtAuthenticationExeption;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +28,9 @@ public class JWTTokenProvider {
 
     @Autowired
     private JWTUserDetailsService jwtUserDetailsService;
+
+    @Autowired
+    private CookieProvider cookieProvider;
 
     @Autowired
     private static UserService u;
@@ -64,11 +67,7 @@ public class JWTTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(HEADER);
-
-        if (bearerToken != null && bearerToken.startsWith("Bearer "))
-            return bearerToken.substring(7, bearerToken.length());
-        return null;
+        return cookieProvider.readCookie(request);
     }
 
     public boolean validateToken(String token) {

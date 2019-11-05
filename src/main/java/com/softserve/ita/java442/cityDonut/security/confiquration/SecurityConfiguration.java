@@ -35,15 +35,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/auth").permitAll()
-                .antMatchers("/auth/admin").hasAuthority("ADMIN")
-                .antMatchers("/auth/user").hasAnyAuthority("USER", "MODERATOR")
+                .antMatchers("/sign-in").permitAll()
+                .antMatchers("/admin").hasAuthority("ADMIN")
+                .antMatchers("/user").hasAnyAuthority("USER", "MODERATOR")
                 .and()
-                .apply(new JWTConfiguration(jwtTokenProvider))
-                .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/");
-
+                .apply(new JWTConfiguration(jwtTokenProvider));
     }
 }
