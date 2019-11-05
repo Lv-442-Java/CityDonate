@@ -188,9 +188,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public MainProjectInfoDto addModeratorToProject(long project_id) {
-        Project project = projectRepository.findById(project_id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID + project_id));
+    public MainProjectInfoDto addModeratorToProject(long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID + projectId));
         User user = userService.getCurrentUser();
         String userRole = "user";
         Role role = roleRepository.findByRole(userRole);
