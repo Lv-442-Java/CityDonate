@@ -1,13 +1,12 @@
 package com.softserve.ita.java442.cityDonut.dto.user;
 
-        import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-        import lombok.AllArgsConstructor;
-        import lombok.Builder;
-        import lombok.Data;
-        import lombok.NoArgsConstructor;
-
-        import javax.validation.constraints.NotNull;
-        import javax.validation.constraints.Size;
+import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
