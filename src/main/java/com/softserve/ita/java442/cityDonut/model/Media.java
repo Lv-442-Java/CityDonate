@@ -31,8 +31,6 @@ public class Media {
     @Column(name = "create_date")
     private LocalDateTime creationDate;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "media_type_id")
     @Column(name = "media_type", length = 8, nullable = false)
     private String mediaType;
 

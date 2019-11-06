@@ -46,7 +46,7 @@ public class MediaServiceImpl implements MediaService {
     }
 
     public String fileIDWithExtension(MediaDto mediaDto) {
-        List<String> name = Arrays.asList(mediaDto.getFileId(), mediaDto.getExtension()/* media extension*/);
+        List<String> name = Arrays.asList(mediaDto.getFileId(), mediaDto.getExtension());
         return String.join(".", name);
     }
 
