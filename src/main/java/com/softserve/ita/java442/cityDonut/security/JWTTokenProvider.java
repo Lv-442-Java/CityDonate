@@ -30,6 +30,9 @@ public class JWTTokenProvider {
     private JWTUserDetailsService jwtUserDetailsService;
 
     @Autowired
+    private CookieProvider cookieProvider;
+
+    @Autowired
     private static UserService u;
 
     @PostConstruct
@@ -64,11 +67,7 @@ public class JWTTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(HEADER);
-
-        if (bearerToken != null && bearerToken.startsWith("Bearer "))
-            return bearerToken.substring(7, bearerToken.length());
-        return null;
+        return cookieProvider.readCookie(request);
     }
 
     public boolean validateToken(String token) {
