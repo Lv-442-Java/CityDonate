@@ -16,7 +16,6 @@ import java.util.UUID;
 
 @Service
 public class MediaServiceImpl implements MediaService {
-
     @Autowired
     MediaRepository mediaRepository;
 
@@ -39,19 +38,15 @@ public class MediaServiceImpl implements MediaService {
         mediaDto.setName(fileName);
         mediaDto.setFileId(generateFileId());
         mediaDto.setExtension(getFileExtension(fileName));
-        /*add error or message of fileType is not defined*/
         String mediaType = mediaTypeService.setMediaType(mediaDto);
         mediaDto.setMediaType(mediaType);
-        //mediaModel.setName(fileName);
-        // mediaModel.setExtension(getFileExtension(fileName));
         Media mediaModel = mediaMapper.convertToModel(mediaDto);
         mediaModel.setCreationDate(LocalDateTime.now());
         return mediaModel;
     }
 
-
     public String fileIDWithExtension(MediaDto mediaDto) {
-        List<String> name = Arrays.asList(mediaDto.getFileId(),mediaDto.getExtension()/* media extension*/);
+        List<String> name = Arrays.asList(mediaDto.getFileId(), mediaDto.getExtension()/* media extension*/);
         return String.join(".", name);
     }
 
@@ -61,7 +56,7 @@ public class MediaServiceImpl implements MediaService {
         else return "";
     }
 
-    private String generateFileId(){
+    private String generateFileId() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
