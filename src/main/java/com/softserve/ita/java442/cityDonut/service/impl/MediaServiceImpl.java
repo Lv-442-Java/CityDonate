@@ -21,6 +21,9 @@ public class MediaServiceImpl implements MediaService {
     MediaRepository mediaRepository;
 
     @Autowired
+    private MediaTypeServiceImpl mediaTypeService;
+
+    @Autowired
     private MediaMapper mediaMapper;
 
     @Transactional
@@ -36,6 +39,9 @@ public class MediaServiceImpl implements MediaService {
         mediaDto.setName(fileName);
         mediaDto.setFileId(generateFileId());
         mediaDto.setExtension(getFileExtension(fileName));
+        /*add error or message of fileType is not defined*/
+        String mediaType = mediaTypeService.setMediaType(mediaDto);
+        mediaDto.setMediaType(mediaType);
         //mediaModel.setName(fileName);
         // mediaModel.setExtension(getFileExtension(fileName));
         Media mediaModel = mediaMapper.convertToModel(mediaDto);

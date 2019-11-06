@@ -19,6 +19,8 @@ public class MediaDto {
 
     private String fileId;
 
+    private String mediaType;
+
     private LocalDateTime creationDate;
 
     private long projectId;
