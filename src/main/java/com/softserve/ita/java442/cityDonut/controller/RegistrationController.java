@@ -19,8 +19,8 @@ public class RegistrationController {
         return ResponseEntity.status(HttpStatus.OK).body(userServiceimpl.registerUser(dto));
     }
 
-    @GetMapping("/activate")
-    public ResponseEntity<Void> activate(@RequestParam(name = "activationCode")String activationCode){
+    @GetMapping("/activationUser")
+    public ResponseEntity<Void> activationUser(@RequestParam(name = "activationCode")String activationCode){
         userServiceimpl.activateUserByCode(activationCode);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -3,6 +3,8 @@ package com.softserve.ita.java442.cityDonut.mapper.media;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.model.Media;
+import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,6 +12,9 @@ import java.util.List;
 
 @Component
 public class MediaMapper implements GeneralMapper<Media, MediaDto> {
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     public List<MediaDto> convertListToDto(List<Media> modelList) {
         List<MediaDto> dtoList = new ArrayList<>();
@@ -32,6 +37,9 @@ public class MediaMapper implements GeneralMapper<Media, MediaDto> {
         return MediaDto.builder()
                 .id(model.getId())
                 .name(model.getName())
+                .extension(model.getExtension())
+                .fileId(model.getFileId())
+                .projectId(model.getProject().getId())
                 .build();
     }
 
@@ -40,6 +48,9 @@ public class MediaMapper implements GeneralMapper<Media, MediaDto> {
         return Media.builder()
                 .id(dto.getId())
                 .name(dto.getName())
+                .extension(dto.getExtension())
+                .fileId(dto.getFileId())
+                .project(projectRepository.getById(dto.getProjectId()))
                 .build();
     }
 }
