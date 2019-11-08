@@ -31,6 +31,7 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
+
     private MailSenderImpl mailSender;
     private UserActivationRequestRepository userActivationRequestRepository;
     private UserRegistrationMapper userRegistrationMapper;
