@@ -4,52 +4,69 @@ import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.service.MediaTypeService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class MediaTypeServiceImpl implements MediaTypeService {
 
     public String setMediaType(MediaDto dto) {
-        Map typeMap = fillMap();
+        Map<String, Set<String>> typeMap = fillMap();
+
         String ext = dto.getExtension().toLowerCase();
-        String val = (String) typeMap.get(ext);
-        dto.setMediaType(val);
+        typeMap.forEach((key, value) -> {
+            if (value.contains(ext)) {
+                dto.setMediaType(key);
+            }
+        });
+
         return dto.getMediaType();
     }
 
-    private Map fillMap() {
-        Map<String, String> typeMap = new HashMap<>();
+    private Map<String, Set<String>> fillMap() {
+        Map<String, Set<String>> typeMap = new HashMap<>();
 
-        typeMap.put("png", "image");
-        typeMap.put("tif", "image");
-        typeMap.put("jpeg", "image");
-        typeMap.put("jpg", "image");
-        typeMap.put("gif", "image");
-        typeMap.put("doc", "document");
-        typeMap.put("docx", "document");
-        typeMap.put("pdf", "document");
-        typeMap.put("xls", "document");
-        typeMap.put("xlsx", "document");
-        typeMap.put("ppt", "document");
-        typeMap.put("pptx", "document");
-        typeMap.put("odt", "document");
-        typeMap.put("ods", "document");
-        typeMap.put("txt", "document");
-        typeMap.put("webm", "video");
-        typeMap.put("mpg", "video");
-        typeMap.put("mp2", "video");
-        typeMap.put("mpe", "video");
-        typeMap.put("mpeg", "video");
-        typeMap.put("mpv", "video");
-        typeMap.put("ogg", "video");
-        typeMap.put("mp4", "video");
-        typeMap.put("avi", "video");
-        typeMap.put("m4p", "video");
-        typeMap.put("wmv", "video");
-        typeMap.put("mov", "video");
-        typeMap.put("qt", "video");
-        typeMap.put("flv", "video");
-        typeMap.put("swf", "video");
+        Set<String> imageSet = new HashSet<>();
+        imageSet.add("png");
+        imageSet.add("tif");
+        imageSet.add("jpeg");
+        imageSet.add("jpg");
+        imageSet.add("gif");
+        typeMap.put("image", imageSet);
+
+        Set<String> documentSet = new HashSet<>();
+        documentSet.add("doc");
+        documentSet.add("docx");
+        documentSet.add("pdf");
+        documentSet.add("xls");
+        documentSet.add("xlsx");
+        documentSet.add("ppt");
+        documentSet.add("pptx");
+        documentSet.add("odt");
+        documentSet.add("ods");
+        documentSet.add("txt");
+        typeMap.put("document", documentSet);
+
+        Set<String> videoSet = new HashSet<>();
+        videoSet.add("webm");
+        videoSet.add("mpg");
+        videoSet.add("mp2");
+        videoSet.add("mpe");
+        videoSet.add("mpeg");
+        videoSet.add("mpv");
+        videoSet.add("ogg");
+        videoSet.add("mp4");
+        videoSet.add("avi");
+        videoSet.add("m4p");
+        videoSet.add("wmv");
+        videoSet.add("mov");
+        videoSet.add("qt");
+        videoSet.add("flv");
+        videoSet.add("swf");
+        typeMap.put("video", videoSet);
+
         return typeMap;
     }
 }
