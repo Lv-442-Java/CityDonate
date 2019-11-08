@@ -3,10 +3,10 @@ package com.softserve.ita.java442.cityDonut.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "media",
-        indexes = {@Index(name = "media_name_index", columnList = "name", unique = true)})
+@Table(name = "media")
 @Builder
 @Data
 @AllArgsConstructor
@@ -22,6 +22,15 @@ public class Media {
     @Column(name = "name", length = 30, nullable = false)
     private String name;
 
+    @Column(name = "extension", length = 5, nullable = false)
+    private String extension;
+
+    @Column(name = "file_id", length = 36, nullable = false)
+    private String fileId;
+
+    @Column(name = "create_date")
+    private LocalDateTime creationDate;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "media_type_id")
     private MediaType mediaType;
@@ -33,5 +42,4 @@ public class Media {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "story_board_id")
     private StoryBoard storyBoard;
-
 }
