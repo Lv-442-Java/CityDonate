@@ -76,5 +76,4 @@ public class ProjectController {
     public ResponseEntity<MainProjectInfoDto> setModeratorToProject(@PathVariable("id") long id) {
         return new ResponseEntity<>(projectService.addModeratorToProject(id), HttpStatus.OK);
     }
-
 }
