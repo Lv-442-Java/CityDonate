@@ -30,10 +30,15 @@ public class ProjectController {
 
     @GetMapping("/project/filter")
     public ResponseEntity<List<PreviewProjectDto>> filter(
-            @RequestParam List<Long> categories, long status, long moneyFrom, long moneyTo,
+            @RequestParam List<String> categories, String status, long moneyFrom, String moneyTo,
             Pageable pageable) {
         return new ResponseEntity<>(
                 projectService.getFilteredProjects(categories, status, moneyFrom, moneyTo, pageable), HttpStatus.OK);
+    }
+
+    @GetMapping("/maxMoney")
+    public ResponseEntity<Long> getMaxMoneyNeeded() {
+        return new ResponseEntity<>(projectService.getMaxMoneyNeeded(), HttpStatus.OK);
     }
 
     @GetMapping("/project/{id}/fields/valid")

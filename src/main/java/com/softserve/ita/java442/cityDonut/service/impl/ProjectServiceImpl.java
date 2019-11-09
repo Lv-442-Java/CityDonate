@@ -83,10 +83,30 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<PreviewProjectDto> getFilteredProjects
-            (List<Long> categoryIds, long statusId, long moneyFrom, long moneyTo, Pageable pageable) {
-        return previewProjectMapper.convertListToDto(
-                projectRepository.getFilteredProjects(categoryService.getCategoriesByIds(categoryIds),
-                        projectStatusService.getById(statusId), moneyFrom, moneyTo,categoryIds.size(), pageable));
+            (List<String> categoryIds, String statusId, long moneyFrom, String moneyTo, Pageable pageable) {
+        if (moneyTo.equals("default")) {
+            moneyTo = projectRepository.getMaxByMoneyNeeded().toString();
+        }
+        long realMoneyTo = Long.parseLong(moneyTo);
+        if (categoryIds.get(0).equals("default")) {
+            if (statusId.equals("default")) {
+                return previewProjectMapper.convertListToDto(
+                        projectRepository.findAllByMoneyNeededBetween(moneyFrom, realMoneyTo, pageable));
+            }
+            return previewProjectMapper.convertListToDto(
+                    projectRepository.findAllByProjectStatusIdAndMoneyNeededBetween(
+                            Long.parseLong(statusId), moneyFrom, realMoneyTo, pageable));
+        } else if (statusId.equals("default")) {
+            return previewProjectMapper.convertListToDto(
+                    projectRepository.getFilteredProjectsByCategories(
+                            categoryService.getCategoriesByIds(categoryIds),
+                            moneyFrom, realMoneyTo, categoryIds.size(), pageable));
+        } else {
+            return previewProjectMapper.convertListToDto(
+                    projectRepository.getFilteredProjects(categoryService.getCategoriesByIds(categoryIds),
+                            projectStatusService.getById(Long.parseLong(statusId)),
+                            moneyFrom, realMoneyTo, categoryIds.size(), pageable));
+        }
     }
 
     @Override
@@ -124,6 +144,11 @@ public class ProjectServiceImpl implements ProjectService {
         EditedProjectDto result = editedProjectMapper.convertToDto(resultOfQuery);
         projectRepository.flush();
         return result;
+    }
+
+    @Override
+    public Long getMaxMoneyNeeded() {
+        return projectRepository.getMaxByMoneyNeeded();
     }
 
     private List<Category> getValidCategoriesFromCategoriesDto(List<CategoryNameDto> categoryNameDtos) {
