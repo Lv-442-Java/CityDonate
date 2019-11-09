@@ -15,7 +15,7 @@ public interface UserService {
 
     UserEditDto update(UserEditDto userEditDto);
 
-    UserEditDto findById(long id);
+    UserEditDto getUserEditDto();
 
     UserRegistrationDto registerUser(UserRegistrationDto userRegistrationDto);
 
@@ -23,5 +23,5 @@ public interface UserService {
 
     User activateUserByCode(String activationCode);
 
-    List<ProjectInfoDto> getProjects(long id);
+    List<ProjectInfoDto> getProjects();
 }
