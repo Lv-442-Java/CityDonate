@@ -4,7 +4,7 @@ import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
-import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
+import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Media;
 import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
@@ -22,9 +22,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
+    private static MediaMapper mediaaMapper;
+    private static MediaRepository mediaaRepository;;
     private final Path fileStorageLocation;
     @Autowired
 
@@ -71,7 +75,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     public Resource loadFileAsResource(String fileName, long projectId) {
-        MediaDto mediaDto = mediaMapper.convertToDto(getFile(fileName, projectId));
+        MediaDto mediaDto = mediaMapper.convertToDto(getFileByNameAndProjectUd(fileName, projectId));
         try {
             String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
             Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
@@ -86,11 +90,26 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    public Media getFile(String fileName, long projectId) {
+    private Media getFileByNameAndProjectUd(String fileName, long projectId) {
         Media media = mediaRepository.findByNameAndProjectId(fileName, projectId);
         if (media == null) {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + projectId);
         }
         return media;
+    }
+
+    public List <String > getDownloadUrl(long projectId){
+        List<MediaDto> dtos = getPhotoNames(projectId);
+        ArrayList<String> result = new ArrayList<>();
+        String url = "http://localhost:8080/api/v1/project/2/downloadFile/";
+        for (MediaDto dto : dtos) {
+            result.add(url + dto.getName());
+        }
+        return result;
+    }
+
+    private List<MediaDto> getPhotoNames(long projectId) {
+        String mediaType = "image";
+        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectId(projectId));
     }
 }
