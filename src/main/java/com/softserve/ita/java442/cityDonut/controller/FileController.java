@@ -1,7 +1,6 @@
 package com.softserve.ita.java442.cityDonut.controller;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-import com.softserve.ita.java442.cityDonut.dto.comment.CommentDto;
 import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
@@ -14,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;

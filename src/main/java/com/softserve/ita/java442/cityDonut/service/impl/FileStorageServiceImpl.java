@@ -4,7 +4,6 @@ import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
-import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Media;
 import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
@@ -27,8 +26,7 @@ import java.util.List;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
-    private static MediaMapper mediaaMapper;
-    private static MediaRepository mediaaRepository;;
+
     private final Path fileStorageLocation;
     @Autowired
 
