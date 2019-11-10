@@ -12,7 +12,9 @@ public interface ProjectService {
 
     EditedProjectDto editProject(EditedProjectDto project, long projectId, long userId);
 
-    List<PreviewProjectDto> getFilteredProjects(List<Long> categoryIds, long statusId, long moneyFrom, long moneyTo, Pageable pageable);
+    Long getMaxMoneyNeeded();
+
+    List<PreviewProjectDto> getFilteredProjects(List<String> categoryIds, String statusId, long moneyFrom, String moneyTo, Pageable pageable);
 
     List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable);
 

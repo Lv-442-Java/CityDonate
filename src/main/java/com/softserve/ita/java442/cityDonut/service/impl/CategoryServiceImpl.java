@@ -1,5 +1,7 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
+import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
+import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
 import com.softserve.ita.java442.cityDonut.model.Category;
 import com.softserve.ita.java442.cityDonut.repository.CategoryRepository;
 import com.softserve.ita.java442.cityDonut.service.CategoryService;
@@ -15,10 +17,19 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private CategoryMapper categoryMapper;
+
     @Override
-    public List<Category> getCategoriesByIds(List<Long> categoryIds) {
+    public List<Category> getCategoriesByIds(List<String> categoryIds) {
         List<Category> requiredCategories = new ArrayList<>();
-        categoryIds.forEach((categoryId) -> requiredCategories.add(categoryRepository.getOne(categoryId)));
+        categoryIds.forEach((categoryId) ->
+                requiredCategories.add(categoryRepository.getOne(Long.parseLong(categoryId))));
         return requiredCategories;
+    }
+
+    @Override
+    public List<CategoryDto> getAllCategories() {
+        return categoryMapper.convertListToDto(categoryRepository.findAll());
     }
 }
