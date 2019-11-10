@@ -9,6 +9,4 @@ public interface FileStorageService {
     String storeFile(MultipartFile file, long projectId);
 
     Resource loadFileAsResource(String fileName, long fileId);
-
-    Media getFile(String fileName, long projectId);
 }

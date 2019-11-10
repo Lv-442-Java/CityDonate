@@ -36,16 +36,13 @@ public class MediaServiceImpl implements MediaService {
         mediaDto.setName(fileName);
         mediaDto.setFileId(generateFileId());
         mediaDto.setExtension(getFileExtension(fileName));
-        //mediaModel.setName(fileName);
-        // mediaModel.setExtension(getFileExtension(fileName));
         Media mediaModel = mediaMapper.convertToModel(mediaDto);
         mediaModel.setCreationDate(LocalDateTime.now());
         return mediaModel;
     }
 
-
     public String fileIDWithExtension(MediaDto mediaDto) {
-        List<String> name = Arrays.asList(mediaDto.getFileId(),mediaDto.getExtension()/* media extension*/);
+        List<String> name = Arrays.asList(mediaDto.getFileId(),mediaDto.getExtension());
         return String.join(".", name);
     }
 
