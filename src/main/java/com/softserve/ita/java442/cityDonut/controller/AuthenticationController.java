@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.controller;
 import com.softserve.ita.java442.cityDonut.dto.authentication.AuthenticationRequestDto;
 import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
 import com.softserve.ita.java442.cityDonut.model.User;
+import com.softserve.ita.java442.cityDonut.security.CookieProvider;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
 import com.softserve.ita.java442.cityDonut.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 public class AuthenticationController {
@@ -25,17 +25,19 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
     private JWTTokenProvider jwtTokenProvider;
     private UserServiceImpl userService;
+    private CookieProvider cookieProvider;
 
     public AuthenticationController(AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider,
-                                    UserServiceImpl userService) {
+                                    UserServiceImpl userService, CookieProvider cookieProvider) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
+        this.cookieProvider = cookieProvider;
     }
 
     @PostMapping
-    @RequestMapping(value = "/auth")
-    public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
+    @RequestMapping(value = "/sign-in")
+    public void login(@RequestBody AuthenticationRequestDto requestDto, HttpServletResponse response) {
         try {
             String userEmail = requestDto.getUserEmail();
             User user = userService.findUserByEmail(userEmail);
@@ -48,12 +50,7 @@ public class AuthenticationController {
             } else
                 throw new IncorrectPasswordException("Incorrect user password!");
 
-            String token = jwtTokenProvider.generateToken(user);
-            Map<Object, Object> response = new HashMap<>();
-            response.put("userName", user.getEmail());
-            response.put("token", token);
-
-            return ResponseEntity.ok(response);
+            response.addCookie(cookieProvider.createCookie(jwtTokenProvider.generateToken(user)));
 
         } catch (AuthenticationException | UserPrincipalNotFoundException e) {
             throw new BadCredentialsException("Invalid email or password");
@@ -62,16 +59,16 @@ public class AuthenticationController {
 
     @GetMapping("/")
     public String getHome() {
-        return ("<h1>Welcome  dear guest!</h1>");
+        return ("Welcome  dear guest!");
     }
 
-    @GetMapping("/auth/user")
+    @GetMapping("/user")
     public String getUser() {
-        return ("<h1>Hello User</h1>" + userService.getCurrentUser().getEmail());
+        return ("Hello User");
     }
 
-    @GetMapping("/auth/admin")
+    @GetMapping("/admin")
     public String getAdmin() {
-        return ("<h1>Hello Admin</h1>");
+        return ("Hello Admin");
     }
 }

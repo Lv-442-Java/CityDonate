@@ -7,11 +7,13 @@ import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
@@ -19,18 +21,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/project")
+@RequestMapping("/api/v1/project/{id}")
 public class FileController {
 
     private FileStorageServiceImpl fileStorageService;
+
     @Autowired
     public FileController(FileStorageServiceImpl fileStorageService) {
         this.fileStorageService = fileStorageService;
     }
 
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        String fileName = fileStorageService.storeFile(file);
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("id") long id) {
+
+        String fileName = fileStorageService.storeFile(file, id);
 
         String download = "/downloadFile/";
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -43,34 +47,33 @@ public class FileController {
     }
 
     @PostMapping("/uploadMultipleFiles")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @PathVariable("id") long id) {
         return Arrays.asList(files)
                 .stream()
-                .map(file -> uploadFile(file))
+                .map(file -> uploadFile(file, id))
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-        // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
-
-        // Try to determine file's content type
+    public ResponseEntity<Resource> downloadFile(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileName) {
+        Resource resource = fileStorageService.loadFileAsResource(fileName, id);
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
             throw new NotFoundException(ErrorMessage.NOT_DETERMINED_FILE_TYPE);
         }
-
-        // Fallback to the default content type if type could not be determined
-        if(contentType == null) {
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
-
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    @GetMapping("/getUrl")
+    public ResponseEntity<List<String>> photoLinks(@PathVariable("id") long id){
+        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getDownloadUrl(id));
     }
 }

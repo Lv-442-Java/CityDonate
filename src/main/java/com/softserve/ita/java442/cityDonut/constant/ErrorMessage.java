@@ -6,11 +6,13 @@ public class ErrorMessage {
     public static final String PROJECT_NOT_FOUND_BY_ID = "The project does not exist by this id";
     public static final String INCORRECT_USER_PASSWORD = "The user`s password is incorrect: ";
     public static final String FILE_NOT_FOUND = "File not found: ";
+    public static final String FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID = "File not found in DB: ";
     public static final String FIELD_INFO_NOT_FOUND_BY_ID = "No field info exists by this id";
+    public static final String FIELD_INFO_NOT_FOUND_BY_PROJECT_ID = "No field info exists by this project id";
     public static final String INVALID_CHARACTER = "Sorry! Filename contains invalid path sequence ";
     public static final String COULD_NOT_STORE_FILE = " could not be stored file. Please try again!";
     public static final String NOT_DETERMINED_FILE_TYPE = "Could not determine file type.";
-    public static final String INCORRECT_EMAIL = "Such email exists: ";
+    public static final String EMAIL_DUBLICATION = "Such email exists: ";
     public static final String INVALID_EMAIL = "Email is wrong: ";
     public static final String USER_HAS_NOT_PROJECT_WITH_ID = "The user hasn`t project with id: ";
     public static final String CATEGORY_NOT_FOUND_BY_NAME = "The category does not exist by name: ";
@@ -26,4 +28,7 @@ public class ErrorMessage {
     public static final String PROJECT_STATUS_NOT_FOUND = "The project status not found: ";
     public static final String NOT_ENOUGH_PERMISSION = "The user have not enough permission ";
     public static final String ROLE_NOT_FOUND = "Role not found:  ";
+    public static final String INVALID_USER_PASSWORD = "The user`s password is not well secured. Password must contain 8 characters," +
+            "2 uppercase letter, 1 special character(._!@#$&*), 2 digits, 3 lowercase letter";
+
 }

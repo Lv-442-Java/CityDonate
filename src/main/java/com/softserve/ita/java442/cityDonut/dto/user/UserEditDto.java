@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,6 +16,7 @@ public class UserEditDto {
 
     private long id;
 
+    @NotNull(message = ErrorMessage.FIELD_CANT_BE_NULL)
     private String email;
 
     @Size(

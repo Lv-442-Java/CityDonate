@@ -1,4 +1,4 @@
-package exeption;
+package com.softserve.ita.java442.cityDonut.exception;
 
 import org.springframework.security.core.AuthenticationException;
 
