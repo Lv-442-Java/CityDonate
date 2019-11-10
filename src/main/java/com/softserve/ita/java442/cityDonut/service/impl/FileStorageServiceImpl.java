@@ -73,7 +73,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     public Resource loadFileAsResource(String fileName, long projectId) {
-        MediaDto mediaDto = mediaMapper.convertToDto(getFileByNameAndProjectUd(fileName, projectId));
+        MediaDto mediaDto = mediaMapper.convertToDto(getFileByNameAndProjectId(fileName, projectId));
         try {
             String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
             Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
@@ -88,7 +88,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    private Media getFileByNameAndProjectUd(String fileName, long projectId) {
+    private Media getFileByNameAndProjectId(String fileName, long projectId) {
         Media media = mediaRepository.findByNameAndProjectId(fileName, projectId);
         if (media == null) {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + projectId);
