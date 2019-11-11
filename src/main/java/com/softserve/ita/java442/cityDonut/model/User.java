@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 public class User {
     public enum UserStatus{
-        ACTIVATE, NOT_ACTIVATE
+        ACTIVATED, NOT_ACTIVATED
     }
 
     @Id

@@ -19,9 +19,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{id}")
-    public UserEditDto getUser(@PathVariable("id") Long id) {
-        return userService.findById(id);
+    @GetMapping()
+    public UserEditDto getUser() {
+        return userService.getUserEditDto();
     }
 
     @PutMapping()
@@ -38,8 +38,8 @@ public class UserController {
         return new ResponseEntity<>(userEditPasswordDto, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/projects")
-    public ResponseEntity<List<ProjectInfoDto>> getMyProject(@PathVariable("id") Long id){
-        return new ResponseEntity<>(userService.getProjects(id),HttpStatus.OK);
+    @GetMapping("/projects")
+    public ResponseEntity<List<ProjectInfoDto>> getMyProject(){
+        return new ResponseEntity<>(userService.getProjects(),HttpStatus.OK);
     }
 }

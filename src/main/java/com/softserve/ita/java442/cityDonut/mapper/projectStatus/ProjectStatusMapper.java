@@ -5,6 +5,9 @@ import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.model.ProjectStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class ProjectStatusMapper implements GeneralMapper<ProjectStatus, ProjectStatusDto> {
 
@@ -20,5 +23,11 @@ public class ProjectStatusMapper implements GeneralMapper<ProjectStatus, Project
                 .id(projectStatusDto.getId())
                 .status(projectStatusDto.getStatus())
                 .build();
+    }
+
+    public List<ProjectStatusDto> convertListToDto(List<ProjectStatus> models) {
+        List<ProjectStatusDto> dtos = new ArrayList<>();
+        models.forEach(model -> dtos.add(convertToDto(model)));
+        return dtos;
     }
 }

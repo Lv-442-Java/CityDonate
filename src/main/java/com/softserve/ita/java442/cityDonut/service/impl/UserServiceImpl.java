@@ -5,10 +5,7 @@ import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserRegistrationDto;
-import com.softserve.ita.java442.cityDonut.exception.BadEmailException;
-import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
-import com.softserve.ita.java442.cityDonut.exception.InvalidEmailException;
-import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
+import com.softserve.ita.java442.cityDonut.exception.*;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
 import com.softserve.ita.java442.cityDonut.model.Project;
@@ -17,7 +14,7 @@ import com.softserve.ita.java442.cityDonut.model.UserActivationRequest;
 import com.softserve.ita.java442.cityDonut.repository.*;
 import com.softserve.ita.java442.cityDonut.security.UserPrincipal;
 import com.softserve.ita.java442.cityDonut.service.UserService;
-import com.softserve.ita.java442.cityDonut.validator.EmailValidator;
+import com.softserve.ita.java442.cityDonut.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +31,7 @@ public class UserServiceImpl implements UserService {
     private MailSenderImpl mailSender;
     private UserActivationRequestRepository userActivationRequestRepository;
     private UserRegistrationMapper userRegistrationMapper;
-    private EmailValidator emailValidator;
+    private Validator validator;
     private UserRepository userRepository;
     private UserEditMapper userEditMapper;
     private ProjectRepository projectRepository;
@@ -44,14 +41,14 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(MailSenderImpl mailSender,
                            UserActivationRequestRepository userActivationRequestRepository,
                            UserRegistrationMapper userRegistrationMapper,
-                           EmailValidator emailValidator,
-                           UserRepository userRepository,RoleRepository roleRepository,
+                           Validator validator,
+                           UserRepository userRepository, RoleRepository roleRepository,
                            UserEditMapper userEditMapper,
                            ProjectRepository projectRepository) {
         this.mailSender = mailSender;
         this.userActivationRequestRepository = userActivationRequestRepository;
         this.userRegistrationMapper = userRegistrationMapper;
-        this.emailValidator = emailValidator;
+        this.validator = validator;
         this.userRepository = userRepository;
         this.userEditMapper = userEditMapper;
         this.projectRepository = projectRepository;
@@ -61,15 +58,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserEditDto update(UserEditDto userEditDto) {
-        User user;
-        if (userEditDto != null) {
-            user = userRepository
-                    .findById(userEditDto.getId())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + userEditDto.getId()));
-        } else {
-            throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID);
-        }
-        if (!emailValidator.validateEmail(userEditDto.getEmail())) {
+        User user = getCurrentUser();
+        if (!validator.validateEmail(userEditDto.getEmail())) {
             throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
         }
         user.setFirstName(userEditDto.getFirstName());
@@ -79,23 +69,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEditDto findById(long id) {
-        return userEditMapper.convertToDto(userRepository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id)));
+    public UserEditDto getUserEditDto() {
+        return userEditMapper.convertToDto(getCurrentUser());
     }
 
     @Override
     @Transactional
     public void changePassword(UserEditPasswordDto userEditPasswordDto) {
-        User user;
-        if (userEditPasswordDto != null) {
-            user = userRepository
-                    .findById(userEditPasswordDto.getId())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + userEditPasswordDto.getId()));
-        } else {
-            throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID);
-        }
+        User user = getCurrentUser();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         if (passwordEncoder.matches(userEditPasswordDto.getPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(userEditPasswordDto.getNewPassword()));
@@ -109,7 +90,7 @@ public class UserServiceImpl implements UserService {
     public User activateUserByCode(String activationCode) {
         UserActivationRequest userActivationRequest = userActivationRequestRepository.findByActivationCode(activationCode);
         User user = userRepository.getUserById(userActivationRequest.getUserId());
-        user.setStatus(User.UserStatus.ACTIVATE);
+        user.setStatus(User.UserStatus.ACTIVATED);
 
         return userRepository.save(user);
     }
@@ -117,11 +98,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRegistrationDto registerUser(UserRegistrationDto userRegistrationDto) {
 
-        if (!emailValidator.validateEmail(userRegistrationDto.getEmail())) {
+        if (!validator.validateEmail(userRegistrationDto.getEmail())) {
             throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
         }
         if (userRepository.findByEmail(userRegistrationDto.getEmail()) != null) {
-            throw new BadEmailException(ErrorMessage.INCORRECT_EMAIL);
+            throw new BadEmailException(ErrorMessage.EMAIL_DUBLICATION);
+        }
+        if(!validator.validatePassword(userRegistrationDto.getPassword())){
+            throw new InvalidPasswordException(ErrorMessage.INVALID_USER_PASSWORD);
         }
         User user = userRegistrationMapper.convertToModel(userRegistrationDto);
         user.setRole(roleRepository.findByRole("user"));
@@ -129,7 +113,7 @@ public class UserServiceImpl implements UserService {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        user.setStatus(User.UserStatus.NOT_ACTIVATE);
+        user.setStatus(User.UserStatus.NOT_ACTIVATED);
 
         user = userRepository.save(user);
 
@@ -137,8 +121,9 @@ public class UserServiceImpl implements UserService {
         userActivationRequestRepository.save(userActivationRequest);
 
         String activationCode = userActivationRequest.getActivationCode();
-        String url = "localhost:8080/api/v1/registration/activate?activationCode=";
-        String message = String.format("Welcome to CityDonate. To activate your account follow link: " + url + activationCode);
+        String url = "localhost:8080/api/v1/registration/activationUser?activationCode=";
+        String message = String.format("Welcome to CityDonate. To activate your account follow link: "+url+activationCode);
+
         mailSender.send(user.getEmail(), "Activation Code", message);
 
         return userRegistrationMapper.convertToDto(user);
@@ -157,10 +142,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ProjectInfoDto> getProjects(long id) {
-        User user = userRepository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
+    public List<ProjectInfoDto> getProjects() {
+        User user = getCurrentUser();
         List<Project> projects;
         List<ProjectInfoDto> list = new ArrayList<>();
         if (user.getRole().equals(roleRepository.findByRole("user"))) {

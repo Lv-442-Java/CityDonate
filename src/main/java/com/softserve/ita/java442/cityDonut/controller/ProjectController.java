@@ -30,10 +30,15 @@ public class ProjectController {
 
     @GetMapping("/project/filter")
     public ResponseEntity<List<PreviewProjectDto>> filter(
-            @RequestParam List<Long> categories, long status, long moneyFrom, long moneyTo,
+            @RequestParam List<String> categories, String status, long moneyFrom, String moneyTo,
             Pageable pageable) {
         return new ResponseEntity<>(
                 projectService.getFilteredProjects(categories, status, moneyFrom, moneyTo, pageable), HttpStatus.OK);
+    }
+
+    @GetMapping("/maxMoney")
+    public ResponseEntity<Long> getMaxMoneyNeeded() {
+        return new ResponseEntity<>(projectService.getMaxMoneyNeeded(), HttpStatus.OK);
     }
 
     @GetMapping("/project/{id}/fields/valid")
@@ -72,9 +77,8 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.getFreeProject(), HttpStatus.OK);
     }
 
-    @PutMapping("/project/{id}/addToModerate/{moderator_id}")
-    public ResponseEntity<MainProjectInfoDto> setModeratorToProject(@PathVariable("id") long id, @PathVariable("moderator_id") long moderatorId) {
-        return new ResponseEntity<>(projectService.addModeratorToProject(id, moderatorId), HttpStatus.OK);
+    @PutMapping("/project/{id}/addToModerate")
+    public ResponseEntity<MainProjectInfoDto> setModeratorToProject(@PathVariable("id") long id) {
+        return new ResponseEntity<>(projectService.addModeratorToProject(id), HttpStatus.OK);
     }
-
 }
