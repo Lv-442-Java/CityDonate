@@ -25,25 +25,19 @@ public class MediaServiceImpl implements MediaService {
     @Autowired
     ExtensionRepository extensionRepository;
 
-//    @Autowired
-//    private MediaTypeServiceImpl mediaTypeService;
-
     @Autowired
     private MediaMapper mediaMapper;
 
     @Transactional
     public void saveMedia(MediaDto mediaDto, String fileName) {
         Media mediaModel = createMediaModelFromDtoData(mediaDto, fileName);
-        Media resultOfQuery = mediaRepository.save(mediaModel);
-//        MediaDto result = mediaMapper.convertToDto(resultOfQuery);//виліт
-//        mediaRepository.flush();                                  //виліт
-//        return result;
+        mediaRepository.save(mediaModel);
     }
 
     private Media createMediaModelFromDtoData(MediaDto mediaDto, String fileName) {
         mediaDto.setName(fileName);
         mediaDto.setFileId(generateFileId());
-        String ext =getFileExtension(fileName);
+        String ext = getFileExtension(fileName);
         Extension extension = extensionRepository.findByName(ext);
         mediaDto.setExtension(extension);
         MediaType mediaType = extension.getMediaType();
