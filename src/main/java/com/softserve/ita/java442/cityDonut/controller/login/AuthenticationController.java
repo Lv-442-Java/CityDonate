@@ -1,4 +1,4 @@
-package com.softserve.ita.java442.cityDonut.controller;
+package com.softserve.ita.java442.cityDonut.controller.login;
 
 import com.softserve.ita.java442.cityDonut.dto.authentication.AuthenticationRequestDto;
 import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
@@ -7,14 +7,12 @@ import com.softserve.ita.java442.cityDonut.security.CookieProvider;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
 import com.softserve.ita.java442.cityDonut.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 
