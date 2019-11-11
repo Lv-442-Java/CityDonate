@@ -170,7 +170,7 @@ public class ProjectServiceImpl implements ProjectService {
     private Project createProjectModelFromDtoData(NewProjectDto project, long userId) {
         Project projectModel = newProjectMapper.convertToModel(project);
         projectModel.setCreationDate(LocalDateTime.now());
-        projectModel.setProjectStatus(projectStatusRepository.getOne(userId));
+        projectModel.setProjectStatus(projectStatusRepository.getOne(1L));
         projectModel.setOwner(User.builder().id(userId).build());
         return projectModel;
     }
