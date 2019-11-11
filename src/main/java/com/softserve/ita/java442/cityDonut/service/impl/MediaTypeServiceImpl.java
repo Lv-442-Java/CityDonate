@@ -12,18 +12,18 @@ import java.util.Set;
 @Service
 public class MediaTypeServiceImpl implements MediaTypeService {
 
-    public String setMediaType(MediaDto dto) {
-        Map<String, Set<String>> typeMap = fillMap();
-
-        String ext = dto.getExtension().toLowerCase();
-        typeMap.forEach((key, value) -> {
-            if (value.contains(ext)) {
-                dto.setMediaType(key);
-            }
-        });
-
-        return dto.getMediaType();
-    }
+//    public String setMediaType(MediaDto dto) {
+//        Map<String, Set<String>> typeMap = fillMap();
+//
+//        String ext = dto.getExtension().toLowerCase();
+//        typeMap.forEach((key, value) -> {
+//            if (value.contains(ext)) {
+//                dto.setMediaType(key);
+//            }
+//        });
+//
+//        return dto.getMediaType();
+//    }
 
     private Map<String, Set<String>> fillMap() {
         Map<String, Set<String>> typeMap = new HashMap<>();
