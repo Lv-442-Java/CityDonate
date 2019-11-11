@@ -27,7 +27,7 @@ public class MediaServiceImpl implements MediaService {
     ExtensionRepository extensionRepository;
 
     @Autowired
-    private MediaMapper mediaMapper;
+    MediaMapper mediaMapper;
 
     @Transactional
     public void saveMedia(MediaDto mediaDto, String fileName) {
