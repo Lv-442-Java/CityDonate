@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserEditPasswordDto {
 
-    private long id;
-
     private String password;
 
     private String newPassword;
