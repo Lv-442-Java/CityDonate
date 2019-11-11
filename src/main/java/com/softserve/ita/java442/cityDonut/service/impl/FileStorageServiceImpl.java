@@ -29,7 +29,6 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     private final Path fileStorageLocation;
     @Autowired
-
     FileStorageServiceImpl fileStorage;
 
     @Autowired

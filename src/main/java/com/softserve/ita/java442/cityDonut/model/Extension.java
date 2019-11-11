@@ -2,7 +2,6 @@ package com.softserve.ita.java442.cityDonut.model;
 
 import lombok.*;
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Builder
@@ -10,15 +9,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
-public class MediaType {
+@ToString(exclude = {"mediaType"})
+public class Extension {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "type", nullable = false)
-    private String type;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @OneToMany(mappedBy = "mediaType")
-    private List<Extension> extensions;
+    @ManyToOne
+    @JoinColumn(name = "media_type_id")
+    private MediaType mediaType;
 }
