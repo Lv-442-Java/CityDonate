@@ -1,7 +1,6 @@
 package com.softserve.ita.java442.cityDonut.model;
 
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
@@ -10,13 +9,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString(exclude = {"media_type_id", "mediaType"})
+@ToString(exclude = {"mediaType"})
 public class Extension {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "name", nullable = false)
     private String name;
 
     @ManyToOne

@@ -4,7 +4,6 @@ import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
-import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Media;
 import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
@@ -25,9 +24,9 @@ import java.nio.file.StandardCopyOption;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
+
     private final Path fileStorageLocation;
     @Autowired
-
     FileStorageServiceImpl fileStorage;
 
     @Autowired
