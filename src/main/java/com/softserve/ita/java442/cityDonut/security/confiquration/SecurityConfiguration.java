@@ -40,5 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user").hasAnyAuthority("USER", "MODERATOR")
                 .and()
                 .apply(new JWTConfiguration(jwtTokenProvider));
+
+
     }
 }
