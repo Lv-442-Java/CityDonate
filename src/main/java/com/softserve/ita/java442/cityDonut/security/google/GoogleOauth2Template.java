@@ -12,7 +12,8 @@ public class GoogleOauth2Template extends AbstractGoogleApiOperations implements
     }
 
     @Override
-    public UserInfo getUserInfo(String access_token) {
-        return getEntity(USER_INFO_URL + access_token, UserInfo.class);
-    }
+public UserInfo getUserInfo(String access_token) {
+
+    return getEntity(USER_INFO_URL + access_token, UserInfo.class);
+}
 }
