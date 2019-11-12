@@ -57,6 +57,11 @@ public class DonateController {
         return new ResponseEntity<>(projectByUserDonateDtos, HttpStatus.OK);
     }
 
+    @GetMapping("all/projects/{id}")
+    public ResponseEntity<Long> getDonatesSumByProjectId(@PathVariable long id) {
+        return new ResponseEntity<> (donateService.getDonatesSumByProjectId(id), HttpStatus.OK);
+    }
+
     @PostMapping("/")
     public ResponseEntity<DonateDto> createDonate(@RequestBody DonateDto donateDto) {
         donateDto.setUserId(userService.getCurrentUser().getId());

@@ -12,4 +12,6 @@ public interface DonateService {
     List<DonatesForProjectDto> getUserDonatesByProject(long id, long userId, Pageable pageable);
 
     DonateDto createDonate(DonateDto donateDto);
+
+    Long getDonatesSumByProjectId(long id);
 }
