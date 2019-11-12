@@ -81,11 +81,6 @@ public class JWTTokenProvider {
         }
     }
 
-    public String parseToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
-        return claims.getSubject();
-    }
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);

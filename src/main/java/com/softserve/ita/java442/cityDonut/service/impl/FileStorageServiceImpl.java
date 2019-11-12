@@ -29,7 +29,6 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     private final Path fileStorageLocation;
     @Autowired
-
     FileStorageServiceImpl fileStorage;
 
     @Autowired
@@ -99,9 +98,10 @@ public class FileStorageServiceImpl implements FileStorageService {
     public List <String > getDownloadUrl(long projectId){
         List<MediaDto> dtos = getPhotoNames(projectId);
         ArrayList<String> result = new ArrayList<>();
-        String url = "http://localhost:8080/api/v1/project/2/downloadFile/";
+        String url = "http://localhost:8080/api/v1/project";
+        String nameOfFunction= "/downloadFile/";
         for (MediaDto dto : dtos) {
-            result.add(url + dto.getName());
+            result.add(url + projectId + nameOfFunction +dto.getName());
         }
         return result;
     }

@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface MediaRepository extends JpaRepository<Media, Long> {
     List<Media> getPhotosByProjectId(long projectId);
-
     Media findByNameAndProjectId(String name, long projectId);
 }
