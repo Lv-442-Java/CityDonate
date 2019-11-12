@@ -99,7 +99,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     public List <String > getDownloadUrl(long projectId){
         List<MediaDto> dtos = getPhotoNames(projectId);
         ArrayList<String> result = new ArrayList<>();
-        String url = "http://localhost:8080/api/v1/project/2/downloadFile/";
+        String url = "http://localhost:8000/api/v1/project/1/downloadFile/";
         for (MediaDto dto : dtos) {
             result.add(url + dto.getName());
         }
