@@ -1,13 +1,12 @@
 package com.softserve.ita.java442.cityDonut.controller.login;
 
-import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.security.CookieProvider;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
-import com.softserve.ita.java442.cityDonut.security.google.GoogleServiceImpl;
-import com.softserve.ita.java442.cityDonut.security.google.UserInfo;
+import com.softserve.ita.java442.cityDonut.security.facebook.FacebookServiceImpl;
 import com.softserve.ita.java442.cityDonut.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.social.facebook.api.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,51 +17,54 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @Controller
-public class GoogleController {
+public class FacebookController {
 
-    private JWTTokenProvider jwtTokenProvider;
+    private FacebookServiceImpl facebookService;
     private UserServiceImpl userService;
     private CookieProvider cookieProvider;
-    private GoogleServiceImpl googleService;
+    private JWTTokenProvider jwtTokenProvider;
 
     @Autowired
-    public GoogleController(JWTTokenProvider jwtTokenProvider, UserServiceImpl userService,
-                            CookieProvider cookieProvider, GoogleServiceImpl googleService) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public FacebookController(FacebookServiceImpl facebookService, UserServiceImpl userService,
+                              CookieProvider cookieProvider,JWTTokenProvider jwtTokenProvider) {
+        this.facebookService = facebookService;
         this.userService = userService;
         this.cookieProvider = cookieProvider;
-        this.googleService = googleService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @GetMapping(value = "/googlelogin")
+    @GetMapping(value = "/facebooklogin")
     public RedirectView googleLogin() {
         RedirectView redirectView = new RedirectView();
-        String url = googleService.getLogin();
+        String url = facebookService.getLogin();
         redirectView.setUrl(url);
         return redirectView;
     }
 
-    @GetMapping(value = "/google")
+    @GetMapping(value = "/facebook")
     public String google(@RequestParam("code") String code) {
-        String accessToken = googleService.getAccessToken(code);
-        return "redirect:/googleProfileData/" + accessToken;
+        String accessToken = facebookService.getAccessToken(code);
+        return "redirect:/facebookProfileData/" + accessToken;
     }
 
-    @GetMapping(value = "/googleProfileData/{accessToken:.+}")
-    public void googleProfileData(@PathVariable String accessToken, HttpServletResponse response) {
+    @GetMapping(value = "/facebookProfileData/{accessToken:.+}")
+    public String googleProfileData(@PathVariable String accessToken, HttpServletResponse response) {
+        System.out.println(accessToken);
         try {
+            User userSocial = facebookService.getUserProfile(accessToken);
+            if(userSocial.getEmail() == null){
+               return "Please add email to your facebook account";
+            }
 
-            UserInfo userSocial = googleService.getUserProfile(accessToken);
-            User userDataBase = userService.findUserByEmail(userSocial.getEmail());
-            System.out.println(userSocial.getEmail());
+            com.softserve.ita.java442.cityDonut.model.User userDataBase = userService.findUserByEmail(userSocial.getEmail());
 
             if (userDataBase == null){
                 throw new UserPrincipalNotFoundException("User with email " + userSocial.getEmail().toUpperCase() + "not found!");
             }else
                 response.addCookie(cookieProvider.createCookie(jwtTokenProvider.generateToken(userDataBase)));
-
         } catch (UserPrincipalNotFoundException e) {
             throw new BadCredentialsException("Invalid email or password");
         }
+        return null;
     }
 }
