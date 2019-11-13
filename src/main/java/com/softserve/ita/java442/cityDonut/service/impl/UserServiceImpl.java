@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRegistrationDto registerUser(UserRegistrationDto userRegistrationDto) {
+    public boolean registerUser(UserRegistrationDto userRegistrationDto) {
 
         if (!validator.validateEmail(userRegistrationDto.getEmail())) {
             throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
@@ -129,10 +129,9 @@ public class UserServiceImpl implements UserService {
         String activationCode = userActivationRequest.getActivationCode();
         String url = "localhost:8080/api/v1/registration/activationUser?activationCode=";
         String message = String.format("Welcome to CityDonate. To activate your account follow link: "+url+activationCode);
-
         mailSender.send(user.getEmail(), "Activation Code", message);
 
-        return userRegistrationMapper.convertToDto(user);
+        return true;
     }
 
     @Override
