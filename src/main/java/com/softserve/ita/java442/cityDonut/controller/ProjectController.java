@@ -2,6 +2,7 @@ package com.softserve.ita.java442.cityDonut.controller;
 
 import com.softserve.ita.java442.cityDonut.dto.fieldsCheck.FieldsCheckDto;
 import com.softserve.ita.java442.cityDonut.dto.project.*;
+import com.softserve.ita.java442.cityDonut.security.UserPrincipal;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -58,17 +60,17 @@ public class ProjectController {
     }
 
     @PostMapping("/project")
-    public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project) {
+    public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project, Authentication auth) {
         return new ResponseEntity<>(
-                projectService.saveProject(project, /*user id*/ 1L),
+                projectService.saveProject(project, ((UserPrincipal)auth.getPrincipal()).getUser().getId()),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/project/{projectId}")
-    public ResponseEntity<EditedProjectDto> editProject(@RequestBody EditedProjectDto project, @PathVariable long projectId) {
+    public ResponseEntity<EditedProjectDto> editProject(@Valid @RequestBody EditedProjectDto project, @PathVariable long projectId, Authentication auth) {
         return new ResponseEntity<>(
-                projectService.editProject(project, projectId, /*user id*/ 1L),
+                projectService.editProject(project, projectId, ((UserPrincipal)auth.getPrincipal()).getUser().getId()),
                 HttpStatus.OK
         );
     }
