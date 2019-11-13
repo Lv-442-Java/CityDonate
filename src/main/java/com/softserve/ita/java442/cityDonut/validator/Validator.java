@@ -10,16 +10,7 @@ import java.util.regex.Pattern;
 @Component
 public class Validator {
 
-    /*
-         * ^                       Start anchor
-         (?=.*[A-Z].*[A-Z])        Ensure string has two uppercase letters.
-         (?=.*[!@#$&*])            Ensure string has one special case letter.
-         (?=.*[0-9].*[0-9])        Ensure string has two digits.
-         (?=.*[a-z].*[a-z].*[a-z]) Ensure string has three lowercase letters.
-         .{8}                      Ensure string is of length 8.
-         $                         End anchor
-   */
-    private static final String PASSWORD_PATTERN = "^(?=.*[A-Z].*[A-Z])(?=.*[._!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$";
+    private static final String PASSWORD_PATTERN = "^[a-zA-Z0-9]{4,15}$";
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-+]+(.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(.[A-Za-z0-9]+)*(.[A-Za-z]{2,})$";
     private Pattern pattern;
     private Matcher matcher;
