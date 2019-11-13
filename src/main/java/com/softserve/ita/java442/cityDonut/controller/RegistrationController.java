@@ -17,7 +17,7 @@ public class RegistrationController {
 
     @PostMapping("/")
     public HttpStatus registration(@RequestBody UserRegistrationDto dto) {
-        userServiceimpl. registerUser(dto);
+        userServiceimpl.registerUser(dto);
         return HttpStatus.OK;
     }
 
