@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,11 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     List<Project> findAllByModeratorsIn(List<User> moderators);
 
-    List<Project> findAllByMoneyNeededBetween(long moneyNeeded, long moneyNeeded2, Pageable pageable);
+    @Query("select p from Project p where p.moneyNeeded between :moneyFrom and :moneyTo " +
+            "AND p.projectStatus.status not in ('чернетка','очікує підтвердження','на перевірці')")
+    List<Project> findAllWithoutFilter(@Param("moneyFrom") long moneyFrom,
+                                       @Param("moneyTo") long moneyTo,
+                                       Pageable pageable);
 
     List<Project> findAllByProjectStatusIdAndMoneyNeededBetween(
             long projectStatus_id, long moneyNeeded, long moneyNeeded2, Pageable pageable);
@@ -45,7 +50,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("select p from Project p where " +
             "(select count (distinct c) FROM p.categories c where c in (:categories) ) >= :categoriesSize " +
-            "AND p.moneyNeeded between :moneyFrom and :moneyTo")
+            "AND p.moneyNeeded between :moneyFrom and :moneyTo " +
+            "AND p.projectStatus.status not in ('чернетка','очікує підтвердження','на перевірці')")
     List<Project> getFilteredProjectsByCategories(@Param("categories") List<Category> categories,
                                                   @Param("moneyFrom") long moneyFrom,
                                                   @Param("moneyTo") long moneyTo,
