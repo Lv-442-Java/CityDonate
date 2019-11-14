@@ -16,12 +16,13 @@ public class RegistrationController {
     private UserServiceImpl userServiceimpl;
 
     @PostMapping("/")
-    public ResponseEntity<UserRegistrationDto> registration(@RequestBody UserRegistrationDto dto) {
-        return ResponseEntity.status(HttpStatus.OK).body(userServiceimpl.registerUser(dto));
+    public HttpStatus registration(@RequestBody UserRegistrationDto dto) {
+        userServiceimpl.registerUser(dto);
+        return HttpStatus.OK;
     }
 
     @GetMapping("/activationUser")
-    public ResponseEntity<Void> activationUser(@RequestParam(name = "activationCode")String activationCode){
+    public ResponseEntity<Void> activationUser(@RequestParam(name = "activationCode") String activationCode) {
         userServiceimpl.activateUserByCode(activationCode);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
