@@ -101,7 +101,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 
 
 
-        String url = "http://localhost:8080/api/v1/project";
+        String url = "http://localhost:8000/api/v1/project/";
         String nameOfFunction= "/downloadFile/";
         for (MediaDto dto : dtos) {
             result.add(url + projectId + nameOfFunction +dto.getName());
