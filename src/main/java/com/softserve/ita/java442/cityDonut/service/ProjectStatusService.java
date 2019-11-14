@@ -8,5 +8,5 @@ import java.util.List;
 public interface ProjectStatusService {
     ProjectStatus getById(Long id);
 
-    List<ProjectStatusDto> getStatusesExcept(List<String> notNeededStatuses);
+    List<ProjectStatusDto> getStatusesAfterValidation();
 }
