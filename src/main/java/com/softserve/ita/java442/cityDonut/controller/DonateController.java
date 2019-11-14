@@ -3,8 +3,6 @@ package com.softserve.ita.java442.cityDonut.controller;
 import com.softserve.ita.java442.cityDonut.dto.donateDto.DonateDto;
 import com.softserve.ita.java442.cityDonut.dto.donateDto.DonatesForProjectDto;
 import com.softserve.ita.java442.cityDonut.dto.project.ProjectByUserDonateDto;
-import com.softserve.ita.java442.cityDonut.mapper.donate.DonateMapper;
-import com.softserve.ita.java442.cityDonut.repository.DonateRepository;
 import com.softserve.ita.java442.cityDonut.service.DonateService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import com.softserve.ita.java442.cityDonut.service.UserService;
@@ -55,6 +53,11 @@ public class DonateController {
                                                                                     Pageable pageable) {
         List<ProjectByUserDonateDto> projectByUserDonateDtos = projectService.getDonatedUserProject(userService.getCurrentUser().getId(), pageable);
         return new ResponseEntity<>(projectByUserDonateDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("all/projects/{id}")
+    public ResponseEntity<Long> getDonatesSumByProjectId(@PathVariable long id) {
+        return new ResponseEntity<> (donateService.getDonatesSumByProjectId(id), HttpStatus.OK);
     }
 
     @PostMapping("/")

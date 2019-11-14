@@ -66,4 +66,12 @@ public class DonateServiceImpl implements DonateService {
     private boolean projectExists(long id) {
         return projectRepository.existsById(id);
     }
+
+    public Long getDonatesSumByProjectId(long id) {
+        if(!projectExists(id)) {
+            throw new NotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID);
+        }
+        return donateRepository.getSumByProjectId(id);
+    }
+
 }
