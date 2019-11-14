@@ -34,6 +34,7 @@ public class AuthenticationController {
     }
 
     @PostMapping
+    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping(value = "/sign-in")
     public void login(@RequestBody AuthenticationRequestDto requestDto, HttpServletResponse response) {
         try {
@@ -55,6 +56,7 @@ public class AuthenticationController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/")
     public String getHome() {
         return ("Welcome  dear guest!");

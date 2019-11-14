@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class CookieProvider {
     public Cookie createCookie(String token) {
-        return new Cookie("JWT", token);
+        Cookie cookie = new Cookie("JWT", token);
+        cookie.setMaxAge(3600000);
+        return cookie;
     }
 
     public String readCookie(HttpServletRequest request) {
