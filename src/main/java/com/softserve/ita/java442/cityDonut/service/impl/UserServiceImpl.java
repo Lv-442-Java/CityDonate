@@ -5,13 +5,19 @@ import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserRegistrationDto;
-import com.softserve.ita.java442.cityDonut.exception.*;
+import com.softserve.ita.java442.cityDonut.exception.BadEmailException;
+import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
+import com.softserve.ita.java442.cityDonut.exception.InvalidEmailException;
+import com.softserve.ita.java442.cityDonut.exception.InvalidPasswordException;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
 import com.softserve.ita.java442.cityDonut.model.Project;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.model.UserActivationRequest;
-import com.softserve.ita.java442.cityDonut.repository.*;
+import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
+import com.softserve.ita.java442.cityDonut.repository.RoleRepository;
+import com.softserve.ita.java442.cityDonut.repository.UserActivationRequestRepository;
+import com.softserve.ita.java442.cityDonut.repository.UserRepository;
 import com.softserve.ita.java442.cityDonut.security.UserPrincipal;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import com.softserve.ita.java442.cityDonut.validator.Validator;
@@ -96,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRegistrationDto registerUser(UserRegistrationDto userRegistrationDto) {
+    public boolean registerUser(UserRegistrationDto userRegistrationDto) {
 
         if (!validator.validateEmail(userRegistrationDto.getEmail())) {
             throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
@@ -123,10 +129,9 @@ public class UserServiceImpl implements UserService {
         String activationCode = userActivationRequest.getActivationCode();
         String url = "localhost:8080/api/v1/registration/activationUser?activationCode=";
         String message = String.format("Welcome to CityDonate. To activate your account follow link: "+url+activationCode);
-
         mailSender.send(user.getEmail(), "Activation Code", message);
 
-        return userRegistrationMapper.convertToDto(user);
+        return true;
     }
 
     @Override
