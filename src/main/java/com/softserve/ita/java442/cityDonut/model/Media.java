@@ -18,7 +18,7 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name", length = 30, nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "file_id", length = 36, nullable = false)
