@@ -5,10 +5,8 @@ import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserRegistrationDto;
-import com.softserve.ita.java442.cityDonut.exception.BadEmailException;
-import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
-import com.softserve.ita.java442.cityDonut.exception.InvalidEmailException;
-import com.softserve.ita.java442.cityDonut.exception.InvalidPasswordException;
+import com.softserve.ita.java442.cityDonut.dto.user.UserRoleDto;
+import com.softserve.ita.java442.cityDonut.exception.*;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
 import com.softserve.ita.java442.cityDonut.model.Project;
@@ -169,5 +167,13 @@ public class UserServiceImpl implements UserService {
             list.add(projectInfoDto);
         }
         return list;
+    }
+
+    @Override
+    public UserRoleDto getUserRoleDto(long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundById(ErrorMessage.USER_NOT_FOUND_BY_ID));
+        String role = user.getRole().getRole();
+        return new UserRoleDto(userId, user.getFirstName(), user.getLastName(), role);
     }
 }
