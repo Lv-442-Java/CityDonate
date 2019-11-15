@@ -42,7 +42,7 @@ public class Project {
     private LocalDateTime publicationDate;
 
     @Column(name = "donation_end_date")
-    private LocalDateTime donationEndDate;
+     private LocalDateTime donationEndDate;
 
     @Column(name = "realization_end_date")
     private LocalDateTime realizationEndDate;
