@@ -87,29 +87,31 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<PreviewProjectDto> getFilteredProjects
-            (List<String> categoryIds, String statusId, long moneyFrom, String moneyTo, Pageable pageable) {
-        if (moneyTo.equals("default")) {
-            moneyTo = projectRepository.getMaxByMoneyNeeded().toString();
+            (List<Long> categoryIds, Long statusId, Long moneyFrom, Long moneyTo, Pageable pageable) {
+        if(moneyFrom==null){
+            moneyFrom= 0L;
         }
-        long realMoneyTo = Long.parseLong(moneyTo);
-        if (categoryIds.get(0).equals("default")) {
-            if (statusId.equals("default")) {
+        if (moneyTo==null) {
+            moneyTo = projectRepository.getMaxByMoneyNeeded();
+        }
+        if (categoryIds==null) {
+            if (statusId==null) {
                 return previewProjectMapper.convertListToDto(
-                        projectRepository.findAllByMoneyNeededBetween(moneyFrom, realMoneyTo, pageable));
+                        projectRepository.findAllWithoutFilter(moneyFrom, moneyTo, pageable));
             }
             return previewProjectMapper.convertListToDto(
                     projectRepository.findAllByProjectStatusIdAndMoneyNeededBetween(
-                            Long.parseLong(statusId), moneyFrom, realMoneyTo, pageable));
-        } else if (statusId.equals("default")) {
+                            statusId, moneyFrom, moneyTo, pageable));
+        } else if (statusId==null) {
             return previewProjectMapper.convertListToDto(
                     projectRepository.getFilteredProjectsByCategories(
                             categoryService.getCategoriesByIds(categoryIds),
-                            moneyFrom, realMoneyTo, categoryIds.size(), pageable));
+                            moneyFrom, moneyTo, categoryIds.size(), pageable));
         } else {
             return previewProjectMapper.convertListToDto(
                     projectRepository.getFilteredProjects(categoryService.getCategoriesByIds(categoryIds),
-                            projectStatusService.getById(Long.parseLong(statusId)),
-                            moneyFrom, realMoneyTo, categoryIds.size(), pageable));
+                            projectStatusService.getById(statusId),
+                            moneyFrom, moneyTo, categoryIds.size(), pageable));
         }
     }
 
@@ -121,10 +123,6 @@ public class ProjectServiceImpl implements ProjectService {
             projectByUserDonateDtos.add(projectByUserDonateMapper.convertToDto(donatedUserProject));
         }
         return projectByUserDonateDtos;
-    }
-
-    private void filterByCategories(List<PreviewProjectDto> previewProjectDtos, List<CategoryDto> categoryDtos) {
-        previewProjectDtos.removeIf(previewProjectDto -> !previewProjectDto.getCategories().containsAll(categoryDtos));
     }
 
     @Override
