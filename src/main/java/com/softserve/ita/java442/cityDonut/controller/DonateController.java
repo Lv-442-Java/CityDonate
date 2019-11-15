@@ -67,4 +67,9 @@ public class DonateController {
         donateDto.setUserId(userService.getCurrentUser().getId());
         return new ResponseEntity<>(donateService.createDonate(donateDto),HttpStatus.OK);
     }
+
+    @GetMapping("/count/project/{id}")
+    public ResponseEntity<Long> getCountOfBenefactorsByProjectId(@PathVariable long id) {
+        return new ResponseEntity<>(donateService.getCountOfBenefactorsByProjectId(id), HttpStatus.OK);
+    }
 }

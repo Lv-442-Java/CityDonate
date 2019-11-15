@@ -16,4 +16,7 @@ public interface DonateRepository extends JpaRepository<Donate, Long> {
 
     @Query("SELECT sum(d.sum) from Donate d where d.project.id = :projectId")
     Long getSumByProjectId(@Param("projectId") long id);
+
+    @Query("SELECT count(distinct d.user.id) FROM Donate d where d.project.id = :projectId")
+    Long getCountOfBenefactorsByProjectId(@Param("projectId") long id);
 }
