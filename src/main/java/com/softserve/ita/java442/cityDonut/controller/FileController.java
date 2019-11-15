@@ -78,4 +78,9 @@ public class FileController {
     public ResponseEntity<List<String>> photoLinks(@PathVariable("id") long id){
         return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getDownloadUrl(id));
     }
+
+    @GetMapping("/getAvatar")
+    public ResponseEntity<String> avatarLink(@PathVariable("id") long id){
+        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getAvatarDownloadLink(id));
+    }
 }

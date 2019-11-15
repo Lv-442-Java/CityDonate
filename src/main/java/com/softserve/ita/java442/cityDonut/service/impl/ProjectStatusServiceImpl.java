@@ -8,6 +8,7 @@ import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,7 +26,11 @@ public class ProjectStatusServiceImpl implements ProjectStatusService {
     }
 
     @Override
-    public List<ProjectStatusDto> getStatusesExcept(List<String> notNeededStatuses) {
+    public List<ProjectStatusDto> getStatusesAfterValidation() {
+        List<String> notNeededStatuses = new ArrayList<>();
+        notNeededStatuses.add("чернетка");
+        notNeededStatuses.add("очікує підтвердження");
+        notNeededStatuses.add("на перевірці");
         return projectStatusMapper.convertListToDto(projectStatusRepository.getByStatusIsNotIn(notNeededStatuses));
     }
 }

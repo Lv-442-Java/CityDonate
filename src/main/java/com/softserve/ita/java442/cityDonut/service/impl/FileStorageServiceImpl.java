@@ -95,10 +95,10 @@ public class FileStorageServiceImpl implements FileStorageService {
         return media;
     }
 
-    public List <String > getDownloadUrl(long projectId){
+    public List <String> getDownloadUrl(long projectId){
         List<MediaDto> dtos = getPhotoNames(projectId);
         ArrayList<String> result = new ArrayList<>();
-        String url = "http://localhost:8080/api/v1/project";
+        String url = "http://localhost:8091/api/v1/project/";
         String nameOfFunction= "/downloadFile/";
         for (MediaDto dto : dtos) {
             result.add(url + projectId + nameOfFunction +dto.getName());
@@ -107,7 +107,13 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     private List<MediaDto> getPhotoNames(long projectId) {
-        String mediaType = "image";
         return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectId(projectId));
+    }
+
+    public String getAvatarDownloadLink(long projectId){
+        ArrayList <MediaDto> listOfDto = (ArrayList<MediaDto>) getPhotoNames(projectId);
+        MediaDto dto = listOfDto.get(0);
+        String result = "http://localhost:8091/api/v1/project/" + projectId + "/downloadFile/" +dto.getName();
+        return result;
     }
 }
