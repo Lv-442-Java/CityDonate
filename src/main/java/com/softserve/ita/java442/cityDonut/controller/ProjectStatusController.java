@@ -21,10 +21,6 @@ public class ProjectStatusController {
 
     @GetMapping("/afterValidation")
     public ResponseEntity<List<ProjectStatusDto>> getStatusesAfterValidation() {
-        List<String> notNeededStatuses = new ArrayList<>();
-        notNeededStatuses.add("чернетка");
-        notNeededStatuses.add("очікує підтвердження");
-        notNeededStatuses.add("на перевірці");
-        return new ResponseEntity<>(projectStatusService.getStatusesExcept(notNeededStatuses), HttpStatus.OK);
+        return new ResponseEntity<>(projectStatusService.getStatusesAfterValidation(), HttpStatus.OK);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -33,7 +34,10 @@ public class ProjectController {
 
     @GetMapping("/project/filter")
     public ResponseEntity<List<PreviewProjectDto>> filter(
-            @RequestParam List<String> categories, String status, long moneyFrom, String moneyTo,
+            @RequestParam(value = "categories", required = false) List<Long> categories,
+            @RequestParam(value = "status",required = false) Long status,
+            @RequestParam(value = "moneyFrom",required = false) Long moneyFrom,
+            @RequestParam(value = "moneyTo",required = false) Long moneyTo,
             Pageable pageable) {
         return new ResponseEntity<>(
                 projectService.getFilteredProjects(categories, status, moneyFrom, moneyTo, pageable), HttpStatus.OK);
