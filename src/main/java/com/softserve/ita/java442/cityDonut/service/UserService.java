@@ -17,6 +17,8 @@ public interface UserService {
 
     UserEditDto getUserEditDto();
 
+    boolean validateUser(UserRegistrationDto userRegistrationDto);
+
     boolean registerUser(UserRegistrationDto userRegistrationDto);
 
     void changePassword(UserEditPasswordDto userEditPasswordDto);
