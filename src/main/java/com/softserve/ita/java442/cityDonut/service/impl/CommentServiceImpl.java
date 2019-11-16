@@ -27,10 +27,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto sendComment(CommentDto comment, long id) {
-        CommentDto newComment = new CommentDto();
+        CommentDto newComment;
+        newComment = mapper.convertToDto(commentRepository.save(mapper.convertToModel(comment)));
         newComment.setProjectId(id);
         newComment.setDate(LocalDateTime.now());
-        newComment = mapper.convertToDto(commentRepository.save(mapper.convertToModel(comment)));
         return newComment;
     }
 }
