@@ -90,10 +90,11 @@ public class FileController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         ArrayList<String> fileNames = (ArrayList<String>) fileStorageService.getFileNames(id);
+        ArrayList<String> result = new ArrayList<>();
         for (String name : fileNames) {
-            fileNames.add(buildDownloadUri(id, name));
+            result.add(buildDownloadUri(id, name));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(fileNames);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     private String buildDownloadUri(long id, String fileName) {
