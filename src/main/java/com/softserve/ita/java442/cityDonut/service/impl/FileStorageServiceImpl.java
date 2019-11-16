@@ -3,13 +3,9 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
-import com.softserve.ita.java442.cityDonut.dto.media.MediaTypeDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
-import com.softserve.ita.java442.cityDonut.model.Media;
-import com.softserve.ita.java442.cityDonut.model.MediaType;
 import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
-import com.softserve.ita.java442.cityDonut.repository.MediaTypeRepository;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -93,18 +89,12 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     public List<String> getPhotoNames(long projectId) {
         List<MediaDto> mediaDtoList = mediaService.getPhotoNames(projectId);
-//        ArrayList<String> fileNames= new ArrayList<>();
-//        for (MediaDto dto : mediaDtoList) {
-//            fileNames.add(dto.getName());
-//        }
         return getNames(mediaDtoList);
-     //   return buildUrls(projectId, mediaDtoList);
     }
 
     public List<String> getFileNames(long projectId) {
         List<MediaDto> mediaDtoList = mediaService.getFileNames(projectId);
         return getNames(mediaDtoList);
-       // return buildUrls(projectId,mediaDtoList);
     }
 
     public String getAvatarName(long projectId) {
@@ -133,15 +123,5 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
         return fileNames;
     }
-
-//    private List<String> buildUrls(long projectId, List<MediaDto> mediaDtoList) {
-//        ArrayList<String> result = new ArrayList<>();
-//        String url = "http://localhost:8091/api/v1/project/";
-//        String nameOfFunction = "/downloadFile/";
-//        for (MediaDto dto : mediaDtoList) {
-//            result.add(url + projectId + nameOfFunction + dto.getName());
-//        }
-//        return result;
-//    }
 
 }

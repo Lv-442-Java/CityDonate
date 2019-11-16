@@ -70,7 +70,7 @@ public class MediaServiceImpl implements MediaService {
         return uuid.toString();
     }
 
-   Media getFileByNameAndProjectId(String fileName, long projectId) {
+    Media getFileByNameAndProjectId(String fileName, long projectId) {
         Media media = mediaRepository.findByNameAndProjectId(fileName, projectId);
         if (media == null) {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + projectId);
@@ -87,7 +87,7 @@ public class MediaServiceImpl implements MediaService {
         return mediaMapper.convertListToDto(mediaRepository.getFilesByProjectId(projectId));
     }
 
-    void deleteInDB(MediaDto dto){
+    void deleteInDB(MediaDto dto) {
         Media mediaToDelete = mediaMapper.convertToModel(dto);
         mediaRepository.delete(mediaToDelete);
     }
