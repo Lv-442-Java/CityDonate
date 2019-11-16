@@ -91,31 +91,26 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    public List<String> getPhotoDownloadUrl(long projectId) {
+    public List<String> getPhotoNames(long projectId) {
         List<MediaDto> mediaDtoList = mediaService.getPhotoNames(projectId);
-        return buildUrls(projectId, mediaDtoList);
+//        ArrayList<String> fileNames= new ArrayList<>();
+//        for (MediaDto dto : mediaDtoList) {
+//            fileNames.add(dto.getName());
+//        }
+        return getNames(mediaDtoList);
+     //   return buildUrls(projectId, mediaDtoList);
     }
 
-    public List<String> getFileDownloadUrl(long projectId) {
+    public List<String> getFileNames(long projectId) {
         List<MediaDto> mediaDtoList = mediaService.getFileNames(projectId);
-        return buildUrls(projectId,mediaDtoList);
+        return getNames(mediaDtoList);
+       // return buildUrls(projectId,mediaDtoList);
     }
 
-    private List<String> buildUrls(long projectId, List<MediaDto> mediaDtoList) {
-        ArrayList<String> result = new ArrayList<>();
-        String url = "http://localhost:8091/api/v1/project/";
-        String nameOfFunction = "/downloadFile/";
-        for (MediaDto dto : mediaDtoList) {
-            result.add(url + projectId + nameOfFunction + dto.getName());
-        }
-        return result;
-    }
-
-    public String getAvatarDownloadLink(long projectId) {
+    public String getAvatarName(long projectId) {
         ArrayList<MediaDto> listOfDto = (ArrayList<MediaDto>) mediaService.getPhotoNames(projectId);
         MediaDto dto = listOfDto.get(0);
-        String result = "http://localhost:8091/api/v1/project/" + projectId + "/downloadFile/" + dto.getName();
-        return result;
+        return dto.getName();
     }
 
     public boolean delete(long projectId, String fileName) {
@@ -130,4 +125,23 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + fileName);
         }
     }
+
+    private ArrayList<String> getNames(List<MediaDto> mediaDtoList){
+        ArrayList<String> fileNames= new ArrayList<>();
+        for (MediaDto dto : mediaDtoList) {
+            fileNames.add(dto.getName());
+        }
+        return fileNames;
+    }
+
+//    private List<String> buildUrls(long projectId, List<MediaDto> mediaDtoList) {
+//        ArrayList<String> result = new ArrayList<>();
+//        String url = "http://localhost:8091/api/v1/project/";
+//        String nameOfFunction = "/downloadFile/";
+//        for (MediaDto dto : mediaDtoList) {
+//            result.add(url + projectId + nameOfFunction + dto.getName());
+//        }
+//        return result;
+//    }
+
 }

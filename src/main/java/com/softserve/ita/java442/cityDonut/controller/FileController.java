@@ -16,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 public class FileController {
 
     private FileStorageServiceImpl fileStorageService;
-
     @Autowired
     public FileController(FileStorageServiceImpl fileStorageService) {
         this.fileStorageService = fileStorageService;
@@ -35,15 +35,7 @@ public class FileController {
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("id") long id) {
 
         String fileName = fileStorageService.storeFile(file, id);
-        String url = "/api/v1/project/";
-        String download = "/downloadFile/";
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(url)
-                .path(String.valueOf(id))
-                .path(download)
-                .path(fileName)
-                .toUriString();
-
+        String fileDownloadUri = buildDownloadUri(id,fileName);
         return new UploadFileResponse(fileName, fileDownloadUri,
                 file.getContentType(), file.getSize());
     }
@@ -76,20 +68,40 @@ public class FileController {
 
     @GetMapping("/getUrl")
     public ResponseEntity<List<String>> photoLinks(@PathVariable("id") long id){
-        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getPhotoDownloadUrl(id));
+        ArrayList<String> photoNames = (ArrayList<String>) fileStorageService.getPhotoNames(id);
+        ArrayList<String> result =new ArrayList<>();
+        for(String name : photoNames){
+            result.add(buildDownloadUri(id,name));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping("/getAvatar")
     public ResponseEntity<String> avatarLink(@PathVariable("id") long id){
-        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getAvatarDownloadLink(id));
+        String fileName = fileStorageService.getAvatarName(id);
+        return ResponseEntity.status(HttpStatus.OK).body(buildDownloadUri(id,fileName));
     }
 
     @DeleteMapping("/deleteFile/{fileName:.+}")
-    public ResponseEntity<List<String>> deletePost(@PathVariable("id") long id, @PathVariable String fileName) {
+    public ResponseEntity<List<String>> deleteFile(@PathVariable("id") long id, @PathVariable String fileName) {
         boolean isRemoved = fileStorageService.delete(id, fileName);
         if (!isRemoved) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getFileDownloadUrl(id));
+        ArrayList<String> fileNames = (ArrayList<String>) fileStorageService.getFileNames(id);
+        for (String name : fileNames){
+            fileNames.add(buildDownloadUri(id,name));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(fileNames);
+       // return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getFileDownloadUrl(id));
+    }
+
+    private String buildDownloadUri (long id,String fileName){
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/v1/project/")
+                .path(String.valueOf(id))
+                .path("/downloadFile/")
+                .path(fileName)
+                .toUriString();
     }
 }
