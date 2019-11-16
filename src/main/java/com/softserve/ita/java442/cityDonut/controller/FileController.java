@@ -76,7 +76,7 @@ public class FileController {
 
     @GetMapping("/getUrl")
     public ResponseEntity<List<String>> photoLinks(@PathVariable("id") long id){
-        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getDownloadUrl(id));
+        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getPhotoDownloadUrl(id));
     }
 
     @GetMapping("/getAvatar")
@@ -85,12 +85,11 @@ public class FileController {
     }
 
     @DeleteMapping("/deleteFile/{fileName:.+}")
-    public ResponseEntity<String> deletePost(@PathVariable("id") long id, @PathVariable String fileName) {
-
+    public ResponseEntity<List<String>> deletePost(@PathVariable("id") long id, @PathVariable String fileName) {
         boolean isRemoved = fileStorageService.delete(id, fileName);
         if (!isRemoved) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(fileName, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getFileDownloadUrl(id));
     }
 }

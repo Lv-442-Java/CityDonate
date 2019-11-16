@@ -11,4 +11,5 @@ import java.util.List;
 public interface MediaRepository extends JpaRepository<Media, Long> {
     List<Media> getPhotosByProjectIdAndMediaType(long projectId, MediaType mediaType);
     Media findByNameAndProjectId(String name, long projectId);
+    List<Media> getFilesByProjectId(long projectId);
 }

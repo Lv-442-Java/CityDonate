@@ -39,9 +39,6 @@ public class FileStorageServiceImpl implements FileStorageService {
     MediaServiceImpl mediaService;
 
     @Autowired
-    MediaTypeRepository mediaTypeRepository;
-
-    @Autowired
     MediaRepository mediaRepository;
 
     @Autowired
@@ -79,7 +76,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     public Resource loadFileAsResource(String fileName, long projectId) {
-        MediaDto mediaDto = mediaMapper.convertToDto(getFileByNameAndProjectId(fileName, projectId));
+        MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByNameAndProjectId(fileName, projectId));
         try {
             String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
             Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
@@ -94,40 +91,35 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    private Media getFileByNameAndProjectId(String fileName, long projectId) {
-        Media media = mediaRepository.findByNameAndProjectId(fileName, projectId);
-        if (media == null) {
-            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + projectId);
-        }
-        return media;
+    public List<String> getPhotoDownloadUrl(long projectId) {
+        List<MediaDto> mediaDtoList = mediaService.getPhotoNames(projectId);
+        return buildUrls(projectId, mediaDtoList);
     }
 
-    public List<String> getDownloadUrl(long projectId) {
-        List<MediaDto> dtos = getPhotoNames(projectId);
+    public List<String> getFileDownloadUrl(long projectId) {
+        List<MediaDto> mediaDtoList = mediaService.getFileNames(projectId);
+        return buildUrls(projectId,mediaDtoList);
+    }
+
+    private List<String> buildUrls(long projectId, List<MediaDto> mediaDtoList) {
         ArrayList<String> result = new ArrayList<>();
         String url = "http://localhost:8091/api/v1/project/";
         String nameOfFunction = "/downloadFile/";
-        for (MediaDto dto : dtos) {
+        for (MediaDto dto : mediaDtoList) {
             result.add(url + projectId + nameOfFunction + dto.getName());
         }
         return result;
     }
 
-    private List<MediaDto> getPhotoNames(long projectId) {
-   //     MediaTypeDto mediaTypeDto = mediaTypeMapper.convertToDto(mediaTypeRepository.findByType("photo"));
-        MediaType mediaType = mediaTypeRepository.findByType("photo");
-        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectIdAndMediaType(projectId, mediaType));
-    }
-
     public String getAvatarDownloadLink(long projectId) {
-        ArrayList<MediaDto> listOfDto = (ArrayList<MediaDto>) getPhotoNames(projectId);
+        ArrayList<MediaDto> listOfDto = (ArrayList<MediaDto>) mediaService.getPhotoNames(projectId);
         MediaDto dto = listOfDto.get(0);
         String result = "http://localhost:8091/api/v1/project/" + projectId + "/downloadFile/" + dto.getName();
         return result;
     }
 
     public boolean delete(long projectId, String fileName) {
-        MediaDto mediaDto = mediaMapper.convertToDto(getFileByNameAndProjectId(fileName, projectId));
+        MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByNameAndProjectId(fileName, projectId));
         String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
         Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
         File file = new File(String.valueOf(filePath));
