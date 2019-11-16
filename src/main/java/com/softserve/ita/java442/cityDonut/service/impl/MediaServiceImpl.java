@@ -63,4 +63,9 @@ public class MediaServiceImpl implements MediaService {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
+
+    public void deleteInDB(MediaDto dto){
+        Media mediaToDelete = mediaMapper.convertToModel(dto);
+        mediaRepository.delete(mediaToDelete);
+    }
 }

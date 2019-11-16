@@ -3,10 +3,13 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
+import com.softserve.ita.java442.cityDonut.dto.media.MediaTypeDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Media;
+import com.softserve.ita.java442.cityDonut.model.MediaType;
 import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
+import com.softserve.ita.java442.cityDonut.repository.MediaTypeRepository;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -33,6 +37,9 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Autowired
     MediaServiceImpl mediaService;
+
+    @Autowired
+    MediaTypeRepository mediaTypeRepository;
 
     @Autowired
     MediaRepository mediaRepository;
@@ -95,25 +102,40 @@ public class FileStorageServiceImpl implements FileStorageService {
         return media;
     }
 
-    public List <String> getDownloadUrl(long projectId){
+    public List<String> getDownloadUrl(long projectId) {
         List<MediaDto> dtos = getPhotoNames(projectId);
         ArrayList<String> result = new ArrayList<>();
         String url = "http://localhost:8091/api/v1/project/";
-        String nameOfFunction= "/downloadFile/";
+        String nameOfFunction = "/downloadFile/";
         for (MediaDto dto : dtos) {
-            result.add(url + projectId + nameOfFunction +dto.getName());
+            result.add(url + projectId + nameOfFunction + dto.getName());
         }
         return result;
     }
 
     private List<MediaDto> getPhotoNames(long projectId) {
-        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectId(projectId));
+   //     MediaTypeDto mediaTypeDto = mediaTypeMapper.convertToDto(mediaTypeRepository.findByType("photo"));
+        MediaType mediaType = mediaTypeRepository.findByType("photo");
+        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectIdAndMediaType(projectId, mediaType));
     }
 
-    public String getAvatarDownloadLink(long projectId){
-        ArrayList <MediaDto> listOfDto = (ArrayList<MediaDto>) getPhotoNames(projectId);
+    public String getAvatarDownloadLink(long projectId) {
+        ArrayList<MediaDto> listOfDto = (ArrayList<MediaDto>) getPhotoNames(projectId);
         MediaDto dto = listOfDto.get(0);
-        String result = "http://localhost:8091/api/v1/project/" + projectId + "/downloadFile/" +dto.getName();
+        String result = "http://localhost:8091/api/v1/project/" + projectId + "/downloadFile/" + dto.getName();
         return result;
+    }
+
+    public boolean delete(long projectId, String fileName) {
+        MediaDto mediaDto = mediaMapper.convertToDto(getFileByNameAndProjectId(fileName, projectId));
+        String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
+        Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
+        File file = new File(String.valueOf(filePath));
+        if (file.delete()) {
+            mediaService.deleteInDB(mediaDto);
+            return true;
+        } else {
+            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + fileName);
+        }
     }
 }

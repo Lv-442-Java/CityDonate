@@ -83,4 +83,14 @@ public class FileController {
     public ResponseEntity<String> avatarLink(@PathVariable("id") long id){
         return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getAvatarDownloadLink(id));
     }
+
+    @DeleteMapping("/deleteFile/{fileName:.+}")
+    public ResponseEntity<String> deletePost(@PathVariable("id") long id, @PathVariable String fileName) {
+
+        boolean isRemoved = fileStorageService.delete(id, fileName);
+        if (!isRemoved) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(fileName, HttpStatus.OK);
+    }
 }
