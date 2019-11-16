@@ -14,4 +14,6 @@ public interface DonateService {
     DonateDto createDonate(DonateDto donateDto);
 
     Long getDonatesSumByProjectId(long id);
+
+    Long getCountOfBenefactorsByProjectId(long id);
 }

@@ -5,6 +5,9 @@ import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserRegistrationDto;
+import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
+import com.softserve.ita.java442.cityDonut.exception.InvalidEmailException;
+import com.softserve.ita.java442.cityDonut.exception.InvalidUserRegistrationDataException;
 import com.softserve.ita.java442.cityDonut.dto.user.UserRoleDto;
 import com.softserve.ita.java442.cityDonut.exception.*;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
@@ -27,7 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -100,33 +105,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean registerUser(UserRegistrationDto userRegistrationDto) {
+    public boolean validateUser(UserRegistrationDto userRegistrationDto) {
+        Map<String, String> map = new HashMap<>();
 
         if (!validator.validateEmail(userRegistrationDto.getEmail())) {
-            throw new InvalidEmailException(ErrorMessage.INVALID_EMAIL);
+            map.put("invalidEmail", ErrorMessage.INVALID_EMAIL);
         }
         if (userRepository.findByEmail(userRegistrationDto.getEmail()) != null) {
-            throw new BadEmailException(ErrorMessage.EMAIL_DUBLICATION);
+            map.put("dublicationEmail", ErrorMessage.EMAIL_DUBLICATION);
         }
-        if(!validator.validatePassword(userRegistrationDto.getPassword())){
-            throw new InvalidPasswordException(ErrorMessage.INVALID_USER_PASSWORD);
+        if (!validator.validatePassword(userRegistrationDto.getPassword())) {
+            map.put("invalidPassword", ErrorMessage.INVALID_USER_PASSWORD);
         }
+        if (map.isEmpty()) {
+            return true;
+        } else {
+//            throw new InvalidUserRegistrationDataException(ErrorMessage.INVALID_USER_REGISTRATION_DATA);
+            throw new InvalidUserRegistrationDataException(map);
+        }
+    }
+
+    @Override
+    public boolean registerUser(UserRegistrationDto userRegistrationDto) {
+
         User user = userRegistrationMapper.convertToModel(userRegistrationDto);
         user.setRole(roleRepository.findByRole("user"));
-
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-
         user.setStatus(User.UserStatus.NOT_ACTIVATED);
-
         user = userRepository.save(user);
 
         UserActivationRequest userActivationRequest = new UserActivationRequest(user.getId());
         userActivationRequestRepository.save(userActivationRequest);
 
-        String activationCode = userActivationRequest.getActivationCode();
-        String url = "localhost:8080/api/v1/registration/activationUser?activationCode=";
-        String message = String.format("Welcome to CityDonate. To activate your account follow link: "+url+activationCode);
+        String message = String.format("Welcome to CityDonate. To activate your account follow link: "
+                + "localhost:8091/api/v1/registration/activationUser?activationCode="
+                + userActivationRequest.getActivationCode());
         mailSender.send(user.getEmail(), "Activation Code", message);
 
         return true;

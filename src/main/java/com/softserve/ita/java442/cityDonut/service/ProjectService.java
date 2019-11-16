@@ -14,7 +14,7 @@ public interface ProjectService {
 
     Long getMaxMoneyNeeded();
 
-    List<PreviewProjectDto> getFilteredProjects(List<String> categoryIds, String statusId, long moneyFrom, String moneyTo, Pageable pageable);
+    List<PreviewProjectDto> getFilteredProjects(List<Long> categoryIds, Long statusId, Long moneyFrom, Long moneyTo, Pageable pageable);
 
     List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable);
 
