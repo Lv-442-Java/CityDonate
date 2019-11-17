@@ -2,6 +2,7 @@ package com.softserve.ita.java442.cityDonut.service;
 
 import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
+import com.softserve.ita.java442.cityDonut.dto.user.UserRoleDto;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserRegistrationDto;
@@ -26,4 +27,6 @@ public interface UserService {
     User activateUserByCode(String activationCode);
 
     List<ProjectInfoDto> getProjects();
+
+    UserRoleDto getUserRoleDto(long userId);
 }
