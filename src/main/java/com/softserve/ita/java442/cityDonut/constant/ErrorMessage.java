@@ -30,5 +30,6 @@ public class ErrorMessage {
     public static final String NOT_ENOUGH_PERMISSION = "The user have not enough permission ";
     public static final String ROLE_NOT_FOUND = "Role not found:  ";
     public static final String INVALID_USER_PASSWORD = "The user`s password is not well secured. Password must contain from 4 till 15 alphanumeric characters";
+    public static final String USER_HAS_NOT_ACCESS_TO_COMMENT = "You can not modify comment with id: ";
 
 }
