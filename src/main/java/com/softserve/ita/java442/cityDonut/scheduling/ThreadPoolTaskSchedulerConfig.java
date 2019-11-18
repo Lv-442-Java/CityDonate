@@ -1,4 +1,4 @@
-package com.softserve.ita.java442.cityDonut.sheduling;
+package com.softserve.ita.java442.cityDonut.scheduling;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -7,7 +7,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
 @ComponentScan(
-        basePackages="com.softserve.ita.java442.cityDonut.sheduling")
+        basePackages= "com.softserve.ita.java442.cityDonut.scheduling")
 public class ThreadPoolTaskSchedulerConfig {
 
     public static int threadPoolSize = 5;
@@ -18,7 +18,12 @@ public class ThreadPoolTaskSchedulerConfig {
                 = new ThreadPoolTaskScheduler();
         threadPoolTaskScheduler.setPoolSize(threadPoolSize);
         threadPoolTaskScheduler.setThreadNamePrefix(
-                "ThreadPoolTaskScheduler");
+                "MyTaskScheduler");
         return threadPoolTaskScheduler;
     }
+
+    /*threadPoolTaskScheduler.schedule(
+                new SendEmailNotificationTask("my message"),
+                new Date(System.currentTimeMillis() + 5000)
+     );*/
 }

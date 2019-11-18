@@ -1,4 +1,4 @@
-package com.softserve.ita.java442.cityDonut.sheduling;
+package com.softserve.ita.java442.cityDonut.scheduling;
 
 import java.util.Date;
 
