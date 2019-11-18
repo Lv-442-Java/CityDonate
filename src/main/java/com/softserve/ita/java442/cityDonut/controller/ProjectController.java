@@ -64,7 +64,7 @@ public class ProjectController {
     }
 
     @PostMapping("/project")
-    public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project, Authentication auth) {
+    public ResponseEntity<NewProjectDto> createProject( @RequestBody NewProjectDto project, Authentication auth) {
         return new ResponseEntity<>(
                 projectService.saveProject(project, ((UserPrincipal)auth.getPrincipal()).getUser().getId()),
                 HttpStatus.OK
