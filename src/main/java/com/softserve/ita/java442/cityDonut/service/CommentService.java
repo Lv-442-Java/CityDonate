@@ -7,4 +7,8 @@ public interface CommentService {
 
     List<CommentDto> showComments(long projectId);
     CommentDto sendComment(CommentDto comment, long id);
+
+    String notifyUsers(long commentId);
+
+    String denotifyUsers(long commentId);
 }
