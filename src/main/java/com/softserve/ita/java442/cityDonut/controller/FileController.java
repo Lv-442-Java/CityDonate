@@ -102,8 +102,8 @@ public class FileController {
 
     @GetMapping("/getAvatar")
     public ResponseEntity<String> avatarLink(@PathVariable("id") long id) {
-        String fileName = fileStorageService.getAvatarName(id);
-        return ResponseEntity.status(HttpStatus.OK).body(buildDownloadUri(id, fileName));
+        String fileId = fileStorageService.getAvatarId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(buildDownloadUri(id, fileId));
     }
 
     @DeleteMapping("/deleteFile/{fileName:.+}")
