@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,7 +22,7 @@ public class Donate {
     private long id;
 
     @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    private Timestamp date;
 
     @Column(name = "sum", nullable = false)
     private double sum;

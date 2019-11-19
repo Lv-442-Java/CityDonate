@@ -10,10 +10,13 @@ import com.softserve.ita.java442.cityDonut.model.Donate;
 import com.softserve.ita.java442.cityDonut.repository.DonateRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.service.DonateService;
+import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +32,9 @@ public class DonateServiceImpl implements DonateService {
 
     @Autowired
     private DonateMapper donateMapper;
+
+    @Autowired
+    UserService userService;
 
     @Override
     public List<DonatesForProjectDto> getProjectDonates(long id, Pageable pageable) {
@@ -58,8 +64,9 @@ public class DonateServiceImpl implements DonateService {
 
     @Override
     public DonateDto createDonate(DonateDto donateDto) {
-        DonateDto dto;
-        dto = donateMapper.convertToDto(donateRepository.save(donateMapper.convertToModel(donateDto)));
+        donateDto.setUserId(userService.getCurrentUser().getId());
+        donateDto.setDate(new Timestamp(new Date().getTime()));
+        DonateDto dto = donateMapper.convertToDto(donateRepository.save(donateMapper.convertToModel(donateDto)));
         return dto;
     }
 

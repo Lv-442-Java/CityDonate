@@ -1,7 +1,7 @@
 package com.softserve.ita.java442.cityDonut.dto.project;
 
-import com.softserve.ita.java442.cityDonut.model.Media;
-import com.softserve.ita.java442.cityDonut.model.ProjectStatus;
+import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
+import com.softserve.ita.java442.cityDonut.dto.projectStatus.ProjectStatusDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +19,11 @@ public class ProjectByUserDonateDto {
 
     private String name;
 
-    private ProjectStatus projectStatus;
+    private ProjectStatusDto projectStatusDto;
+
+    private List<CategoryDto> categories;
+
+    private long moneyNeeded;
 
     private long donateCount;
 

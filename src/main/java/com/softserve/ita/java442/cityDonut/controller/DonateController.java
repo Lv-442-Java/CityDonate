@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/donates")
+    @RequestMapping(path = "/api/v1/donates")
 public class DonateController {
 
     @Autowired
@@ -64,7 +64,6 @@ public class DonateController {
 
     @PostMapping("/")
     public ResponseEntity<DonateDto> createDonate(@RequestBody DonateDto donateDto) {
-        donateDto.setUserId(userService.getCurrentUser().getId());
         return new ResponseEntity<>(donateService.createDonate(donateDto),HttpStatus.OK);
     }
 
