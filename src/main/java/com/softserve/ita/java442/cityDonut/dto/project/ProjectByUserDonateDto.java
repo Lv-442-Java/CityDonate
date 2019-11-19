@@ -19,8 +19,6 @@ public class ProjectByUserDonateDto {
 
     private String name;
 
-    private List<Media> media;
-
     private ProjectStatus projectStatus;
 
     private long donateCount;

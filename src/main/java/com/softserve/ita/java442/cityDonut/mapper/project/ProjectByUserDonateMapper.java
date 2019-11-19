@@ -13,7 +13,6 @@ public class ProjectByUserDonateMapper implements GeneralMapper<DonatedUserProje
         return ProjectByUserDonateDto.builder()
                 .id(donatedUserProject.getProject().getId())
                 .name(donatedUserProject.getProject().getName())
-                .media(donatedUserProject.getProject().getMedia())
                 .projectStatus(donatedUserProject.getProject().getProjectStatus())
                 .donateCount(donatedUserProject.getDonateCount())
                 .donateSum(donatedUserProject.getSum())
