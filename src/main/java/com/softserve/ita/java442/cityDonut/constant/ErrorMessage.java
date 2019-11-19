@@ -13,7 +13,7 @@ public class ErrorMessage {
     public static final String COULD_NOT_STORE_FILE = " could not be stored file. Please try again!";
     public static final String NOT_DETERMINED_FILE_TYPE = "Could not determine file type.";
     public static final String EMAIL_DUBLICATION = "Such email exist";
-    public static final String INVALID_USER_REGISTRATION_DATA = "Wrong registration data";
+    public static final String INVALID_USER_REGISTRATION_DATA = "User with such email already exist";
     public static final String INVALID_EMAIL = "Email is wrong";
     public static final String USER_HAS_NOT_PROJECT_WITH_ID = "The user hasn`t project with id: ";
     public static final String CATEGORY_NOT_FOUND_BY_NAME = "The category does not exist by name: ";
