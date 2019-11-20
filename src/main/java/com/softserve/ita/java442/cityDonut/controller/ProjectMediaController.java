@@ -3,7 +3,7 @@ package com.softserve.ita.java442.cityDonut.controller;
 import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
 import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
-import com.softserve.ita.java442.cityDonut.service.impl.FileServiceImpl;
+import com.softserve.ita.java442.cityDonut.service.impl.GalleryImpl;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
 public class ProjectMediaController {
 
     private ProjectRepository projectRepository;
-    private FileServiceImpl fileServiceImlp;
+    private GalleryImpl fileServiceImlp;
 
-    public ProjectMediaController(ProjectRepository projectRepository, FileServiceImpl fileServiceImlp) {
+    public ProjectMediaController(ProjectRepository projectRepository, GalleryImpl fileServiceImlp) {
         this.projectRepository = projectRepository;
         this.fileServiceImlp = fileServiceImlp;
     }
 
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile( MultipartFile file, @PathVariable("id")  long id) {
+    public UploadFileResponse uploadFile(MultipartFile file, @PathVariable("id") long id) {
         long galleryId = projectRepository.getById(id).getGallery().getId();
-        return fileServiceImlp.uploadFile(file,id,galleryId);
+        return fileServiceImlp.uploadFile(file, id, galleryId);
     }
 
     @PostMapping("/uploadMultipleFiles")
@@ -41,7 +41,7 @@ public class ProjectMediaController {
     }
 
     @GetMapping("/fileInfo")
-    public List<DownloadFileResponse> getAllFilesInfo(@PathVariable("id") long id){
+    public List<DownloadFileResponse> getAllFilesInfo(@PathVariable("id") long id) {
         long galleryId = projectRepository.getById(id).getGallery().getId();
         return fileServiceImlp.getAllFilesInfo(id, galleryId);
     }

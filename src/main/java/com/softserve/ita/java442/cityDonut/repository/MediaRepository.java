@@ -14,4 +14,5 @@ public interface MediaRepository extends JpaRepository<Media, Long> {
     Media findByNameAndGalleryId(String name, long galleryId);
     Media findByName(String name);
     List<Media> getFilesByGalleryId(long galleryId);
+    Media getFileByFileIdAndGalleryId(String fileId, long galleryId);
 }

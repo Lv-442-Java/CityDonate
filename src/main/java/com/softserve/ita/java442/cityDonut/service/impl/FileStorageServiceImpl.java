@@ -97,8 +97,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         return fileResponse;
     }
 
-    public List<String> getPhotosId(long projectId) {
-        List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(projectId);
+    public List<String> getPhotosId(long projectId) {List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(projectId);
         return getFilesId(mediaDtoList);
     }
 
@@ -107,14 +106,14 @@ public class FileStorageServiceImpl implements FileStorageService {
         return getFilesId(mediaDtoList);
     }
 
-    public String getAvatarId(long projectId) {
+    public String getAvatarName(long projectId) {
         ArrayList<MediaDto> photoDtoList = (ArrayList<MediaDto>) mediaService.getListOfPhotoDto(projectId);
         MediaDto dto = photoDtoList.get(0);
-        return dto.getFileId();
+        return dto.getName();
     }
 
     public boolean delete(long projectId, String fileName) {
-        MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByNameAndProjectId(fileName, projectId));
+        MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByFileIdAndGalleryId(fileName, projectId));
         String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
         Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
         File file = new File(String.valueOf(filePath));
@@ -133,5 +132,4 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
         return fileNames;
     }
-
 }

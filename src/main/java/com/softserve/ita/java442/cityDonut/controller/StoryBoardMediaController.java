@@ -3,7 +3,7 @@ package com.softserve.ita.java442.cityDonut.controller;
 import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
 import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.repository.StoryBoardRepository;
-import com.softserve.ita.java442.cityDonut.service.impl.FileServiceImpl;
+import com.softserve.ita.java442.cityDonut.service.impl.GalleryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +20,18 @@ import java.util.stream.Collectors;
 public class StoryBoardMediaController {
 
     private StoryBoardRepository storyBoardRepository;
-    private FileServiceImpl fileServiceImlp;
+    private GalleryImpl galleryImlp;
 
     @Autowired
-   public StoryBoardMediaController(StoryBoardRepository storyBoardRepository, FileServiceImpl fileServiceImlp) {
+   public StoryBoardMediaController(StoryBoardRepository storyBoardRepository, GalleryImpl galleryImlp) {
         this.storyBoardRepository = storyBoardRepository;
-        this.fileServiceImlp = fileServiceImlp;
+        this.galleryImlp = galleryImlp;
     }
 
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile( MultipartFile file, @PathVariable("id")  long id) {
         long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
-        return fileServiceImlp.uploadFile(file,id,galleryId);
+        return galleryImlp.uploadFile(file,id,galleryId);
     }
 
     @PostMapping("/uploadMultipleFiles")
@@ -45,30 +45,30 @@ public class StoryBoardMediaController {
     @GetMapping("/fileInfo")
     public List<DownloadFileResponse> getAllFilesInfo(@PathVariable("id") long id){
         long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
-        return fileServiceImlp.getAllFilesInfo(id, galleryId);
+        return galleryImlp.getAllFilesInfo(id, galleryId);
     }
 
     @GetMapping("/downloadFile/{fileId:.+}")
     public ResponseEntity<Resource> getResource(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileId) {
         long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
-        return fileServiceImlp.getResource(id, request, fileId, galleryId);
+        return galleryImlp.getResource(id, request, fileId, galleryId);
     }
 
     @GetMapping("/getUrl")
     public ResponseEntity<List<String>> photoLinks(@PathVariable("id") long id) {
         long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
-        return fileServiceImlp.photoLinks(id, galleryId);
+        return galleryImlp.photoLinks(id, galleryId);
     }
 
     @GetMapping("/getAvatar")
     public ResponseEntity<String> avatarLink(@PathVariable("id") long id) {
         long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
-        return fileServiceImlp.avatarLink(id, galleryId);
+        return galleryImlp.avatarLink(id, galleryId);
     }
 
     @DeleteMapping("/deleteFile/{fileName:.+}")
     public ResponseEntity<List<String>> deleteFile(@PathVariable("id") long id, @PathVariable String fileName) {
         long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
-        return fileServiceImlp.deleteFile(id, fileName, galleryId);
+        return galleryImlp.deleteFile(id, fileName, galleryId);
     }
 }

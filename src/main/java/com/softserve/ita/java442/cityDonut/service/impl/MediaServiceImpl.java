@@ -72,8 +72,8 @@ public class MediaServiceImpl implements MediaService {
         return uuid.toString();
     }
 
-    Media getFileByNameAndProjectId(String fileName, long galleryId) {
-        Media media = mediaRepository.findByNameAndGalleryId(fileName, galleryId);
+    Media getFileByFileIdAndGalleryId(String fileName, long galleryId) {
+        Media media = mediaRepository.getFileByFileIdAndGalleryId(fileName, galleryId);
         if (media == null) {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + galleryId);
         }
@@ -85,11 +85,11 @@ public class MediaServiceImpl implements MediaService {
         return mediaMapper.convertListToDto(mediaRepository.getPhotosByGalleryIdAndMediaType(galleryId, mediaType));
     }
 
-    public List<MediaDto> getDtoList(long galleryId) {
+    List<MediaDto> getDtoList(long galleryId) {
         return mediaMapper.convertListToDto(mediaRepository.getFilesByGalleryId(galleryId));
     }
 
-    public MediaDto getDtoForFile(String fileId) {
+    MediaDto getDtoForFile(String fileId) {
         return mediaMapper.convertToDto(mediaRepository.findByFileId(fileId));
     }
 

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class FileServiceImpl {
+public class GalleryImpl {
 
     @Autowired
     private FileStorageServiceImpl fileStorageService;
