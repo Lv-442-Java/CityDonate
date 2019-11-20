@@ -11,9 +11,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"description", "location", "locationLatitude", "locationLongitude", "creationDate", "publicationDate",
-        "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "media", "documents", "moderators", "categories"})
+        "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "media", "documents", "moderators", "categories", "subscribedUsers"})
 @NoArgsConstructor
-@ToString(exclude = {"comments", "donates", "storyBoards", "media", "documents", "moderators", "categories"})
+@ToString(exclude = {"comments", "donates", "storyBoards", "media", "documents", "moderators", "categories", "subscribedUsers"})
 @Table(indexes = @Index(columnList = "name, realization_end_date"))
 public class Project {
 

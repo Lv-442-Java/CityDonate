@@ -12,6 +12,7 @@ import com.softserve.ita.java442.cityDonut.dto.user.UserRoleDto;
 import com.softserve.ita.java442.cityDonut.exception.*;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
+import com.softserve.ita.java442.cityDonut.mapper.user.UserRoleMapper;
 import com.softserve.ita.java442.cityDonut.model.Project;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.model.UserActivationRequest;
@@ -45,6 +46,7 @@ public class UserServiceImpl implements UserService {
     private UserEditMapper userEditMapper;
     private ProjectRepository projectRepository;
     private RoleRepository roleRepository;
+    private UserRoleMapper userRoleMapper;
 
     @Autowired
     public UserServiceImpl(MailSenderImpl mailSender,
@@ -53,7 +55,8 @@ public class UserServiceImpl implements UserService {
                            Validator validator,
                            UserRepository userRepository, RoleRepository roleRepository,
                            UserEditMapper userEditMapper,
-                           ProjectRepository projectRepository) {
+                           ProjectRepository projectRepository,
+                           UserRoleMapper userRoleMapper) {
         this.mailSender = mailSender;
         this.userActivationRequestRepository = userActivationRequestRepository;
         this.userRegistrationMapper = userRegistrationMapper;
@@ -62,6 +65,7 @@ public class UserServiceImpl implements UserService {
         this.userEditMapper = userEditMapper;
         this.projectRepository = projectRepository;
         this.roleRepository = roleRepository;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
@@ -191,5 +195,15 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundById(ErrorMessage.USER_NOT_FOUND_BY_ID));
         String role = user.getRole().getRole();
         return new UserRoleDto(userId, user.getFirstName(), user.getLastName(), role);
+    }
+
+    @Override
+    public List<UserRoleDto> getUsersRoleDto(long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException());
+        List<User> userList = project.getModerators();
+        //List<User> userList = new ArrayList<>();
+        userList.add(project.getOwner());
+        return userRoleMapper.converListToDto(userList);
     }
 }

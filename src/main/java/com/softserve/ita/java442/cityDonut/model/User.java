@@ -9,8 +9,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"moderatorProjects", "userProjects", "comments", "donates"})
-@EqualsAndHashCode(exclude = {"firstName", "lastName", "password", "moderatorProjects", "userProjects", "users", "comments", "donates"})
+@ToString(exclude = {"moderatorProjects", "userProjects", "comments", "donates", "subscribedProjects"})
+@EqualsAndHashCode(exclude = {"firstName", "lastName", "password", "moderatorProjects", "userProjects", "users", "comments", "donates", "subscribedProjects"})
 @Entity
 public class User {
     public enum UserStatus{
