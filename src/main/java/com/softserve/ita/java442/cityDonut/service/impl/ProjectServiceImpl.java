@@ -1,39 +1,33 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
 import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.exception.CategoryNotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.NotEnoughPermission;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.ProjectNotFoundException;
-import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.*;
 import com.softserve.ita.java442.cityDonut.model.*;
 import com.softserve.ita.java442.cityDonut.repository.*;
 import com.softserve.ita.java442.cityDonut.service.CategoryService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
-import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import com.softserve.ita.java442.cityDonut.service.UserService;
-import org.hibernate.engine.spi.PersistenceContext;
-import org.hibernate.query.internal.QueryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.query.JpaQueryCreator;
-import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,16 +38,10 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectStatusService projectStatusService;
-
-    @Autowired
     private CategoryService categoryService;
 
     @Autowired
     private PreviewProjectMapper previewProjectMapper;
-
-    @Autowired
-    private CategoryMapper categoryMapper;
 
     @Autowired
     private MainProjectInfoMapper mainProjectInfoMapper;
@@ -80,9 +68,6 @@ public class ProjectServiceImpl implements ProjectService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -103,12 +88,12 @@ public class ProjectServiceImpl implements ProjectService {
     public List<PreviewProjectDto> getFilteredProjects
             (List<Long> categoryIds, Long statusId, Long moneyFrom, Long moneyTo, Pageable pageable) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Project> projectCriteria = builder.createQuery(Project.class);
         Root<Project> root = projectCriteria.from(Project.class);
         List<Predicate> predicates = new ArrayList<>();
-
 
         predicates.add(builder.greaterThan(root.get("projectStatus").get("id"), 3));
         if (moneyFrom != null) {
@@ -117,7 +102,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (moneyTo != null) {
             predicates.add(builder.lessThanOrEqualTo(root.get("moneyNeeded"), moneyTo));
         }
-        if (statusId != null /*&& statusId > 2*/) {
+        if (statusId != null && statusId > 3) {
             predicates.add(builder.equal(root.get("projectStatus").get("id"), statusId));
         }
         if (categoryIds != null) {
@@ -130,9 +115,13 @@ public class ProjectServiceImpl implements ProjectService {
         TypedQuery<Project> typedQuery = entityManager.createQuery(projectCriteria);
         typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
         typedQuery.setMaxResults(pageable.getPageSize());
-        System.out.println(typedQuery.unwrap(QueryImpl.class).getQueryString());
 
-        return previewProjectMapper.convertListToDto(entityManager.createQuery(projectCriteria).getResultList());
+        List<PreviewProjectDto> result = previewProjectMapper.convertListToDto(typedQuery.getResultList());
+
+        transaction.commit();
+        entityManager.close();
+
+        return result;
     }
 
 
