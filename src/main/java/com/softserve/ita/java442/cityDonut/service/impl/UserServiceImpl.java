@@ -99,6 +99,8 @@ public class UserServiceImpl implements UserService {
     public User activateUserByCode(String activationCode) {
         UserActivationRequest userActivationRequest = userActivationRequestRepository.findByActivationCode(activationCode);
         User user = userRepository.getUserById(userActivationRequest.getUserId());
+        if(user.getStatus() == User.UserStatus.ACTIVATED)
+            throw new InvalidEmailException(ErrorMessage.INVALID_USER_REGISTRATION_DATA);
         user.setStatus(User.UserStatus.ACTIVATED);
 
         return userRepository.save(user);
@@ -112,7 +114,7 @@ public class UserServiceImpl implements UserService {
             map.put("invalidEmail", ErrorMessage.INVALID_EMAIL);
         }
         if (userRepository.findByEmail(userRegistrationDto.getEmail()) != null) {
-            map.put("dublicationEmail", ErrorMessage.EMAIL_DUBLICATION);
+            map.put("dublicationEmail", ErrorMessage.INVALID_USER_REGISTRATION_DATA);
         }
         if (!validator.validatePassword(userRegistrationDto.getPassword())) {
             map.put("invalidPassword", ErrorMessage.INVALID_USER_PASSWORD);
@@ -120,7 +122,6 @@ public class UserServiceImpl implements UserService {
         if (map.isEmpty()) {
             return true;
         } else {
-//            throw new InvalidUserRegistrationDataException(ErrorMessage.INVALID_USER_REGISTRATION_DATA);
             throw new InvalidUserRegistrationDataException(map);
         }
     }
@@ -138,9 +139,10 @@ public class UserServiceImpl implements UserService {
         UserActivationRequest userActivationRequest = new UserActivationRequest(user.getId());
         userActivationRequestRepository.save(userActivationRequest);
 
-        String message = String.format("Welcome to CityDonate. To activate your account follow link: "
-                + "localhost:8091/api/v1/registration/activationUser?activationCode="
-                + userActivationRequest.getActivationCode());
+        String message ="Welcome to CityDonate. To activate your account follow link:  "
+                +"http://localhost:3000/activationUser/"
+                +userActivationRequest.getActivationCode();
+
         mailSender.send(user.getEmail(), "Activation Code", message);
 
         return true;

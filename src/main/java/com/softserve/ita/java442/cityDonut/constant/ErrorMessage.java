@@ -12,9 +12,8 @@ public class ErrorMessage {
     public static final String INVALID_CHARACTER = "Sorry! Filename contains invalid path sequence ";
     public static final String COULD_NOT_STORE_FILE = " could not be stored file. Please try again!";
     public static final String NOT_DETERMINED_FILE_TYPE = "Could not determine file type.";
-    public static final String EMAIL_DUBLICATION = "Such email exist";
-    public static final String INVALID_USER_REGISTRATION_DATA = "Wrong registration data";
-    public static final String INVALID_EMAIL = "Email is wrong";
+    public static final String INVALID_USER_REGISTRATION_DATA = "Користувач з таким email вже зареєстрований";
+    public static final String INVALID_EMAIL = "Не вірно введений email";
     public static final String USER_HAS_NOT_PROJECT_WITH_ID = "The user hasn`t project with id: ";
     public static final String CATEGORY_NOT_FOUND_BY_NAME = "The category does not exist by name: ";
     public static final String NULL_NAME_ERROR = "name field cannot be empty";
@@ -29,7 +28,7 @@ public class ErrorMessage {
     public static final String PROJECT_STATUS_NOT_FOUND = "The project status not found: ";
     public static final String NOT_ENOUGH_PERMISSION = "The user have not enough permission ";
     public static final String ROLE_NOT_FOUND = "Role not found:  ";
-    public static final String INVALID_USER_PASSWORD = "The user`s password is not well secured. Password must contain from 4 till 15 alphanumeric characters";
     public static final String USER_HAS_NOT_ACCESS_TO_COMMENT = "You can not modify comment with id: ";
+    public static final String INVALID_USER_PASSWORD = "Пароль недостатньо захищений. Пароль повинен містити від 4 до 15 цифр або літер";
 
 }
