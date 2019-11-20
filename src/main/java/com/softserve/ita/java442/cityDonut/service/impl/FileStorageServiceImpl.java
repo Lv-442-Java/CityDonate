@@ -107,10 +107,10 @@ public class FileStorageServiceImpl implements FileStorageService {
         return getFilesId(mediaDtoList);
     }
 
-    public String getAvatarName(long projectId) {
+    public String getAvatarId(long projectId) {
         ArrayList<MediaDto> photoDtoList = (ArrayList<MediaDto>) mediaService.getListOfPhotoDto(projectId);
         MediaDto dto = photoDtoList.get(0);
-        return dto.getName();
+        return dto.getFileId();
     }
 
     public boolean delete(long projectId, String fileName) {
