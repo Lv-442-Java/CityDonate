@@ -36,10 +36,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     private ProjectRepository projectRepository;
-    private ProjectStatusService projectStatusService;
     private CategoryService categoryService;
     private PreviewProjectMapper previewProjectMapper;
-    private CategoryMapper categoryMapper;
     private MainProjectInfoMapper mainProjectInfoMapper;
     private DonatedUserProjectRepository donatedUserProjectRepository;
     private ProjectStatusRepository projectStatusRepository;
@@ -48,23 +46,21 @@ public class ProjectServiceImpl implements ProjectService {
     private NewProjectMapper newProjectMapper;
     private EditedProjectMapper editedProjectMapper;
     private RoleRepository roleRepository;
-    private UserRepository userRepository;
     private UserService userService;
+    private EntityManagerFactory entityManagerFactory;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectStatusService projectStatusService,
+    public ProjectServiceImpl(ProjectRepository projectRepository,
                               CategoryService categoryService, PreviewProjectMapper previewProjectMapper,
-                              CategoryMapper categoryMapper, MainProjectInfoMapper mainProjectInfoMapper,
+                               MainProjectInfoMapper mainProjectInfoMapper,
                               DonatedUserProjectRepository donatedUserProjectRepository,
                               ProjectStatusRepository projectStatusRepository, CategoryRepository categoryRepository,
                               ProjectByUserDonateMapper projectByUserDonateMapper, NewProjectMapper newProjectMapper,
                               EditedProjectMapper editedProjectMapper, RoleRepository roleRepository,
-                              UserRepository userRepository,UserService userService) {
+                              UserService userService,EntityManagerFactory entityManagerFactory) {
         this.projectRepository = projectRepository;
-        this.projectStatusService = projectStatusService;
         this.categoryService = categoryService;
         this.previewProjectMapper = previewProjectMapper;
-        this.categoryMapper = categoryMapper;
         this.mainProjectInfoMapper = mainProjectInfoMapper;
         this.donatedUserProjectRepository = donatedUserProjectRepository;
         this.projectStatusRepository = projectStatusRepository;
@@ -73,8 +69,8 @@ public class ProjectServiceImpl implements ProjectService {
         this.newProjectMapper = newProjectMapper;
         this.editedProjectMapper = editedProjectMapper;
         this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
         this.userService = userService;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
