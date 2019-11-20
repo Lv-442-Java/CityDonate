@@ -1,6 +1,8 @@
 package com.softserve.ita.java442.cityDonut.dto.comment;
 
 import lombok.*;
+
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,7 +15,7 @@ public class CommentDto {
 
     private String description;
 
-    private LocalDateTime date;
+    private Timestamp date;
 
     private long projectId;
 

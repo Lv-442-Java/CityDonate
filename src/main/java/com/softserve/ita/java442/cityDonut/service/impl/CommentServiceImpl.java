@@ -7,7 +7,9 @@ import com.softserve.ita.java442.cityDonut.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto sendComment(CommentDto comment, long id) {
         CommentDto newComment = new CommentDto();
         newComment.setProjectId(id);
-        newComment.setDate(LocalDateTime.now());
+        newComment.setDate(new Timestamp(new Date().getTime()));
         newComment = mapper.convertToDto(commentRepository.save(mapper.convertToModel(comment)));
         return newComment;
     }

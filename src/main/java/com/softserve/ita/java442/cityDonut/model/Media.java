@@ -2,6 +2,7 @@ package com.softserve.ita.java442.cityDonut.model;
 
 import lombok.*;
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +26,7 @@ public class Media {
     private String fileId;
 
     @Column(name = "create_date")
-    private LocalDateTime creationDate;
+    private Timestamp creationDate;
 
     @ManyToOne
     @JoinColumn(name = "media_type_id")

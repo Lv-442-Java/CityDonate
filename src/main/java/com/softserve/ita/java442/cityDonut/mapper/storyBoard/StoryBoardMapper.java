@@ -26,7 +26,6 @@ public class StoryBoardMapper implements GeneralMapper<StoryBoard, StoryBoardDto
                 .projectId(model.getProject().getId())
                 .date(model.getDate())
                 .description(model.getDescription())
-                .media(mediaMapper.convertListToDto(model.getMedia()))
                 .isVerified(model.isVerified())
                 .moneySpent(model.getMoneySpent())
                 .build();
@@ -39,7 +38,6 @@ public class StoryBoardMapper implements GeneralMapper<StoryBoard, StoryBoardDto
                 .project(projectRepository.getById(dto.getProjectId()))
                 .date(dto.getDate())
                 .description(dto.getDescription())
-                .media(mediaMapper.convertListToModel(dto.getMedia()))
                 .moneySpent(dto.getMoneySpent())
                 .isVerified(dto.isVerified())
                 .build();

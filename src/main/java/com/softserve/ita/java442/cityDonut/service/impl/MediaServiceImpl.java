@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,7 +46,7 @@ public class MediaServiceImpl implements MediaService {
         MediaType mediaType = extension.getMediaType();
         mediaDto.setMediaType(mediaType);
         Media mediaModel = mediaMapper.convertToModel(mediaDto);
-        mediaModel.setCreationDate(LocalDateTime.now());
+        mediaModel.setCreationDate(new Timestamp(new Date().getTime()));
         return mediaModel;
     }
 
