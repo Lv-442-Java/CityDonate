@@ -89,4 +89,10 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_subscribed_to_project",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> subscribedUsers;
 }

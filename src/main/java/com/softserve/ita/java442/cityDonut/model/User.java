@@ -49,6 +49,12 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "project_id"))
     private List<Project> moderatorProjects;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_subscribed_to_project",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id"))
+    private List<Project> subscribedProjects;
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private List<Project> userProjects;
 
