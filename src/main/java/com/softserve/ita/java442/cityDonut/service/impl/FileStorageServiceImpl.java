@@ -1,11 +1,11 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
-import com.softserve.ita.java442.cityDonut.model.Media;
 import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -53,7 +54,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public String storeFile(MultipartFile file, long projectId) {
+    public MediaDto storeFile(MultipartFile file, long projectId) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         MediaDto mediaDto = new MediaDto();
         try {
@@ -61,18 +62,18 @@ public class FileStorageServiceImpl implements FileStorageService {
                 throw new FileStorageException(ErrorMessage.INVALID_CHARACTER + fileName);
             }
             mediaDto.setProjectId(projectId);
-            mediaService.saveMedia(mediaDto, fileName);
-            String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
-            Path targetLocation = this.fileStorageLocation.resolve(FileIdWithExt);
+            MediaDto savedMediaDto = mediaService.saveMedia(mediaDto, fileName);
+            String fileIdWithExt = mediaService.fileIDWithExtension(savedMediaDto);
+            Path targetLocation = this.fileStorageLocation.resolve(fileIdWithExt);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-            return fileName;
+            return savedMediaDto;
         } catch (IOException ex) {
             throw new FileStorageException(fileName + ErrorMessage.COULD_NOT_STORE_FILE);
         }
     }
 
-    public Resource loadFileAsResource(String fileName, long projectId) {
-        MediaDto mediaDto = mediaMapper.convertToDto(getFileByNameAndProjectId(fileName, projectId));
+    public Resource loadFileAsResource(String fileId, long projectId) {
+        MediaDto mediaDto = mediaService.getDtoForFile(fileId);
         try {
             String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
             Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
@@ -80,40 +81,57 @@ public class FileStorageServiceImpl implements FileStorageService {
             if (resource.exists()) {
                 return resource;
             } else {
-                throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + fileName);
+                throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + mediaDto.getName());
             }
         } catch (MalformedURLException ex) {
+            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + mediaDto.getName());
+        }
+    }
+
+    public DownloadFileResponse getFile (String fileId){
+        MediaDto mediaDto = mediaService.getDtoForFile(fileId);
+        DownloadFileResponse fileResponse = new DownloadFileResponse();
+        fileResponse.setFileName(mediaDto.getName());
+        fileResponse.setMediaType(mediaDto.getMediaType().getType());
+        fileResponse.setProjectId(mediaDto.getProjectId());
+        return fileResponse;
+    }
+
+    public List<String> getPhotosId(long projectId) {
+        List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(projectId);
+        return getFilesId(mediaDtoList);
+    }
+
+    public List<String> getListOfFilesId(long projectId) {
+        List<MediaDto> mediaDtoList = mediaService.getDtoList(projectId);
+        return getFilesId(mediaDtoList);
+    }
+
+    public String getAvatarId(long projectId) {
+        ArrayList<MediaDto> photoDtoList = (ArrayList<MediaDto>) mediaService.getListOfPhotoDto(projectId);
+        MediaDto dto = photoDtoList.get(0);
+        return dto.getFileId();
+    }
+
+    public boolean delete(long projectId, String fileName) {
+        MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByNameAndProjectId(fileName, projectId));
+        String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
+        Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
+        File file = new File(String.valueOf(filePath));
+        if (file.delete()) {
+            mediaService.deleteInDB(mediaDto);
+            return true;
+        } else {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + fileName);
         }
     }
 
-    private Media getFileByNameAndProjectId(String fileName, long projectId) {
-        Media media = mediaRepository.findByNameAndProjectId(fileName, projectId);
-        if (media == null) {
-            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + projectId);
+    private ArrayList<String> getFilesId(List<MediaDto> mediaDtoList){
+        ArrayList<String> fileNames= new ArrayList<>();
+        for (MediaDto dto : mediaDtoList) {
+            fileNames.add(dto.getFileId());
         }
-        return media;
+        return fileNames;
     }
 
-    public List <String> getDownloadUrl(long projectId){
-        List<MediaDto> dtos = getPhotoNames(projectId);
-        ArrayList<String> result = new ArrayList<>();
-        String url = "http://localhost:8091/api/v1/project/";
-        String nameOfFunction= "/downloadFile/";
-        for (MediaDto dto : dtos) {
-            result.add(url + projectId + nameOfFunction +dto.getName());
-        }
-        return result;
-    }
-
-    private List<MediaDto> getPhotoNames(long projectId) {
-        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectId(projectId));
-    }
-
-    public String getAvatarDownloadLink(long projectId){
-        ArrayList <MediaDto> listOfDto = (ArrayList<MediaDto>) getPhotoNames(projectId);
-        MediaDto dto = listOfDto.get(0);
-        String result = "http://localhost:8091/api/v1/project/" + projectId + "/downloadFile/" +dto.getName();
-        return result;
-    }
 }

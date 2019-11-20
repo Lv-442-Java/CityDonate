@@ -34,44 +34,48 @@ import java.util.List;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    @Autowired
+
     private ProjectRepository projectRepository;
-
-    @Autowired
+    private ProjectStatusService projectStatusService;
     private CategoryService categoryService;
-
-    @Autowired
     private PreviewProjectMapper previewProjectMapper;
-
-    @Autowired
+    private CategoryMapper categoryMapper;
     private MainProjectInfoMapper mainProjectInfoMapper;
-
-    @Autowired
     private DonatedUserProjectRepository donatedUserProjectRepository;
-
-    @Autowired
     private ProjectStatusRepository projectStatusRepository;
-
-    @Autowired
     private CategoryRepository categoryRepository;
-
-    @Autowired
     private ProjectByUserDonateMapper projectByUserDonateMapper;
-
-    @Autowired
     private NewProjectMapper newProjectMapper;
-
-    @Autowired
     private EditedProjectMapper editedProjectMapper;
-
-    @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
+    private UserRepository userRepository;
     private UserService userService;
 
     @Autowired
-    EntityManagerFactory entityManagerFactory;
+    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectStatusService projectStatusService,
+                              CategoryService categoryService, PreviewProjectMapper previewProjectMapper,
+                              CategoryMapper categoryMapper, MainProjectInfoMapper mainProjectInfoMapper,
+                              DonatedUserProjectRepository donatedUserProjectRepository,
+                              ProjectStatusRepository projectStatusRepository, CategoryRepository categoryRepository,
+                              ProjectByUserDonateMapper projectByUserDonateMapper, NewProjectMapper newProjectMapper,
+                              EditedProjectMapper editedProjectMapper, RoleRepository roleRepository,
+                              UserRepository userRepository,UserService userService) {
+        this.projectRepository = projectRepository;
+        this.projectStatusService = projectStatusService;
+        this.categoryService = categoryService;
+        this.previewProjectMapper = previewProjectMapper;
+        this.categoryMapper = categoryMapper;
+        this.mainProjectInfoMapper = mainProjectInfoMapper;
+        this.donatedUserProjectRepository = donatedUserProjectRepository;
+        this.projectStatusRepository = projectStatusRepository;
+        this.categoryRepository = categoryRepository;
+        this.projectByUserDonateMapper = projectByUserDonateMapper;
+        this.newProjectMapper = newProjectMapper;
+        this.editedProjectMapper = editedProjectMapper;
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @Override
     public MainProjectInfoDto getProjectById(long id) {
@@ -123,7 +127,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         return result;
     }
-
 
     @Override
     public List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable) {

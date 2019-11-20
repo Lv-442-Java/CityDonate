@@ -14,6 +14,8 @@ public class GoogleServiceImpl implements SocialService<UserInfo> {
     private String googleId;
     @Value("${spring.social.google.app-secret}")
     private String googleSecret;
+    @Value("${server.port}")
+    private int serverPort;
 
     @Bean
     private GoogleOauth2Template oauth2Template(){
@@ -27,14 +29,14 @@ public class GoogleServiceImpl implements SocialService<UserInfo> {
     @Override
     public String getLogin() {
         OAuth2Parameters oAuth2Parameters = new OAuth2Parameters();
-        oAuth2Parameters.setRedirectUri("http://localhost:8080/google");
+        oAuth2Parameters.setRedirectUri("http://localhost:"+serverPort+"/google");
         oAuth2Parameters.setScope("email openid profile");
         return createGoogleConnection().getOAuthOperations().buildAuthenticateUrl(oAuth2Parameters);
     }
 
     @Override
     public String getAccessToken(String code) {
-        return createGoogleConnection().getOAuthOperations().exchangeForAccess(code,"http://localhost:8080/google",null).getAccessToken();
+        return createGoogleConnection().getOAuthOperations().exchangeForAccess(code,"http://localhost:"+serverPort+"/google",null).getAccessToken();
     }
 
     @Override

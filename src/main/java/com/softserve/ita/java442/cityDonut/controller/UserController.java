@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.controller;
 import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
+import com.softserve.ita.java442.cityDonut.dto.user.UserRoleDto;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,5 +42,10 @@ public class UserController {
     @GetMapping("/projects")
     public ResponseEntity<List<ProjectInfoDto>> getMyProject(){
         return new ResponseEntity<>(userService.getProjects(),HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/role")
+    public ResponseEntity<UserRoleDto> getUserWithRole(@PathVariable long userId) {
+        return new ResponseEntity<>(userService.getUserRoleDto(userId), HttpStatus.OK);
     }
 }

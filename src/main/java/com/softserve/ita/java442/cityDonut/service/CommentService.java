@@ -7,4 +7,8 @@ public interface CommentService {
 
     List<CommentDto> showComments(long projectId);
     CommentDto sendComment(CommentDto comment, long id);
+
+    CommentDto deleteComment(long commentId);
+
+    CommentDto editComment(long commentId, CommentDto commentDto);
 }
