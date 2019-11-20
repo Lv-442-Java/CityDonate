@@ -11,22 +11,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
 public class ProjectController {
+<<<<<<< HEAD
     private ProjectService projectService;
 
     private UserService userService;
     private FieldsCheckService fieldsCheckService;
 
     @Autowired
+=======
+
+    private ProjectService projectService;
+    private UserService userService;
+    private FieldsCheckService fieldsCheckService;
+
+@Autowired
+>>>>>>> 86f3b73c8831dd0d7e078dd6052e46832a1d87da
     public ProjectController(ProjectService projectService, UserService userService, FieldsCheckService fieldsCheckService) {
         this.projectService = projectService;
         this.userService = userService;
@@ -70,8 +79,15 @@ public class ProjectController {
     }
 
     @PostMapping("/project")
+<<<<<<< HEAD
     public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project) {
         return new ResponseEntity<>(
+=======
+    public ResponseEntity<NewProjectDto> createProject( @RequestBody NewProjectDto project) {
+        System.out.println(userService.getCurrentUser());
+        return
+                new ResponseEntity<>(
+>>>>>>> 86f3b73c8831dd0d7e078dd6052e46832a1d87da
                 projectService.saveProject(project, userService.getCurrentUser().getId()),
                 HttpStatus.OK
         );

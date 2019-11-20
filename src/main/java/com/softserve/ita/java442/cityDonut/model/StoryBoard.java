@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class StoryBoard {
     private String description;
 
     @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    private Timestamp date;
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,

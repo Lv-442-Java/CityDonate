@@ -5,7 +5,6 @@ import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
-import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;

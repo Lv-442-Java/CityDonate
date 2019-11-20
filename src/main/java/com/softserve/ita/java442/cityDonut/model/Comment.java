@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,7 +22,7 @@ public class Comment {
     private String description;
 
     @Column(name = "date")
-    private LocalDateTime date;
+    private Timestamp date;
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,

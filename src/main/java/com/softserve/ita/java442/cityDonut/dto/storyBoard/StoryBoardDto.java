@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,9 +24,9 @@ public class StoryBoardDto {
 
     private String description;
 
-    private LocalDateTime date;
-
     private GalleryDto galleryDto;
+
+    private Timestamp date;
 
     private boolean isVerified;
 

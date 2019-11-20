@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,16 +37,16 @@ public class Project {
     private double locationLongitude;
 
     @Column(name = "creation_date")
-    private LocalDateTime creationDate;
+    private Timestamp creationDate;
 
     @Column(name = "publication_date")
-    private LocalDateTime publicationDate;
+    private Timestamp publicationDate;
 
     @Column(name = "donation_end_date")
-    private LocalDateTime donationEndDate;
+    private Timestamp donationEndDate;
 
     @Column(name = "realization_end_date")
-    private LocalDateTime realizationEndDate;
+    private Timestamp realizationEndDate;
 
     @Column(name = "money_needed")
     private long moneyNeeded;
