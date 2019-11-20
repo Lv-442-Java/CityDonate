@@ -72,7 +72,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    public Resource loadFileAsResource(String fileId, long projectId) {
+    public Resource loadFileAsResource(String fileId, long galleryId) {
         MediaDto mediaDto = mediaService.getDtoForFile(fileId);
         try {
             String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
@@ -97,23 +97,23 @@ public class FileStorageServiceImpl implements FileStorageService {
         return fileResponse;
     }
 
-    public List<String> getPhotosId(long projectId) {List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(projectId);
+    public List<String> getPhotosId(long galleryId) {List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(galleryId);
         return getFilesId(mediaDtoList);
     }
 
-    public List<String> getListOfFilesId(long projectId) {
-        List<MediaDto> mediaDtoList = mediaService.getDtoList(projectId);
+    public List<String> getListOfFilesId(long galleryId) {
+        List<MediaDto> mediaDtoList = mediaService.getDtoList(galleryId);
         return getFilesId(mediaDtoList);
     }
 
-    public String getAvatarName(long projectId) {
-        ArrayList<MediaDto> photoDtoList = (ArrayList<MediaDto>) mediaService.getListOfPhotoDto(projectId);
+    public String getAvatarName(long galleryId) {
+        ArrayList<MediaDto> photoDtoList = (ArrayList<MediaDto>) mediaService.getListOfPhotoDto(galleryId);
         MediaDto dto = photoDtoList.get(0);
-        return dto.getName();
+        return dto.getFileId();
     }
 
-    public boolean delete(long projectId, String fileName) {
-        MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByFileIdAndGalleryId(fileName, projectId));
+    public boolean delete(long galleryId, String fileName) {
+        MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByFileIdAndGalleryId(fileName, galleryId));
         String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
         Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
         File file = new File(String.valueOf(filePath));
