@@ -12,7 +12,9 @@ import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -35,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto sendComment(CommentDto comment, long id) {
         comment.setProjectId(id);
-        comment.setDate(LocalDateTime.now());
+        comment.setDate(new Timestamp(new Date().getTime()));
         CommentDto newComment = mapper.convertToDto(commentRepository.save(mapper.convertToModel(comment)));
         return newComment;
     }

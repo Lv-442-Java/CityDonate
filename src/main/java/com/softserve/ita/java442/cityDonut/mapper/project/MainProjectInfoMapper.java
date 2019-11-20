@@ -5,7 +5,6 @@ import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.mapper.projectStatus.ProjectStatusMapper;
-import com.softserve.ita.java442.cityDonut.mapper.storyBoard.StoryBoardForProjectMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserNameMapper;
 import com.softserve.ita.java442.cityDonut.model.Donate;
 import com.softserve.ita.java442.cityDonut.model.Project;
@@ -20,12 +19,6 @@ public class MainProjectInfoMapper implements GeneralMapper<Project, MainProject
 
     @Autowired
     private UserNameMapper userNameMapper;
-
-    @Autowired
-    private StoryBoardForProjectMapper storyBoardForProjectMapper;
-
-    @Autowired
-    private MediaMapper mediaMapper;
 
     @Autowired
     private CategoryMapper categoryMapper;

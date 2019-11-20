@@ -18,6 +18,11 @@ public class StoryBoardController {
     @Autowired
     private StoryBoardServiceImpl service;
 
+    @GetMapping("/verified")
+    public ResponseEntity<List<StoryBoardDto>> getVerifiedStoryBoardByProject(@PathVariable("id") long projectId){
+        return ResponseEntity.status(HttpStatus.OK).body(service.getVerifiedStoryBoardsByProject(projectId));
+    }
+
     @GetMapping()
     public ResponseEntity<List<StoryBoardDto>> getStoryBoardByProject(@PathVariable("id") long projectId){
         return ResponseEntity.status(HttpStatus.OK).body(service.getStoryBoardsByProject(projectId));
