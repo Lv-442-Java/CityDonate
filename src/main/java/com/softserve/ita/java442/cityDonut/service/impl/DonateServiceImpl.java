@@ -74,4 +74,12 @@ public class DonateServiceImpl implements DonateService {
         return donateRepository.getSumByProjectId(id);
     }
 
+    @Override
+    public Long getCountOfBenefactorsByProjectId(long id) {
+        if(!projectExists(id)) {
+            throw new NotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID);
+        }
+        return donateRepository.getCountOfBenefactorsByProjectId(id);
+    }
+
 }

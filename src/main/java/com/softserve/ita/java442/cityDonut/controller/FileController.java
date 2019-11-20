@@ -1,6 +1,8 @@
 package com.softserve.ita.java442.cityDonut.controller;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
+import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,18 +37,13 @@ public class FileController {
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("id") long id) {
 
-        String fileName = fileStorageService.storeFile(file, id);
-        String url = "/api/v1/project/";
-        String download = "/downloadFile/";
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(url)
-                .path(String.valueOf(id))
-                .path(download)
-                .path(fileName)
-                .toUriString();
-
+        MediaDto responseDto = fileStorageService.storeFile(file, id);
+        String fileId = responseDto.getFileId();
+        String fileName = responseDto.getName();
+        String mediaType = responseDto.getMediaType().getType();
+        String fileDownloadUri = buildDownloadUri(id, fileId);
         return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());
+                mediaType, file.getSize());
     }
 
     @PostMapping("/uploadMultipleFiles")
@@ -56,9 +54,26 @@ public class FileController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileName) {
-        Resource resource = fileStorageService.loadFileAsResource(fileName, id);
+    private DownloadFileResponse getFileInfo(@PathVariable("id") long projectId, @PathVariable String fileId) {
+        String fileDownloadUri = buildDownloadUri(projectId, fileId);
+        DownloadFileResponse fileResponse = fileStorageService.getFile(fileId);
+        fileResponse.setFileDownloadUri(fileDownloadUri);
+        return fileResponse;
+    }
+
+    @GetMapping("/fileInfo")
+    public List<DownloadFileResponse> getAllFilesInfo(@PathVariable("id") long projectId){
+        ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(projectId);
+        ArrayList<DownloadFileResponse> result = new ArrayList<>();
+        for (String fileId : filesId) {
+            result.add(getFileInfo(projectId, fileId));
+        }
+        return result;
+    }
+
+    @GetMapping("/downloadFile/{fileId:.+}")
+    public ResponseEntity<Resource> getResource(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileId) {
+        Resource resource = fileStorageService.loadFileAsResource(fileId, id);
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
@@ -75,12 +90,41 @@ public class FileController {
     }
 
     @GetMapping("/getUrl")
-    public ResponseEntity<List<String>> photoLinks(@PathVariable("id") long id){
-        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getDownloadUrl(id));
+    public ResponseEntity<List<String>> photoLinks(@PathVariable("id") long id) {
+        ArrayList<String> photoNames = (ArrayList<String>) fileStorageService.getPhotosId(id);
+        ArrayList<String> result = new ArrayList<>();
+        for (String name : photoNames) {
+            result.add(buildDownloadUri(id, name));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping("/getAvatar")
-    public ResponseEntity<String> avatarLink(@PathVariable("id") long id){
-        return ResponseEntity.status(HttpStatus.OK).body(fileStorageService.getAvatarDownloadLink(id));
+    public ResponseEntity<String> avatarLink(@PathVariable("id") long id) {
+        String fileId = fileStorageService.getAvatarId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(buildDownloadUri(id, fileId));
+    }
+
+    @DeleteMapping("/deleteFile/{fileName:.+}")
+    public ResponseEntity<List<String>> deleteFile(@PathVariable("id") long id, @PathVariable String fileName) {
+        boolean isRemoved = fileStorageService.delete(id, fileName);
+        if (!isRemoved) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(id);
+        ArrayList<String> result = new ArrayList<>();
+        for (String fileId : filesId) {
+            result.add(buildDownloadUri(id, fileId));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    private String buildDownloadUri(long id, String fileName) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/v1/project/")
+                .path(String.valueOf(id))
+                .path("/downloadFile/")
+                .path(fileName)
+                .toUriString();
     }
 }

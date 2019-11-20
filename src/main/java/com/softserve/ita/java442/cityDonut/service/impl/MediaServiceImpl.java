@@ -1,12 +1,15 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
+import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
+import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Extension;
 import com.softserve.ita.java442.cityDonut.model.Media;
 import com.softserve.ita.java442.cityDonut.model.MediaType;
 import com.softserve.ita.java442.cityDonut.repository.ExtensionRepository;
 import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
+import com.softserve.ita.java442.cityDonut.repository.MediaTypeRepository;
 import com.softserve.ita.java442.cityDonut.service.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ import java.util.UUID;
 public class MediaServiceImpl implements MediaService {
 
     @Autowired
+    MediaTypeRepository mediaTypeRepository;
+
+    @Autowired
     MediaRepository mediaRepository;
 
     @Autowired
@@ -30,9 +36,11 @@ public class MediaServiceImpl implements MediaService {
     MediaMapper mediaMapper;
 
     @Transactional
-    public void saveMedia(MediaDto mediaDto, String fileName) {
+    public MediaDto saveMedia(MediaDto mediaDto, String fileName) {
         Media mediaModel = createMediaModelFromDtoData(mediaDto, fileName);
         mediaRepository.save(mediaModel);
+        MediaDto savedMediaDto = mediaMapper.convertToDto(mediaRepository.findByName(fileName));
+        return savedMediaDto;
     }
 
     private Media createMediaModelFromDtoData(MediaDto mediaDto, String fileName) {
@@ -62,5 +70,31 @@ public class MediaServiceImpl implements MediaService {
     private String generateFileId() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
+    }
+
+    Media getFileByNameAndProjectId(String fileName, long projectId) {
+        Media media = mediaRepository.findByNameAndProjectId(fileName, projectId);
+        if (media == null) {
+            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + projectId);
+        }
+        return media;
+    }
+
+    List<MediaDto> getListOfPhotoDto(long projectId) {
+        MediaType mediaType = mediaTypeRepository.findByType("photo");
+        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectIdAndMediaTypeAndStoryBoard_IdNull(projectId, mediaType));
+    }
+
+    public List<MediaDto> getDtoList(long projectId) {
+        return mediaMapper.convertListToDto(mediaRepository.getFilesByProjectId(projectId));
+    }
+
+    public MediaDto getDtoForFile(String fileId) {
+        return mediaMapper.convertToDto(mediaRepository.findByFileId(fileId));
+    }
+
+    void deleteInDB(MediaDto dto) {
+        Media mediaToDelete = mediaMapper.convertToModel(dto);
+        mediaRepository.delete(mediaToDelete);
     }
 }
