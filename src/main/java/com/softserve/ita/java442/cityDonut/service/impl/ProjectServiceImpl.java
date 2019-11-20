@@ -1,7 +1,6 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
 import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.exception.CategoryNotFoundException;
@@ -29,50 +28,48 @@ import java.util.List;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    @Autowired
+
     private ProjectRepository projectRepository;
-
-    @Autowired
     private ProjectStatusService projectStatusService;
-
-    @Autowired
     private CategoryService categoryService;
-
-    @Autowired
     private PreviewProjectMapper previewProjectMapper;
-
-    @Autowired
     private CategoryMapper categoryMapper;
-
-    @Autowired
     private MainProjectInfoMapper mainProjectInfoMapper;
-
-    @Autowired
     private DonatedUserProjectRepository donatedUserProjectRepository;
-
-    @Autowired
     private ProjectStatusRepository projectStatusRepository;
-
-    @Autowired
     private CategoryRepository categoryRepository;
-
-    @Autowired
     private ProjectByUserDonateMapper projectByUserDonateMapper;
-
-    @Autowired
     private NewProjectMapper newProjectMapper;
-
-    @Autowired
     private EditedProjectMapper editedProjectMapper;
-
-    @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
     private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectStatusService projectStatusService,
+                              CategoryService categoryService, PreviewProjectMapper previewProjectMapper,
+                              CategoryMapper categoryMapper, MainProjectInfoMapper mainProjectInfoMapper,
+                              DonatedUserProjectRepository donatedUserProjectRepository,
+                              ProjectStatusRepository projectStatusRepository, CategoryRepository categoryRepository,
+                              ProjectByUserDonateMapper projectByUserDonateMapper, NewProjectMapper newProjectMapper,
+                              EditedProjectMapper editedProjectMapper, RoleRepository roleRepository,
+                              UserRepository userRepository,UserService userService) {
+        this.projectRepository = projectRepository;
+        this.projectStatusService = projectStatusService;
+        this.categoryService = categoryService;
+        this.previewProjectMapper = previewProjectMapper;
+        this.categoryMapper = categoryMapper;
+        this.mainProjectInfoMapper = mainProjectInfoMapper;
+        this.donatedUserProjectRepository = donatedUserProjectRepository;
+        this.projectStatusRepository = projectStatusRepository;
+        this.categoryRepository = categoryRepository;
+        this.projectByUserDonateMapper = projectByUserDonateMapper;
+        this.newProjectMapper = newProjectMapper;
+        this.editedProjectMapper = editedProjectMapper;
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @Override
     public MainProjectInfoDto getProjectById(long id) {
@@ -88,21 +85,21 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<PreviewProjectDto> getFilteredProjects
             (List<Long> categoryIds, Long statusId, Long moneyFrom, Long moneyTo, Pageable pageable) {
-        if(moneyFrom==null){
-            moneyFrom= 0L;
+        if (moneyFrom == null) {
+            moneyFrom = 0L;
         }
-        if (moneyTo==null) {
+        if (moneyTo == null) {
             moneyTo = projectRepository.getMaxByMoneyNeeded();
         }
-        if (categoryIds==null) {
-            if (statusId==null) {
+        if (categoryIds == null) {
+            if (statusId == null) {
                 return previewProjectMapper.convertListToDto(
                         projectRepository.findAllWithoutFilter(moneyFrom, moneyTo, pageable));
             }
             return previewProjectMapper.convertListToDto(
                     projectRepository.findAllByProjectStatusIdAndMoneyNeededBetween(
                             statusId, moneyFrom, moneyTo, pageable));
-        } else if (statusId==null) {
+        } else if (statusId == null) {
             return previewProjectMapper.convertListToDto(
                     projectRepository.getFilteredProjectsByCategories(
                             categoryService.getCategoriesByIds(categoryIds),

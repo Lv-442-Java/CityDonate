@@ -36,9 +36,12 @@ public class MediaServiceImpl implements MediaService {
     MediaMapper mediaMapper;
 
     @Transactional
-    public void saveMedia(MediaDto mediaDto, String fileName) {
+    public MediaDto saveMedia(MediaDto mediaDto, String fileName) {
         Media mediaModel = createMediaModelFromDtoData(mediaDto, fileName);
         mediaRepository.save(mediaModel);
+        System.out.println(mediaRepository.findByFileId(mediaModel.getFileId()));
+        MediaDto savedMediaDto = mediaMapper.convertToDto(mediaRepository.findByFileId(mediaModel.getFileId()));
+        return savedMediaDto;
     }
 
     private Media createMediaModelFromDtoData(MediaDto mediaDto, String fileName) {
@@ -78,13 +81,17 @@ public class MediaServiceImpl implements MediaService {
         return media;
     }
 
-    List<MediaDto> getPhotoNames(long projectId) {
+    List<MediaDto> getListOfPhotoDto(long projectId) {
         MediaType mediaType = mediaTypeRepository.findByType("photo");
-        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectIdAndMediaType(projectId, mediaType));
+        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectIdAndMediaTypeAndStoryBoard_IdNull(projectId, mediaType));
     }
 
-    List<MediaDto> getFileNames(long projectId) {
+    public List<MediaDto> getDtoList(long projectId) {
         return mediaMapper.convertListToDto(mediaRepository.getFilesByProjectId(projectId));
+    }
+
+    public MediaDto getDtoForFile(String fileId) {
+        return mediaMapper.convertToDto(mediaRepository.findByFileId(fileId));
     }
 
     void deleteInDB(MediaDto dto) {
