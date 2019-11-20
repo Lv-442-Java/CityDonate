@@ -73,6 +73,7 @@ public class FileController {
 
     @GetMapping("/downloadFile/{fileId:.+}")
     public ResponseEntity<Resource> getResource(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileId) {
+
         Resource resource = fileStorageService.loadFileAsResource(fileId, id);
         String contentType = null;
         try {
