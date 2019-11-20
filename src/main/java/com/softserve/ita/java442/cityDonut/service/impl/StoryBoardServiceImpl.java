@@ -23,13 +23,17 @@ public class StoryBoardServiceImpl implements StoryBoardService {
     private ProjectRepository projectRepository;
     @Autowired
     private StoryBoardMapper mapper;
-    @Autowired
-    private MediaMapper mediaMapper;
 
 
     public List<StoryBoardDto> getStoryBoardsByProject(long projectId){
         List<StoryBoardDto> storyBoardDtos;
         storyBoardDtos =  mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_Id(projectId));
+        return storyBoardDtos;
+    }
+
+    public List<StoryBoardDto> getVerifiedStoryBoardsByProject(long projectId){
+        List<StoryBoardDto> storyBoardDtos;
+        storyBoardDtos =  mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_IdAndIsVerifiedIsTrueOrderByDateDesc(projectId));
         return storyBoardDtos;
     }
 
@@ -51,7 +55,6 @@ public class StoryBoardServiceImpl implements StoryBoardService {
         }
         model.setDate(storyBoardDto.getDate());
         model.setDescription(storyBoardDto.getDescription());
-        model.setMedia(mediaMapper.convertListToModel(storyBoardDto.getMedia()));
         model.setMoneySpent(storyBoardDto.getMoneySpent());
         model.setVerified(storyBoardDto.isVerified());
         model.setProject(projectRepository.getById(storyBoardDto.getProjectId()));
