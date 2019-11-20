@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
             map.put("invalidEmail", ErrorMessage.INVALID_EMAIL);
         }
         if (userRepository.findByEmail(userRegistrationDto.getEmail()) != null) {
-            map.put("dublicationEmail", ErrorMessage.EMAIL_DUBLICATION);
+            map.put("dublicationEmail", ErrorMessage.INVALID_USER_REGISTRATION_DATA);
         }
         if (!validator.validatePassword(userRegistrationDto.getPassword())) {
             map.put("invalidPassword", ErrorMessage.INVALID_USER_PASSWORD);
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
         userActivationRequestRepository.save(userActivationRequest);
 
         String message ="Welcome to CityDonate. To activate your account follow link:  "
-                +"localhost:3000/activationUser/"
+                +"http://localhost:3000/activationUser/"
                 +userActivationRequest.getActivationCode();
 
         mailSender.send(user.getEmail(), "Activation Code", message);
