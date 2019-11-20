@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -25,23 +24,25 @@ import java.util.UUID;
 @Service
 public class MediaServiceImpl implements MediaService {
 
-    @Autowired
-    MediaTypeRepository mediaTypeRepository;
+    private MediaTypeRepository mediaTypeRepository;
+    private MediaRepository mediaRepository;
+    private ExtensionRepository extensionRepository;
+    private MediaMapper mediaMapper;
 
     @Autowired
-    MediaRepository mediaRepository;
-
-    @Autowired
-    ExtensionRepository extensionRepository;
-
-    @Autowired
-    MediaMapper mediaMapper;
+    public MediaServiceImpl(MediaTypeRepository mediaTypeRepository, MediaRepository mediaRepository,
+                            ExtensionRepository extensionRepository, MediaMapper mediaMapper) {
+        this.mediaTypeRepository = mediaTypeRepository;
+        this.mediaRepository = mediaRepository;
+        this.extensionRepository = extensionRepository;
+        this.mediaMapper = mediaMapper;
+    }
 
     @Transactional
     public MediaDto saveMedia(MediaDto mediaDto, String fileName) {
         Media mediaModel = createMediaModelFromDtoData(mediaDto, fileName);
         mediaRepository.save(mediaModel);
-        MediaDto savedMediaDto = mediaMapper.convertToDto(mediaRepository.findByFileId(mediaModel.getFileId()));
+        MediaDto savedMediaDto = mediaMapper.convertToDto(mediaRepository.getByFileId(mediaModel.getFileId()));
         return savedMediaDto;
     }
 
@@ -92,7 +93,7 @@ public class MediaServiceImpl implements MediaService {
     }
 
     MediaDto getDtoForFile(String fileId) {
-        return mediaMapper.convertToDto(mediaRepository.findByFileId(fileId));
+        return mediaMapper.convertToDto(mediaRepository.getByFileId(fileId));
     }
 
     void deleteInDB(MediaDto dto) {

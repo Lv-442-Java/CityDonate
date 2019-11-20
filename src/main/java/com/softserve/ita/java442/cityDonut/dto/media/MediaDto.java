@@ -5,7 +5,6 @@ import com.softserve.ita.java442.cityDonut.model.MediaType;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Data
 @Builder

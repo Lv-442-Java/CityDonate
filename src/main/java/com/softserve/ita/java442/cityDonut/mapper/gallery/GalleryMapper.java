@@ -9,13 +9,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GalleryMapper implements GeneralMapper <Gallery, GalleryDto> {
-@Autowired
+    @Autowired
     ProjectRepository projectRepository;
     @Override
     public GalleryDto convertToDto(Gallery model) {
         return GalleryDto.builder()
                 .id(model.getId())
-                //.projectId(projectRepository.getById().getId())
                 .build();
     }
 

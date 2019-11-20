@@ -1,10 +1,10 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
 import com.softserve.ita.java442.cityDonut.dto.media.FileUpload;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
+import com.softserve.ita.java442.cityDonut.service.GalleryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -16,10 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
-public class GalleryImpl {
+public class GalleryServiceImpl implements GalleryService {
 
     @Autowired
     private FileStorageServiceImpl fileStorageService;
@@ -32,22 +31,6 @@ public class GalleryImpl {
         fileUpload.setFileType(responseDto.getMediaType().getType());
         return fileUpload;
     }
-
-//    private DownloadFileResponse getFileInfo(long id,String fileId) {
-//        String fileDownloadUri = buildDownloadUri(id, fileId);
-//        DownloadFileResponse fileResponse = fileStorageService.getFile(fileId);
-//        fileResponse.setFileDownloadUri(fileDownloadUri);
-//        return fileResponse;
-//    }
-//
-//    public List<DownloadFileResponse> getAllFilesInfo(long id, long galleryId){
-//        ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(galleryId);
-//        ArrayList<DownloadFileResponse> result = new ArrayList<>();
-//        for (String fileId : filesId) {
-//            result.add(getFileInfo(id, fileId));
-//        }
-//        return result;
-//    }
 
     public ResponseEntity<Resource> getResource(HttpServletRequest request, String fileId, long galleryId) {
         Resource resource = fileStorageService.loadFileAsResource(fileId, galleryId);
@@ -74,5 +57,4 @@ public class GalleryImpl {
         ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(galleryId);
         return filesId;
     }
-
 }
