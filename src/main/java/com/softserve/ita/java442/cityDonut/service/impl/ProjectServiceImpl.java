@@ -16,13 +16,24 @@ import com.softserve.ita.java442.cityDonut.service.CategoryService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import com.softserve.ita.java442.cityDonut.service.UserService;
+import org.hibernate.engine.spi.PersistenceContext;
+import org.hibernate.query.internal.QueryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.query.JpaQueryCreator;
+import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,6 +85,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    EntityManagerFactory entityManagerFactory;
+
     @Override
     public MainProjectInfoDto getProjectById(long id) {
         MainProjectInfoDto mainProjectInfoDto;
@@ -88,32 +102,39 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<PreviewProjectDto> getFilteredProjects
             (List<Long> categoryIds, Long statusId, Long moneyFrom, Long moneyTo, Pageable pageable) {
-        if(moneyFrom==null){
-            moneyFrom= 0L;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Project> projectCriteria = builder.createQuery(Project.class);
+        Root<Project> root = projectCriteria.from(Project.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+
+        predicates.add(builder.greaterThan(root.get("projectStatus").get("id"), 3));
+        if (moneyFrom != null) {
+            predicates.add(builder.greaterThanOrEqualTo(root.get("moneyNeeded"), moneyFrom));
         }
-        if (moneyTo==null) {
-            moneyTo = projectRepository.getMaxByMoneyNeeded();
+        if (moneyTo != null) {
+            predicates.add(builder.lessThanOrEqualTo(root.get("moneyNeeded"), moneyTo));
         }
-        if (categoryIds==null) {
-            if (statusId==null) {
-                return previewProjectMapper.convertListToDto(
-                        projectRepository.findAllWithoutFilter(moneyFrom, moneyTo, pageable));
-            }
-            return previewProjectMapper.convertListToDto(
-                    projectRepository.findAllByProjectStatusIdAndMoneyNeededBetween(
-                            statusId, moneyFrom, moneyTo, pageable));
-        } else if (statusId==null) {
-            return previewProjectMapper.convertListToDto(
-                    projectRepository.getFilteredProjectsByCategories(
-                            categoryService.getCategoriesByIds(categoryIds),
-                            moneyFrom, moneyTo, categoryIds.size(), pageable));
-        } else {
-            return previewProjectMapper.convertListToDto(
-                    projectRepository.getFilteredProjects(categoryService.getCategoriesByIds(categoryIds),
-                            projectStatusService.getById(statusId),
-                            moneyFrom, moneyTo, categoryIds.size(), pageable));
+        if (statusId != null /*&& statusId > 2*/) {
+            predicates.add(builder.equal(root.get("projectStatus").get("id"), statusId));
         }
+        if (categoryIds != null) {
+            categoryService.getCategoriesByIds(categoryIds).forEach(category ->
+                    predicates.add(builder.isMember(category, root.get("categories"))));
+        }
+
+        projectCriteria.select(root).where(predicates.toArray(new Predicate[]{}));
+
+        TypedQuery<Project> typedQuery = entityManager.createQuery(projectCriteria);
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());
+        System.out.println(typedQuery.unwrap(QueryImpl.class).getQueryString());
+
+        return previewProjectMapper.convertListToDto(entityManager.createQuery(projectCriteria).getResultList());
     }
+
 
     @Override
     public List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable) {
@@ -167,7 +188,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private Project createProjectModelFromDtoData(NewProjectDto project, long userId) {
         Project projectModel = newProjectMapper.convertToModel(project);
-        projectModel.setCreationDate(LocalDateTime.now());
+        projectModel.setCreationDate(new Timestamp(222));
         projectModel.setProjectStatus(projectStatusRepository.getOne(1L));
         projectModel.setOwner(User.builder().id(userId).build());
         return projectModel;

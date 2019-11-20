@@ -26,35 +26,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     List<Project> findAllByModeratorsIn(List<User> moderators);
 
-    @Query("select p from Project p where p.moneyNeeded between :moneyFrom and :moneyTo " +
-            "AND p.projectStatus.status not in ('чернетка','очікує підтвердження','на перевірці')")
-    List<Project> findAllWithoutFilter(@Param("moneyFrom") long moneyFrom,
-                                       @Param("moneyTo") long moneyTo,
-                                       Pageable pageable);
-
-    List<Project> findAllByProjectStatusIdAndMoneyNeededBetween(
-            long projectStatus_id, long moneyNeeded, long moneyNeeded2, Pageable pageable);
-
     @Query("select MAX(p.moneyNeeded) from Project p")
     Long getMaxByMoneyNeeded();
-
-    @Query("select p from Project p where " +
-            "(select count (distinct c) FROM p.categories c where c in (:categories) ) >= :categoriesSize " +
-            "AND p.projectStatus = :projectStatus AND p.moneyNeeded between :moneyFrom and :moneyTo")
-    List<Project> getFilteredProjects(@Param("categories") List<Category> categories,
-                                      @Param("projectStatus") ProjectStatus projectStatus,
-                                      @Param("moneyFrom") long moneyFrom,
-                                      @Param("moneyTo") long moneyTo,
-                                      @Param("categoriesSize") long categoriesSize,
-                                      Pageable pageable);
-
-    @Query("select p from Project p where " +
-            "(select count (distinct c) FROM p.categories c where c in (:categories) ) >= :categoriesSize " +
-            "AND p.moneyNeeded between :moneyFrom and :moneyTo " +
-            "AND p.projectStatus.status not in ('чернетка','очікує підтвердження','на перевірці')")
-    List<Project> getFilteredProjectsByCategories(@Param("categories") List<Category> categories,
-                                                  @Param("moneyFrom") long moneyFrom,
-                                                  @Param("moneyTo") long moneyTo,
-                                                  @Param("categoriesSize") long categoriesSize,
-                                                  Pageable pageable);
 }
