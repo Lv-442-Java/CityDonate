@@ -1,9 +1,14 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
+import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.comment.CommentDto;
+import com.softserve.ita.java442.cityDonut.exception.UserHasNotAccessToCommentException;
 import com.softserve.ita.java442.cityDonut.mapper.comment.CommentMapper;
+import com.softserve.ita.java442.cityDonut.model.Comment;
+import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.repository.CommentRepository;
 import com.softserve.ita.java442.cityDonut.service.CommentService;
+import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +20,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private UserService userService;
     @Autowired
     private CommentMapper mapper;
 
@@ -31,6 +38,27 @@ public class CommentServiceImpl implements CommentService {
         comment.setDate(LocalDateTime.now());
         CommentDto newComment = mapper.convertToDto(commentRepository.save(mapper.convertToModel(comment)));
         return newComment;
+    }
+
+    @Override
+    public CommentDto deleteComment(long commentId) {
+        CommentDto commentDto = getCommentIfUserHasAccessToThisComment(commentId);
+        commentRepository.deleteById(commentId);
+        return commentDto;
+    }
+
+    @Override
+    public CommentDto editComment(long commentId, CommentDto commentDto) {
+        CommentDto oldCommentDto = getCommentIfUserHasAccessToThisComment(commentId);
+        oldCommentDto.setDescription(commentDto.getDescription());
+        return mapper.convertToDto(commentRepository.save(mapper.convertToModel(oldCommentDto)));
+    }
+
+    private CommentDto getCommentIfUserHasAccessToThisComment(long commentId) {
+        User user = userService.getCurrentUser();
+        Comment comment = commentRepository.findCommentByIdAndUser(commentId, user)
+                .orElseThrow(() -> new UserHasNotAccessToCommentException(ErrorMessage.USER_HAS_NOT_ACCESS_TO_COMMENT + commentId));
+        return mapper.convertToDto(comment);
     }
 }
 
