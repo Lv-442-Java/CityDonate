@@ -6,26 +6,32 @@ import com.softserve.ita.java442.cityDonut.security.UserPrincipal;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
 
+import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
 public class ProjectController {
 
-    @Autowired
     private ProjectService projectService;
+    private UserService userService;
+    private FieldsCheckService fieldsCheckService;
 
     @Autowired
-    private FieldsCheckService fieldsCheckService;
+    public ProjectController(ProjectService projectService, UserService userService, FieldsCheckService fieldsCheckService) {
+        this.projectService = projectService;
+        this.userService = userService;
+        this.fieldsCheckService = fieldsCheckService;
+    }
 
     @GetMapping("/project/{id}")
     public ResponseEntity<MainProjectInfoDto> getProjectById(@PathVariable long id) {
@@ -64,9 +70,9 @@ public class ProjectController {
     }
 
     @PostMapping("/project")
-    public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project, Authentication auth) {
+    public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project) {
         return new ResponseEntity<>(
-                projectService.saveProject(project, ((UserPrincipal)auth.getPrincipal()).getUser().getId()),
+                projectService.saveProject(project, userService.getCurrentUser().getId()),
                 HttpStatus.OK
         );
     }

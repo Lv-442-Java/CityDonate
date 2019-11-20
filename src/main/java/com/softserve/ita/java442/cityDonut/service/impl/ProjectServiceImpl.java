@@ -1,27 +1,33 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
 import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.exception.CategoryNotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.NotEnoughPermission;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.ProjectNotFoundException;
-import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
+import com.softserve.ita.java442.cityDonut.mapper.gallery.GalleryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.*;
 import com.softserve.ita.java442.cityDonut.model.*;
 import com.softserve.ita.java442.cityDonut.repository.*;
 import com.softserve.ita.java442.cityDonut.service.CategoryService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
-import com.softserve.ita.java442.cityDonut.service.ProjectStatusService;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,50 +35,50 @@ import java.util.List;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    @Autowired
+
     private ProjectRepository projectRepository;
-
-    @Autowired
-    private ProjectStatusService projectStatusService;
-
-    @Autowired
     private CategoryService categoryService;
-
-    @Autowired
     private PreviewProjectMapper previewProjectMapper;
-
-    @Autowired
-    private CategoryMapper categoryMapper;
-
-    @Autowired
     private MainProjectInfoMapper mainProjectInfoMapper;
-
-    @Autowired
     private DonatedUserProjectRepository donatedUserProjectRepository;
-
-    @Autowired
     private ProjectStatusRepository projectStatusRepository;
-
-    @Autowired
     private CategoryRepository categoryRepository;
-
-    @Autowired
     private ProjectByUserDonateMapper projectByUserDonateMapper;
-
-    @Autowired
     private NewProjectMapper newProjectMapper;
-
-    @Autowired
     private EditedProjectMapper editedProjectMapper;
-
-    @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private UserService userService;
+    private EntityManagerFactory entityManagerFactory;
+
+    @Autowired
+    public ProjectServiceImpl(ProjectRepository projectRepository,
+                              CategoryService categoryService, PreviewProjectMapper previewProjectMapper,
+                               MainProjectInfoMapper mainProjectInfoMapper,
+                              DonatedUserProjectRepository donatedUserProjectRepository,
+                              ProjectStatusRepository projectStatusRepository, CategoryRepository categoryRepository,
+                              ProjectByUserDonateMapper projectByUserDonateMapper, NewProjectMapper newProjectMapper,
+                              EditedProjectMapper editedProjectMapper, RoleRepository roleRepository,
+                              UserService userService,EntityManagerFactory entityManagerFactory) {
+        this.projectRepository = projectRepository;
+        this.categoryService = categoryService;
+        this.previewProjectMapper = previewProjectMapper;
+        this.mainProjectInfoMapper = mainProjectInfoMapper;
+        this.donatedUserProjectRepository = donatedUserProjectRepository;
+        this.projectStatusRepository = projectStatusRepository;
+        this.categoryRepository = categoryRepository;
+        this.projectByUserDonateMapper = projectByUserDonateMapper;
+        this.newProjectMapper = newProjectMapper;
+        this.editedProjectMapper = editedProjectMapper;
+        this.roleRepository = roleRepository;
+        this.userService = userService;
+        this.entityManagerFactory = entityManagerFactory;
+    }
+
+    @Autowired
+    private GalleryRepository galleryRepository;
+
+    @Autowired
+    private GalleryMapper galleryMapper;
 
     @Override
     public MainProjectInfoDto getProjectById(long id) {
@@ -88,31 +94,41 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<PreviewProjectDto> getFilteredProjects
             (List<Long> categoryIds, Long statusId, Long moneyFrom, Long moneyTo, Pageable pageable) {
-        if(moneyFrom==null){
-            moneyFrom= 0L;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Project> projectCriteria = builder.createQuery(Project.class);
+        Root<Project> root = projectCriteria.from(Project.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(builder.greaterThan(root.get("projectStatus").get("id"), 3));
+        if (moneyFrom != null) {
+            predicates.add(builder.greaterThanOrEqualTo(root.get("moneyNeeded"), moneyFrom));
         }
-        if (moneyTo==null) {
-            moneyTo = projectRepository.getMaxByMoneyNeeded();
+        if (moneyTo != null) {
+            predicates.add(builder.lessThanOrEqualTo(root.get("moneyNeeded"), moneyTo));
         }
-        if (categoryIds==null) {
-            if (statusId==null) {
-                return previewProjectMapper.convertListToDto(
-                        projectRepository.findAllWithoutFilter(moneyFrom, moneyTo, pageable));
-            }
-            return previewProjectMapper.convertListToDto(
-                    projectRepository.findAllByProjectStatusIdAndMoneyNeededBetween(
-                            statusId, moneyFrom, moneyTo, pageable));
-        } else if (statusId==null) {
-            return previewProjectMapper.convertListToDto(
-                    projectRepository.getFilteredProjectsByCategories(
-                            categoryService.getCategoriesByIds(categoryIds),
-                            moneyFrom, moneyTo, categoryIds.size(), pageable));
-        } else {
-            return previewProjectMapper.convertListToDto(
-                    projectRepository.getFilteredProjects(categoryService.getCategoriesByIds(categoryIds),
-                            projectStatusService.getById(statusId),
-                            moneyFrom, moneyTo, categoryIds.size(), pageable));
+        if (statusId != null && statusId > 3) {
+            predicates.add(builder.equal(root.get("projectStatus").get("id"), statusId));
         }
+        if (categoryIds != null) {
+            categoryService.getCategoriesByIds(categoryIds).forEach(category ->
+                    predicates.add(builder.isMember(category, root.get("categories"))));
+        }
+
+        projectCriteria.select(root).where(predicates.toArray(new Predicate[]{}));
+
+        TypedQuery<Project> typedQuery = entityManager.createQuery(projectCriteria);
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());
+
+        List<PreviewProjectDto> result = previewProjectMapper.convertListToDto(typedQuery.getResultList());
+
+        transaction.commit();
+        entityManager.close();
+
+        return result;
     }
 
     @Override
@@ -131,8 +147,11 @@ public class ProjectServiceImpl implements ProjectService {
         Project projectModel = createProjectModelFromDtoData(projectDto, userId);
         projectModel.setCategories(getValidCategoriesFromCategoriesDto(projectDto.getCategories()));
         Project resultOfQuery = projectRepository.save(projectModel);
+        Gallery gallery= new Gallery();
+        gallery.setProject(resultOfQuery);
+        resultOfQuery.setGallery(galleryRepository.saveAndFlush(gallery));
         NewProjectDto result = newProjectMapper.convertToDto(resultOfQuery);
-        projectRepository.flush();
+        projectRepository.flush();  //pa
         return result;
     }
 
@@ -167,7 +186,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private Project createProjectModelFromDtoData(NewProjectDto project, long userId) {
         Project projectModel = newProjectMapper.convertToModel(project);
-        projectModel.setCreationDate(LocalDateTime.now());
+        projectModel.setCreationDate(new Timestamp(222));
         projectModel.setProjectStatus(projectStatusRepository.getOne(1L));
         projectModel.setOwner(User.builder().id(userId).build());
         return projectModel;

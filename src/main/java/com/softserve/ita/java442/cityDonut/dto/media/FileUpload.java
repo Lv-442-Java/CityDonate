@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DownloadFileResponse {
-
-    private String fileDownloadUri;
+public class FileUpload {
 
     private String fileName;
 
-    private long galleryId;
+    private String fileId;
 
-    private String mediaType;
+    private String fileType;
+
+    private long size;
 }

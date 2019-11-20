@@ -2,9 +2,12 @@ package com.softserve.ita.java442.cityDonut.mapper.storyBoard;
 
 import com.softserve.ita.java442.cityDonut.dto.storyBoard.StoryBoardDto;
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
+import com.softserve.ita.java442.cityDonut.mapper.gallery.GalleryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.StoryBoard;
+import com.softserve.ita.java442.cityDonut.repository.GalleryRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
+import com.softserve.ita.java442.cityDonut.repository.StoryBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +18,13 @@ import java.util.List;
 public class StoryBoardMapper implements GeneralMapper<StoryBoard, StoryBoardDto> {
 
     @Autowired
+    StoryBoardRepository storyBoardRepository;
+    @Autowired
     MediaMapper mediaMapper;
     @Autowired
     ProjectRepository projectRepository;
+    @Autowired
+    GalleryMapper galleryMapper;
 
     @Override
     public StoryBoardDto convertToDto(StoryBoard model) {
@@ -26,7 +33,7 @@ public class StoryBoardMapper implements GeneralMapper<StoryBoard, StoryBoardDto
                 .projectId(model.getProject().getId())
                 .date(model.getDate())
                 .description(model.getDescription())
-                .media(mediaMapper.convertListToDto(model.getMedia()))
+                .galleryDto(galleryMapper.convertToDto(storyBoardRepository.getOne(model.getId()).getGallery()))
                 .isVerified(model.isVerified())
                 .moneySpent(model.getMoneySpent())
                 .build();
@@ -39,7 +46,7 @@ public class StoryBoardMapper implements GeneralMapper<StoryBoard, StoryBoardDto
                 .project(projectRepository.getById(dto.getProjectId()))
                 .date(dto.getDate())
                 .description(dto.getDescription())
-                .media(mediaMapper.convertListToModel(dto.getMedia()))
+                .gallery(storyBoardRepository.getOne(dto.getId()).getGallery())
                 .moneySpent(dto.getMoneySpent())
                 .isVerified(dto.isVerified())
                 .build();

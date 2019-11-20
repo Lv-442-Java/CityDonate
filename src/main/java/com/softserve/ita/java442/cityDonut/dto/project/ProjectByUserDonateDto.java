@@ -21,6 +21,8 @@ public class ProjectByUserDonateDto {
 
     private ProjectStatusDto projectStatusDto;
 
+    private long galleryId;
+
     private List<CategoryDto> categories;
 
     private long moneyNeeded;

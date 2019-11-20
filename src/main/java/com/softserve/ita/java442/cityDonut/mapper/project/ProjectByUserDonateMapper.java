@@ -25,6 +25,7 @@ public class ProjectByUserDonateMapper implements GeneralMapper<DonatedUserProje
                 .projectStatusDto(projectStatusMapper.convertToDto(donatedUserProject.getProject().getProjectStatus()))
                 .categories(categoryMapper.convertListToDto(donatedUserProject.getProject().getCategories()))
                 .moneyNeeded(donatedUserProject.getProject().getMoneyNeeded())
+                .galleryId(donatedUserProject.getProject().getGallery().getId())
                 .donateCount(donatedUserProject.getDonateCount())
                 .donateSum(donatedUserProject.getSum())
                 .build();
