@@ -54,14 +54,14 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public MediaDto storeFile(MultipartFile file, long projectId) {
+    public MediaDto storeFile(MultipartFile file, long Id) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         MediaDto mediaDto = new MediaDto();
         try {
             if (fileName.contains("..")) {
                 throw new FileStorageException(ErrorMessage.INVALID_CHARACTER + fileName);
             }
-            mediaDto.setProjectId(projectId);
+            mediaDto.setGalleryId(Id);
             MediaDto savedMediaDto = mediaService.saveMedia(mediaDto, fileName);
             String fileIdWithExt = mediaService.fileIDWithExtension(savedMediaDto);
             Path targetLocation = this.fileStorageLocation.resolve(fileIdWithExt);
@@ -93,7 +93,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         DownloadFileResponse fileResponse = new DownloadFileResponse();
         fileResponse.setFileName(mediaDto.getName());
         fileResponse.setMediaType(mediaDto.getMediaType().getType());
-        fileResponse.setProjectId(mediaDto.getProjectId());
+        fileResponse.setGalleryId(mediaDto.getGalleryId());
         return fileResponse;
     }
 

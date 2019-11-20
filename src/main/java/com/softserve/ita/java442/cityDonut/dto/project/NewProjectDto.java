@@ -2,6 +2,7 @@ package com.softserve.ita.java442.cityDonut.dto.project;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
+import com.softserve.ita.java442.cityDonut.dto.gallery.GalleryDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -48,4 +49,5 @@ public class NewProjectDto {
 
     private List<CategoryNameDto> categories;
 
+    private GalleryDto galleryDto;
 }

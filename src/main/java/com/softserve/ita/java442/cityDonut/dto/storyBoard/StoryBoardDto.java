@@ -1,6 +1,8 @@
 package com.softserve.ita.java442.cityDonut.dto.storyBoard;
 
+import com.softserve.ita.java442.cityDonut.dto.gallery.GalleryDto;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
+import com.softserve.ita.java442.cityDonut.model.Gallery;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +25,7 @@ public class StoryBoardDto {
 
     private LocalDateTime date;
 
-    private List<MediaDto> media;
+    private GalleryDto galleryDto;
 
     private boolean isVerified;
 

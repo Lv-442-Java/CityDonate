@@ -3,12 +3,14 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryDto;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
+import com.softserve.ita.java442.cityDonut.dto.gallery.GalleryDto;
 import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.exception.CategoryNotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.NotEnoughPermission;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.ProjectNotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
+import com.softserve.ita.java442.cityDonut.mapper.gallery.GalleryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.*;
 import com.softserve.ita.java442.cityDonut.model.*;
 import com.softserve.ita.java442.cityDonut.repository.*;
@@ -74,6 +76,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private GalleryRepository galleryRepository;
+
+    @Autowired
+    private GalleryMapper galleryMapper;
+
     @Override
     public MainProjectInfoDto getProjectById(long id) {
         MainProjectInfoDto mainProjectInfoDto;
@@ -130,9 +138,14 @@ public class ProjectServiceImpl implements ProjectService {
     public NewProjectDto saveProject(NewProjectDto projectDto, long userId) {
         Project projectModel = createProjectModelFromDtoData(projectDto, userId);
         projectModel.setCategories(getValidCategoriesFromCategoriesDto(projectDto.getCategories()));
+
+     //   projectModel.setGallery(galleryRepository.save(galleryMapper.convertToModel(galleryDto)));
         Project resultOfQuery = projectRepository.save(projectModel);
+        Gallery gallery= new Gallery();
+        gallery.setProject(resultOfQuery);
+        resultOfQuery.setGallery(galleryRepository.saveAndFlush(gallery));
         NewProjectDto result = newProjectMapper.convertToDto(resultOfQuery);
-        projectRepository.flush();
+        projectRepository.flush();  //pa
         return result;
     }
 

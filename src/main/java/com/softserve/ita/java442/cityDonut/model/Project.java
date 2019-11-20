@@ -11,9 +11,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"description", "location", "locationLatitude", "locationLongitude", "creationDate", "publicationDate",
-        "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "media", "documents", "moderators", "categories"})
+        "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "gallery", "documents", "moderators", "categories"})
 @NoArgsConstructor
-@ToString(exclude = {"comments", "donates", "storyBoards", "media", "documents", "moderators", "categories"})
+@ToString(exclude = {"comments", "donates", "storyBoards", "gallery", "documents", "moderators", "categories"})
 @Table(indexes = @Index(columnList = "name, realization_end_date"))
 public class Project {
 
@@ -74,9 +74,9 @@ public class Project {
             CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<StoryBoard> storyBoards;
 
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH}, fetch = FetchType.LAZY)
-    private List<Media> media;
+    @OneToOne
+    @JoinColumn(name = "gallery_id", referencedColumnName = "id")
+    private Gallery gallery;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "moderator_has_project",

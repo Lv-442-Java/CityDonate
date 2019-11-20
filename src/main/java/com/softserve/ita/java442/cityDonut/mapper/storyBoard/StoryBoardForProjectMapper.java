@@ -4,6 +4,9 @@ import com.softserve.ita.java442.cityDonut.dto.storyBoard.StoryBoardForProjectDt
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.StoryBoard;
+import com.softserve.ita.java442.cityDonut.repository.GalleryRepository;
+import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
+import com.softserve.ita.java442.cityDonut.repository.StoryBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +15,15 @@ import java.util.List;
 
 @Component
 public class StoryBoardForProjectMapper implements GeneralMapper<StoryBoard, StoryBoardForProjectDto> {
+
+    @Autowired
+    StoryBoardRepository storyBoardRepository;
+
+    @Autowired
+    ProjectRepository projectRepository;
+
+    @Autowired
+    GalleryRepository galleryRepository;
 
     @Autowired
     MediaMapper mediaMapper;
@@ -38,7 +50,8 @@ public class StoryBoardForProjectMapper implements GeneralMapper<StoryBoard, Sto
                 .id(model.getId())
                 .date(model.getDate())
                 .description(model.getDescription())
-                .media(mediaMapper.convertListToDto(model.getMedia()))
+              //  .media(mediaMapper.convertListToDto(model.getMedia()))
+                .galleryId(storyBoardRepository.getOne(model.getId()).getGallery().getId())
                 .build();
     }
 
@@ -48,7 +61,7 @@ public class StoryBoardForProjectMapper implements GeneralMapper<StoryBoard, Sto
                 .id(dto.getId())
                 .date(dto.getDate())
                 .description(dto.getDescription())
-                .media(mediaMapper.convertListToModel(dto.getMedia()))
+                .gallery(storyBoardRepository.getOne(dto.getId()).getGallery())
                 .build();
     }
 }

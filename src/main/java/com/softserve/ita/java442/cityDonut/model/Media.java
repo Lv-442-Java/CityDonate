@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"name", "mediaType", "project", "storyBoard"})
-@ToString(exclude = {"project", "storyBoard", "mediaType"})
+//@EqualsAndHashCode(exclude = {"name", "mediaType", "project", "storyBoard"})
+//@ToString(exclude = {"project", "storyBoard", "mediaType"})
 public class Media {
 
     @Id
@@ -36,11 +36,7 @@ public class Media {
     @JoinColumn(name = "extension_id")
     private Extension extension;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project project;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "story_board_id")
-    private StoryBoard storyBoard;
+    @ManyToOne
+    @JoinColumn(name = "gallery_id", nullable = false)
+    private Gallery gallery;
 }

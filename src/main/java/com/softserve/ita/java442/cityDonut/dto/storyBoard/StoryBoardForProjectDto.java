@@ -21,5 +21,5 @@ public class StoryBoardForProjectDto {
 
     private LocalDateTime date;
 
-    private List<MediaDto> media;
+    private long galleryId;
 }

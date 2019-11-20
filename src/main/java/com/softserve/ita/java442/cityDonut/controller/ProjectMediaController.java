@@ -5,8 +5,8 @@ import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
+import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,20 +24,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/project/{id}")
-public class FileController {
+@RequestMapping("project/{id}")
+public class ProjectMediaController {
 
+    private ProjectRepository projectRepository;
     private FileStorageServiceImpl fileStorageService;
 
-    @Autowired
-    public FileController(FileStorageServiceImpl fileStorageService) {
+    public ProjectMediaController(ProjectRepository projectRepository, FileStorageServiceImpl fileStorageService) {
+        this.projectRepository = projectRepository;
         this.fileStorageService = fileStorageService;
     }
 
-    @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("id") long id) {
 
-        MediaDto responseDto = fileStorageService.storeFile(file, id);
+    @PostMapping("/uploadFile")
+        public UploadFileResponse uploadFile( MultipartFile file,  long id) {
+        long galleryId = projectRepository.getById(id).getGallery().getId();
+        MediaDto responseDto = fileStorageService.storeFile(file, galleryId);
         String fileId = responseDto.getFileId();
         String fileName = responseDto.getName();
         String mediaType = responseDto.getMediaType().getType();
@@ -54,26 +56,29 @@ public class FileController {
                 .collect(Collectors.toList());
     }
 
-    private DownloadFileResponse getFileInfo(@PathVariable("id") long projectId, @PathVariable String fileId) {
-        String fileDownloadUri = buildDownloadUri(projectId, fileId);
+    private DownloadFileResponse getFileInfo(@PathVariable("id") long id, @PathVariable String fileId) {
+        //long galleryId = projectRepository.getById(id).getGallery().getId();
+        String fileDownloadUri = buildDownloadUri(id, fileId);
         DownloadFileResponse fileResponse = fileStorageService.getFile(fileId);
         fileResponse.setFileDownloadUri(fileDownloadUri);
         return fileResponse;
     }
 
     @GetMapping("/fileInfo")
-    public List<DownloadFileResponse> getAllFilesInfo(@PathVariable("id") long projectId){
-        ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(projectId);
+    public List<DownloadFileResponse> getAllFilesInfo(@PathVariable("id") long id){
+        long galleryId = projectRepository.getById(id).getGallery().getId();
+        ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(galleryId);
         ArrayList<DownloadFileResponse> result = new ArrayList<>();
         for (String fileId : filesId) {
-            result.add(getFileInfo(projectId, fileId));
+            result.add(getFileInfo(id, fileId));
         }
         return result;
     }
 
     @GetMapping("/downloadFile/{fileId:.+}")
     public ResponseEntity<Resource> getResource(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileId) {
-        Resource resource = fileStorageService.loadFileAsResource(fileId, id);
+        long galleryId = projectRepository.getById(id).getGallery().getId();
+        Resource resource = fileStorageService.loadFileAsResource(fileId, galleryId);
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
@@ -91,7 +96,8 @@ public class FileController {
 
     @GetMapping("/getUrl")
     public ResponseEntity<List<String>> photoLinks(@PathVariable("id") long id) {
-        ArrayList<String> photoNames = (ArrayList<String>) fileStorageService.getPhotosId(id);
+        long galleryId = projectRepository.getById(id).getGallery().getId();
+        ArrayList<String> photoNames = (ArrayList<String>) fileStorageService.getPhotosId(galleryId);
         ArrayList<String> result = new ArrayList<>();
         for (String name : photoNames) {
             result.add(buildDownloadUri(id, name));
@@ -101,17 +107,19 @@ public class FileController {
 
     @GetMapping("/getAvatar")
     public ResponseEntity<String> avatarLink(@PathVariable("id") long id) {
-        String fileName = fileStorageService.getAvatarName(id);
+        long galleryId = projectRepository.getById(id).getGallery().getId();
+        String fileName = fileStorageService.getAvatarName(galleryId);
         return ResponseEntity.status(HttpStatus.OK).body(buildDownloadUri(id, fileName));
     }
 
     @DeleteMapping("/deleteFile/{fileName:.+}")
     public ResponseEntity<List<String>> deleteFile(@PathVariable("id") long id, @PathVariable String fileName) {
-        boolean isRemoved = fileStorageService.delete(id, fileName);
+        long galleryId = projectRepository.getById(id).getGallery().getId();
+        boolean isRemoved = fileStorageService.delete(galleryId, fileName);
         if (!isRemoved) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(id);
+        ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(galleryId);
         ArrayList<String> result = new ArrayList<>();
         for (String fileId : filesId) {
             result.add(buildDownloadUri(id, fileId));

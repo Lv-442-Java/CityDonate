@@ -24,7 +24,5 @@ public class MediaDto {
 
     private LocalDateTime creationDate;
 
-    private long projectId;
-
-    private long storyBoardId;
+    private long galleryId;
 }

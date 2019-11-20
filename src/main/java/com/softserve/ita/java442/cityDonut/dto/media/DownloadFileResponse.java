@@ -15,7 +15,7 @@ public class DownloadFileResponse {
 
     private String fileName;
 
-    private long projectId;
+    private long galleryId;
 
     private String mediaType;
 }
