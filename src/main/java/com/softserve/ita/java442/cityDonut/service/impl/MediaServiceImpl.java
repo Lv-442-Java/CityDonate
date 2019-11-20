@@ -39,7 +39,7 @@ public class MediaServiceImpl implements MediaService {
     public MediaDto saveMedia(MediaDto mediaDto, String fileName) {
         Media mediaModel = createMediaModelFromDtoData(mediaDto, fileName);
         mediaRepository.save(mediaModel);
-        MediaDto savedMediaDto = mediaMapper.convertToDto(mediaRepository.findByName(fileName));
+        MediaDto savedMediaDto = mediaMapper.convertToDto(mediaRepository.findByFileId(mediaModel.getFileId()));
         return savedMediaDto;
     }
 
