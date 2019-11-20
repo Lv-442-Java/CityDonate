@@ -1,11 +1,13 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.dto.gallery.GalleryDto;
 import com.softserve.ita.java442.cityDonut.dto.storyBoard.StoryBoardDto;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
-import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
+import com.softserve.ita.java442.cityDonut.mapper.gallery.GalleryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.storyBoard.StoryBoardMapper;
 import com.softserve.ita.java442.cityDonut.model.StoryBoard;
+import com.softserve.ita.java442.cityDonut.repository.GalleryRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.StoryBoardRepository;
 import com.softserve.ita.java442.cityDonut.service.StoryBoardService;
@@ -23,6 +25,11 @@ public class StoryBoardServiceImpl implements StoryBoardService {
     private ProjectRepository projectRepository;
     @Autowired
     private StoryBoardMapper mapper;
+
+    @Autowired
+    private GalleryMapper galleryMapper;
+    @Autowired
+    private GalleryRepository galleryRepository;
 
 
     public List<StoryBoardDto> getStoryBoardsByProject(long projectId){
@@ -58,6 +65,8 @@ public class StoryBoardServiceImpl implements StoryBoardService {
         model.setMoneySpent(storyBoardDto.getMoneySpent());
         model.setVerified(storyBoardDto.isVerified());
         model.setProject(projectRepository.getById(storyBoardDto.getProjectId()));
+        GalleryDto galleryDto = new GalleryDto();
+        model.setGallery(galleryRepository.save(galleryMapper.convertToModel(galleryDto)));
 
         return mapper.convertToDto(storyBoardRepository.save(model));
     }

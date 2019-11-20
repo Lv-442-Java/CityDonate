@@ -9,9 +9,10 @@ import java.util.List;
 
 @Repository
 public interface MediaRepository extends JpaRepository<Media, Long> {
-    List<Media> getPhotosByProjectIdAndMediaTypeAndStoryBoard_IdNull(long projectId, MediaType mediaType);
+    List<Media> getPhotosByGalleryIdAndMediaType(long galleryId, MediaType mediaType);
     Media findByFileId(String fileId);
-    Media findByNameAndProjectId(String name, long projectId);
+    Media findByNameAndGalleryId(String name, long galleryId);
     Media findByName(String name);
-    List<Media> getFilesByProjectId(long projectId);
+    List<Media> getFilesByGalleryId(long galleryId);
+    Media getFileByFileIdAndGalleryId(String fileId, long galleryId);
 }

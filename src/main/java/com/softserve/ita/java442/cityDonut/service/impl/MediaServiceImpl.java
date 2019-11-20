@@ -41,7 +41,6 @@ public class MediaServiceImpl implements MediaService {
     public MediaDto saveMedia(MediaDto mediaDto, String fileName) {
         Media mediaModel = createMediaModelFromDtoData(mediaDto, fileName);
         mediaRepository.save(mediaModel);
-        System.out.println(mediaRepository.findByFileId(mediaModel.getFileId()));
         MediaDto savedMediaDto = mediaMapper.convertToDto(mediaRepository.findByFileId(mediaModel.getFileId()));
         return savedMediaDto;
     }
@@ -75,24 +74,24 @@ public class MediaServiceImpl implements MediaService {
         return uuid.toString();
     }
 
-    Media getFileByNameAndProjectId(String fileName, long projectId) {
-        Media media = mediaRepository.findByNameAndProjectId(fileName, projectId);
+    Media getFileByFileIdAndGalleryId(String fileName, long galleryId) {
+        Media media = mediaRepository.getFileByFileIdAndGalleryId(fileName, galleryId);
         if (media == null) {
-            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + projectId);
+            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + galleryId);
         }
         return media;
     }
 
-    List<MediaDto> getListOfPhotoDto(long projectId) {
+    List<MediaDto> getListOfPhotoDto(long galleryId) {
         MediaType mediaType = mediaTypeRepository.findByType("photo");
-        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectIdAndMediaTypeAndStoryBoard_IdNull(projectId, mediaType));
+        return mediaMapper.convertListToDto(mediaRepository.getPhotosByGalleryIdAndMediaType(galleryId, mediaType));
     }
 
-    public List<MediaDto> getDtoList(long projectId) {
-        return mediaMapper.convertListToDto(mediaRepository.getFilesByProjectId(projectId));
+    List<MediaDto> getDtoList(long galleryId) {
+        return mediaMapper.convertListToDto(mediaRepository.getFilesByGalleryId(galleryId));
     }
 
-    public MediaDto getDtoForFile(String fileId) {
+    MediaDto getDtoForFile(String fileId) {
         return mediaMapper.convertToDto(mediaRepository.findByFileId(fileId));
     }
 

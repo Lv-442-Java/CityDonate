@@ -25,7 +25,5 @@ public class MediaDto {
 
     private Timestamp creationDate;
 
-    private long projectId;
-
-    private long storyBoardId;
+    private long galleryId;
 }

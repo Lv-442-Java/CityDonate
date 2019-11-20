@@ -7,6 +7,7 @@ import com.softserve.ita.java442.cityDonut.exception.CategoryNotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.NotEnoughPermission;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.ProjectNotFoundException;
+import com.softserve.ita.java442.cityDonut.mapper.gallery.GalleryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.*;
 import com.softserve.ita.java442.cityDonut.model.*;
 import com.softserve.ita.java442.cityDonut.repository.*;
@@ -72,6 +73,12 @@ public class ProjectServiceImpl implements ProjectService {
         this.userService = userService;
         this.entityManagerFactory = entityManagerFactory;
     }
+
+    @Autowired
+    private GalleryRepository galleryRepository;
+
+    @Autowired
+    private GalleryMapper galleryMapper;
 
     @Override
     public MainProjectInfoDto getProjectById(long id) {
@@ -140,8 +147,11 @@ public class ProjectServiceImpl implements ProjectService {
         Project projectModel = createProjectModelFromDtoData(projectDto, userId);
         projectModel.setCategories(getValidCategoriesFromCategoriesDto(projectDto.getCategories()));
         Project resultOfQuery = projectRepository.save(projectModel);
+        Gallery gallery= new Gallery();
+        gallery.setProject(resultOfQuery);
+        resultOfQuery.setGallery(galleryRepository.saveAndFlush(gallery));
         NewProjectDto result = newProjectMapper.convertToDto(resultOfQuery);
-        projectRepository.flush();
+        projectRepository.flush();  //pa
         return result;
     }
 

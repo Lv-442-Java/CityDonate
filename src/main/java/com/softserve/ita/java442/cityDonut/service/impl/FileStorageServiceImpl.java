@@ -54,14 +54,14 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public MediaDto storeFile(MultipartFile file, long projectId) {
+    public MediaDto storeFile(MultipartFile file, long Id) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         MediaDto mediaDto = new MediaDto();
         try {
             if (fileName.contains("..")) {
                 throw new FileStorageException(ErrorMessage.INVALID_CHARACTER + fileName);
             }
-            mediaDto.setProjectId(projectId);
+            mediaDto.setGalleryId(Id);
             MediaDto savedMediaDto = mediaService.saveMedia(mediaDto, fileName);
             String fileIdWithExt = mediaService.fileIDWithExtension(savedMediaDto);
             Path targetLocation = this.fileStorageLocation.resolve(fileIdWithExt);
@@ -93,12 +93,11 @@ public class FileStorageServiceImpl implements FileStorageService {
         DownloadFileResponse fileResponse = new DownloadFileResponse();
         fileResponse.setFileName(mediaDto.getName());
         fileResponse.setMediaType(mediaDto.getMediaType().getType());
-        fileResponse.setProjectId(mediaDto.getProjectId());
+        fileResponse.setGalleryId(mediaDto.getGalleryId());
         return fileResponse;
     }
 
-    public List<String> getPhotosId(long projectId) {
-        List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(projectId);
+    public List<String> getPhotosId(long projectId) {List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(projectId);
         return getFilesId(mediaDtoList);
     }
 
@@ -107,14 +106,14 @@ public class FileStorageServiceImpl implements FileStorageService {
         return getFilesId(mediaDtoList);
     }
 
-    public String getAvatarId(long projectId) {
+    public String getAvatarName(long projectId) {
         ArrayList<MediaDto> photoDtoList = (ArrayList<MediaDto>) mediaService.getListOfPhotoDto(projectId);
         MediaDto dto = photoDtoList.get(0);
-        return dto.getFileId();
+        return dto.getName();
     }
 
     public boolean delete(long projectId, String fileName) {
-        MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByNameAndProjectId(fileName, projectId));
+        MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByFileIdAndGalleryId(fileName, projectId));
         String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
         Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
         File file = new File(String.valueOf(filePath));
@@ -133,5 +132,4 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
         return fileNames;
     }
-
 }

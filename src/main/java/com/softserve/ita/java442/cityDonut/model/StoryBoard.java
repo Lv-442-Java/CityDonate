@@ -12,8 +12,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"description", "media"})
-@ToString(exclude = {"media"})
+@EqualsAndHashCode(exclude = {"description"})
+//@ToString(exclude = {"media"})
 @Table(name = "story_board")
 public class StoryBoard {
 
@@ -33,9 +33,9 @@ public class StoryBoard {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @OneToMany(mappedBy = "storyBoard", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
-    private List<Media> media;
+    @OneToOne
+    @JoinColumn(name = "gallery_id", referencedColumnName = "id")
+    private Gallery gallery;
 
     @Column(name = "is_verified", nullable = false)
     private boolean isVerified;
