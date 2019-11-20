@@ -1,4 +1,4 @@
-package com.softserve.ita.java442.cityDonut.controller;
+package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
