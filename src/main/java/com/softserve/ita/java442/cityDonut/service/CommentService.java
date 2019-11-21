@@ -11,4 +11,8 @@ public interface CommentService {
     CommentDto deleteComment(long commentId);
 
     CommentDto editComment(long commentId, CommentDto commentDto);
+
+    String notifyUsers(long commentId);
+
+    String denotifyUsers(long commentId);
 }

@@ -37,4 +37,14 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(service.editComment(commentId, commentText));
    }
 
+
+    @PatchMapping("/{commentId}/notify")
+    public ResponseEntity notifyUsers(@PathVariable long commentId) {
+        return ResponseEntity.ok(service.notifyUsers(commentId));
+    }
+
+    @PatchMapping("/denotify")
+    public ResponseEntity denotifyUsers(@PathVariable long id) {
+        return ResponseEntity.ok(service.denotifyUsers(id));
+    }
 }
