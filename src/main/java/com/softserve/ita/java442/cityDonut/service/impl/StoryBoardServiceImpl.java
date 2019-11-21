@@ -32,25 +32,29 @@ public class StoryBoardServiceImpl implements StoryBoardService {
     private GalleryRepository galleryRepository;
 
 
-    public List<StoryBoardDto> getStoryBoardsByProject(long projectId){
+    @Override
+    public List<StoryBoardDto> getStoryBoardsByProject(long projectId) {
         List<StoryBoardDto> storyBoardDtos;
-        storyBoardDtos =  mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_Id(projectId));
+        storyBoardDtos = mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_Id(projectId));
         return storyBoardDtos;
     }
 
-    public List<StoryBoardDto> getVerifiedStoryBoardsByProject(long projectId){
+    @Override
+    public List<StoryBoardDto> getVerifiedStoryBoardsByProject(long projectId) {
         List<StoryBoardDto> storyBoardDtos;
-        storyBoardDtos =  mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_IdAndIsVerifiedIsTrueOrderByDateDesc(projectId));
+        storyBoardDtos = mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_IdAndIsVerifiedIsTrueOrderByDateDesc(projectId));
         return storyBoardDtos;
     }
 
-    public StoryBoardDto createStoryBoard(StoryBoardDto storyBoard){
+    @Override
+    public StoryBoardDto createStoryBoard(StoryBoardDto storyBoard) {
         StoryBoardDto newStoryBoard;
         newStoryBoard = mapper.convertToDto(storyBoardRepository.save(mapper.convertToModel(storyBoard)));
-        return  newStoryBoard;
+        return newStoryBoard;
     }
 
-    public StoryBoardDto editStoryBoard(StoryBoardDto storyBoardDto){
+    @Override
+    public StoryBoardDto editStoryBoard(StoryBoardDto storyBoardDto) {
 
         StoryBoard model;
         if (storyBoardDto != null) {

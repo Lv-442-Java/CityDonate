@@ -4,8 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Builder
@@ -13,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = {"description"})
-//@ToString(exclude = {"media"})
 @Table(name = "story_board")
 public class StoryBoard {
 

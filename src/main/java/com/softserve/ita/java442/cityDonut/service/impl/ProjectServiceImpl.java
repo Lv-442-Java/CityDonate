@@ -7,7 +7,6 @@ import com.softserve.ita.java442.cityDonut.exception.CategoryNotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.NotEnoughPermission;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.exception.ProjectNotFoundException;
-import com.softserve.ita.java442.cityDonut.mapper.gallery.GalleryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.project.*;
 import com.softserve.ita.java442.cityDonut.model.*;
 import com.softserve.ita.java442.cityDonut.repository.*;
@@ -49,16 +48,17 @@ public class ProjectServiceImpl implements ProjectService {
     private RoleRepository roleRepository;
     private UserService userService;
     private EntityManagerFactory entityManagerFactory;
+    private GalleryRepository galleryRepository;
 
     @Autowired
     public ProjectServiceImpl(ProjectRepository projectRepository,
                               CategoryService categoryService, PreviewProjectMapper previewProjectMapper,
-                               MainProjectInfoMapper mainProjectInfoMapper,
+                              MainProjectInfoMapper mainProjectInfoMapper,
                               DonatedUserProjectRepository donatedUserProjectRepository,
                               ProjectStatusRepository projectStatusRepository, CategoryRepository categoryRepository,
                               ProjectByUserDonateMapper projectByUserDonateMapper, NewProjectMapper newProjectMapper,
                               EditedProjectMapper editedProjectMapper, RoleRepository roleRepository,
-                              UserService userService,EntityManagerFactory entityManagerFactory) {
+                              UserService userService, EntityManagerFactory entityManagerFactory,GalleryRepository galleryRepository) {
         this.projectRepository = projectRepository;
         this.categoryService = categoryService;
         this.previewProjectMapper = previewProjectMapper;
@@ -72,13 +72,8 @@ public class ProjectServiceImpl implements ProjectService {
         this.roleRepository = roleRepository;
         this.userService = userService;
         this.entityManagerFactory = entityManagerFactory;
+        this.galleryRepository = galleryRepository;
     }
-
-    @Autowired
-    private GalleryRepository galleryRepository;
-
-    @Autowired
-    private GalleryMapper galleryMapper;
 
     @Override
     public MainProjectInfoDto getProjectById(long id) {
@@ -147,7 +142,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project projectModel = createProjectModelFromDtoData(projectDto, userId);
         projectModel.setCategories(getValidCategoriesFromCategoriesDto(projectDto.getCategories()));
         Project resultOfQuery = projectRepository.save(projectModel);
-        Gallery gallery= new Gallery();
+        Gallery gallery = new Gallery();
         gallery.setProject(resultOfQuery);
         resultOfQuery.setGallery(galleryRepository.saveAndFlush(gallery));
         NewProjectDto result = newProjectMapper.convertToDto(resultOfQuery);

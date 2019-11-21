@@ -32,9 +32,7 @@ public class FieldsCheckServiceImpl implements FieldsCheckService {
 
     @Override
     public FieldsCheckDto update(FieldsCheckDto fieldsCheckDto) {
-        FieldsCheck fieldsCheck;
-        fieldsCheck = fieldsCheckRepository
-                .findById(fieldsCheckDto.getId())
+        FieldsCheck fieldsCheck = fieldsCheckRepository.findById(fieldsCheckDto.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.FIELD_INFO_NOT_FOUND_BY_ID));
         fieldsCheck.setAreDocumentsValid(fieldsCheckDto.isAreDocumentsValid());
         fieldsCheck.setArePhotosValid(fieldsCheckDto.isArePhotosValid());
