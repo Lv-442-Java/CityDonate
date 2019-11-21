@@ -53,7 +53,6 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    @Override
     public MediaDto storeFile(MultipartFile file, long Id) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         MediaDto mediaDto = new MediaDto();
@@ -97,7 +96,8 @@ public class FileStorageServiceImpl implements FileStorageService {
         return fileResponse;
     }
 
-    public List<String> getPhotosId(long galleryId) {List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(galleryId);
+    public List<String> getPhotosId(long galleryId) {
+        List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(galleryId);
         return getFilesId(mediaDtoList);
     }
 
