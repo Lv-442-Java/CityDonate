@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.scheduling;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
@@ -34,8 +35,8 @@ public class ScheduledTasksPool {
         if (taskPool.get(userId).size() == 0) removeUserTasks(userId);
     }
 
-    public void createTask(long userId, long projectId, ScheduledFuture<?> scheduledFuture, String text) {
-        ScheduledTaskContainer scheduledTaskContainer = new ScheduledTaskContainer(text, scheduledFuture);
+    public void createTask(long userId, long projectId, ScheduledFuture<?> scheduledFuture, String text, List<Long> userList) {
+        ScheduledTaskContainer scheduledTaskContainer = new ScheduledTaskContainer(text, userList, scheduledFuture);
         if (taskPool.get(userId) != null) {
             taskPool.get(userId).put(projectId, scheduledTaskContainer);
         }

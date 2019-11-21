@@ -14,14 +14,12 @@ import com.softserve.ita.java442.cityDonut.scheduling.SendEmailNotificationTask;
 import com.softserve.ita.java442.cityDonut.service.CommentService;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 
 @Service
@@ -37,6 +35,8 @@ public class CommentServiceImpl implements CommentService {
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
     @Autowired
     ScheduledTasksPool scheduledTasksPool;
+    @Autowired
+    ApplicationContext context;
 
     @Override
     public List<CommentDto> showComments(long projectId) {
@@ -76,27 +76,45 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public String notifyUsers(long commentId) {
-        long[] usersArray = new long[] {3L, 4L};
+        List<Long> userIdList = new ArrayList<>();
+        Map<Long, String> emails = new HashMap<>();
+        //userIdList.add(2L);
+        //userIdList.add(3L);
+        //userIdList.add(4L);
         Comment comment = commentRepository.getOne(commentId);
         long userId = comment.getUser().getId();
         long projectId = comment.getProject().getId();
+        List<User> subscribedUsers = comment.getProject().getSubscribedUsers();
+        System.out.println(Arrays.toString(subscribedUsers.toArray()));
+        System.out.println(subscribedUsers);
+        subscribedUsers.forEach((user -> {userIdList.add(user.getId());emails.put(user.getId(), user.getEmail());}));
+        System.out.println(userIdList);
+
         ScheduledTaskContainer taskContainer = scheduledTasksPool.getTask(userId, projectId);
         if (taskContainer == null
                 || taskContainer.getScheduledFuture().isDone()
                 || taskContainer.getScheduledFuture().isCancelled()) {
+            SendEmailNotificationTask sendTask = context.getBean(SendEmailNotificationTask.class);
+            sendTask.setUserList(userIdList);
+            sendTask.setMessageArray(new ArrayList<String>(){{add(comment.getDescription());}});
+            sendTask.setEmails(emails);
             ScheduledFuture<?> scheduledFuture = threadPoolTaskScheduler.schedule(
-                    new SendEmailNotificationTask(usersArray, new ArrayList<String>(){{add(comment.getDescription());}}),
+                    sendTask,
                     new Date(System.currentTimeMillis() + 5000)
             );
-            scheduledTasksPool.createTask(userId, projectId, scheduledFuture, comment.getDescription());
+            scheduledTasksPool.createTask(userId, projectId, scheduledFuture, comment.getDescription(), userIdList);
         }
         else {
             List<String> messageList = taskContainer.getMessages();
             messageList.add(comment.getDescription());
 
             if (taskContainer.getScheduledFuture().cancel(false)) {
+                SendEmailNotificationTask sendTask = context.getBean(SendEmailNotificationTask.class);
+                sendTask.setUserList(userIdList);
+                sendTask.setMessageArray(messageList);
+                sendTask.setEmails(emails);
                 ScheduledFuture<?> scheduledFuture = threadPoolTaskScheduler.schedule(
-                        new SendEmailNotificationTask(usersArray, messageList),
+                        sendTask,
                         new Date(System.currentTimeMillis() + 5000)
                 );
                 taskContainer.setScheduledFuture(scheduledFuture);
@@ -116,8 +134,14 @@ public class CommentServiceImpl implements CommentService {
             }
             else {
                 if (taskContainer != null) {
-                    taskContainer.getScheduledFuture().cancel(false);
-                    scheduledTasksPool.removeUserProjectTask(userId, projectId);
+                    List<Long> userList = taskContainer.getUserList();
+                    if (userList == null || userList.size() == 0 || (userList.size() == 1 && userList.get(0) == userId)) {
+                        taskContainer.getScheduledFuture().cancel(false);
+                        scheduledTasksPool.removeUserProjectTask(userId, projectId);
+                    }
+                    else if (userList.size() > 1) {
+                        if (userList.contains(userId)) {userList.remove(userId);}
+                    }
                 }
                 else {
                     scheduledTasksPool.removeUserTasks(userId);

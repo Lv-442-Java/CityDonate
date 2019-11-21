@@ -14,13 +14,15 @@ import java.util.concurrent.ScheduledFuture;
 public class ScheduledTaskContainer {
 
     private List<String> messages;
+    private List<Long> userList;
 
     private ScheduledFuture<?> scheduledFuture;
 
-    public ScheduledTaskContainer(String text, ScheduledFuture<?> scheduledFuture) {
+    public ScheduledTaskContainer(String text, List<Long> userList, ScheduledFuture<?> scheduledFuture) {
         this.messages = new ArrayList<>();
         messages.add(text);
         this.scheduledFuture = scheduledFuture;
+        this.userList = userList;
     }
 
 }
