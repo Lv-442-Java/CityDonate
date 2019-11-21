@@ -60,8 +60,8 @@ public class StoryBoardMediaController {
     }
 
     @GetMapping("/fileInfo")
-    public List<DownloadFileResponse> getAllFilesInfo(long id, long galleryId){
-        ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(galleryId);
+    public List<DownloadFileResponse> getAllFilesInfo(@PathVariable("id") long id){
+        ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(id);
         ArrayList<DownloadFileResponse> result = new ArrayList<>();
         for (String fileId : filesId) {
             result.add(getFileInfo(id, fileId));
