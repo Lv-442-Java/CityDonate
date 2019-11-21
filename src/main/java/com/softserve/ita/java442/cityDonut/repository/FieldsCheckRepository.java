@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FieldsCheckRepository extends JpaRepository<FieldsCheck,Long> {
+public interface FieldsCheckRepository extends JpaRepository<FieldsCheck, Long> {
     List<FieldsCheck> getAllByProjectId(long project_id);
 }

@@ -19,23 +19,23 @@ public class StoryBoardController {
     private StoryBoardServiceImpl service;
 
     @GetMapping("/verified")
-    public ResponseEntity<List<StoryBoardDto>> getVerifiedStoryBoardByProject(@PathVariable("id") long projectId){
+    public ResponseEntity<List<StoryBoardDto>> getVerifiedStoryBoardByProject(@PathVariable("id") long projectId) {
         return ResponseEntity.status(HttpStatus.OK).body(service.getVerifiedStoryBoardsByProject(projectId));
     }
 
     @GetMapping()
-    public ResponseEntity<List<StoryBoardDto>> getStoryBoardByProject(@PathVariable("id") long projectId){
+    public ResponseEntity<List<StoryBoardDto>> getStoryBoardByProject(@PathVariable("id") long projectId) {
         return ResponseEntity.status(HttpStatus.OK).body(service.getStoryBoardsByProject(projectId));
     }
 
     @PostMapping()
-    public ResponseEntity<StoryBoardDto> createStoryBoard(@RequestBody StoryBoardDto storyBoardDto){
+    public ResponseEntity<StoryBoardDto> createStoryBoard(@RequestBody StoryBoardDto storyBoardDto) {
         StoryBoardDto storyBoard = service.createStoryBoard(storyBoardDto);
         return new ResponseEntity<>(storyBoard, HttpStatus.OK);
     }
 
     @PutMapping()
-    public ResponseEntity<StoryBoardDto> editStoryBoard(@RequestBody StoryBoardDto storyBoardDto){
-        return ResponseEntity.status(HttpStatus.OK).body(service. editStoryBoard(storyBoardDto));
+    public ResponseEntity<StoryBoardDto> editStoryBoard(@RequestBody StoryBoardDto storyBoardDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.editStoryBoard(storyBoardDto));
     }
 }

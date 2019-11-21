@@ -53,12 +53,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     public ProjectServiceImpl(ProjectRepository projectRepository,
                               CategoryService categoryService, PreviewProjectMapper previewProjectMapper,
-                               MainProjectInfoMapper mainProjectInfoMapper,
+                              MainProjectInfoMapper mainProjectInfoMapper,
                               DonatedUserProjectRepository donatedUserProjectRepository,
                               ProjectStatusRepository projectStatusRepository, CategoryRepository categoryRepository,
                               ProjectByUserDonateMapper projectByUserDonateMapper, NewProjectMapper newProjectMapper,
                               EditedProjectMapper editedProjectMapper, RoleRepository roleRepository,
-                              UserService userService,EntityManagerFactory entityManagerFactory) {
+                              UserService userService, EntityManagerFactory entityManagerFactory) {
         this.projectRepository = projectRepository;
         this.categoryService = categoryService;
         this.previewProjectMapper = previewProjectMapper;
@@ -147,7 +147,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project projectModel = createProjectModelFromDtoData(projectDto, userId);
         projectModel.setCategories(getValidCategoriesFromCategoriesDto(projectDto.getCategories()));
         Project resultOfQuery = projectRepository.save(projectModel);
-        Gallery gallery= new Gallery();
+        Gallery gallery = new Gallery();
         gallery.setProject(resultOfQuery);
         resultOfQuery.setGallery(galleryRepository.saveAndFlush(gallery));
         NewProjectDto result = newProjectMapper.convertToDto(resultOfQuery);

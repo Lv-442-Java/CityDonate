@@ -3,7 +3,6 @@ package com.softserve.ita.java442.cityDonut.mapper.project;
 import com.softserve.ita.java442.cityDonut.dto.project.MainProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.mapper.category.CategoryMapper;
-import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.mapper.projectStatus.ProjectStatusMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserNameMapper;
 import com.softserve.ita.java442.cityDonut.model.Donate;

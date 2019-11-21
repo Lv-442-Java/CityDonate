@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface StoryBoardRepository extends JpaRepository<StoryBoard, Long> {
     List<StoryBoard> getStoryBoardsByProject_Id(long projectId);
+
     List<StoryBoard> getStoryBoardsByProject_IdAndIsVerifiedIsTrueOrderByDateDesc(long projectId);
 }
