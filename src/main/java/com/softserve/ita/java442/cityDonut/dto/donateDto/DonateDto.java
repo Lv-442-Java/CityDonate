@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,7 +16,7 @@ public class DonateDto {
 
     private long id;
 
-    private LocalDateTime date;
+    private Timestamp date;
 
     private double sum;
 

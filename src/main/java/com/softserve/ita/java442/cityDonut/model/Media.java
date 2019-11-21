@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,8 +12,8 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"name", "mediaType", "project", "storyBoard"})
-@ToString(exclude = {"project", "storyBoard", "mediaType"})
+//@EqualsAndHashCode(exclude = {"name", "mediaType", "project", "storyBoard"})
+//@ToString(exclude = {"project", "storyBoard", "mediaType"})
 public class Media {
 
     @Id
@@ -26,7 +27,7 @@ public class Media {
     private String fileId;
 
     @Column(name = "create_date")
-    private LocalDateTime creationDate;
+    private Timestamp creationDate;
 
     @ManyToOne
     @JoinColumn(name = "media_type_id")
@@ -36,11 +37,7 @@ public class Media {
     @JoinColumn(name = "extension_id")
     private Extension extension;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project project;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "story_board_id")
-    private StoryBoard storyBoard;
+    @ManyToOne
+    @JoinColumn(name = "gallery_id", nullable = false)
+    private Gallery gallery;
 }

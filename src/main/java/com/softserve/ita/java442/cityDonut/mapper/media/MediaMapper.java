@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.mapper.media;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.mapper.GeneralMapper;
 import com.softserve.ita.java442.cityDonut.model.Media;
+import com.softserve.ita.java442.cityDonut.repository.GalleryRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ import java.util.List;
 public class MediaMapper implements GeneralMapper<Media, MediaDto> {
 
     @Autowired
-    private ProjectRepository projectRepository;
+    private GalleryRepository galleryRepository;
 
     public List<MediaDto> convertListToDto(List<Media> modelList) {
         List<MediaDto> dtoList = new ArrayList<>();
@@ -40,7 +41,7 @@ public class MediaMapper implements GeneralMapper<Media, MediaDto> {
                 .extension(model.getExtension())
                 .fileId(model.getFileId())
                 .mediaType(model.getMediaType())
-                .projectId(model.getProject().getId())
+                .galleryId(model.getGallery().getId())
                 .creationDate(model.getCreationDate())
                 .build();
     }
@@ -53,7 +54,7 @@ public class MediaMapper implements GeneralMapper<Media, MediaDto> {
                 .extension(dto.getExtension())
                 .fileId(dto.getFileId())
                 .mediaType(dto.getMediaType())
-                .project(projectRepository.getById(dto.getProjectId()))
+                .gallery(galleryRepository.getOne(dto.getGalleryId()))
                 .build();
     }
 }

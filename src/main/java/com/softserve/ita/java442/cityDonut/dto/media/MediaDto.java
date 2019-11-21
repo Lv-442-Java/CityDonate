@@ -4,7 +4,7 @@ import com.softserve.ita.java442.cityDonut.model.Extension;
 import com.softserve.ita.java442.cityDonut.model.MediaType;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Data
 @Builder
@@ -22,9 +22,7 @@ public class MediaDto {
 
     private MediaType mediaType;
 
-    private LocalDateTime creationDate;
+    private Timestamp creationDate;
 
-    private long projectId;
-
-    private long storyBoardId;
+    private long galleryId;
 }

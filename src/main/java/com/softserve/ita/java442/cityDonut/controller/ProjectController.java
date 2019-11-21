@@ -26,7 +26,7 @@ public class ProjectController {
     private UserService userService;
     private FieldsCheckService fieldsCheckService;
 
-@Autowired
+    @Autowired
     public ProjectController(ProjectService projectService, UserService userService, FieldsCheckService fieldsCheckService) {
         this.projectService = projectService;
         this.userService = userService;
@@ -70,10 +70,8 @@ public class ProjectController {
     }
 
     @PostMapping("/project")
-    public ResponseEntity<NewProjectDto> createProject( @RequestBody NewProjectDto project) {
-        System.out.println(userService.getCurrentUser());
-        return
-                new ResponseEntity<>(
+    public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project) {
+        return new ResponseEntity<>(
                 projectService.saveProject(project, userService.getCurrentUser().getId()),
                 HttpStatus.OK
         );
