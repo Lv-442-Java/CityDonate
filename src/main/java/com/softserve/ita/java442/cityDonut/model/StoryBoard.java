@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = {"description"})
-//@ToString(exclude = {"media"})
 @Table(name = "story_board")
 public class StoryBoard {
 
