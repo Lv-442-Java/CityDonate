@@ -20,7 +20,6 @@ public class FieldsCheckController {
 
     @GetMapping("/get/{id}")
     public ResponseEntity<List<FieldsCheckDto>> getAllCategories(@PathVariable long id) {
-        System.out.println("In ");
         return new ResponseEntity<>(fieldsCheckService.getAllByProjectId(id), HttpStatus.OK);
     }
 }
