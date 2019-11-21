@@ -5,7 +5,7 @@ import com.softserve.ita.java442.cityDonut.dto.media.FileUpload;
 import com.softserve.ita.java442.cityDonut.dto.media.UploadFileResponse;
 import com.softserve.ita.java442.cityDonut.repository.StoryBoardRepository;
 import com.softserve.ita.java442.cityDonut.service.impl.FileStorageServiceImpl;
-import com.softserve.ita.java442.cityDonut.service.impl.GalleryImpl;
+import com.softserve.ita.java442.cityDonut.service.impl.GalleryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -25,20 +25,20 @@ import java.util.stream.Collectors;
 public class StoryBoardMediaController {
 
     private StoryBoardRepository storyBoardRepository;
-    private GalleryImpl galleryImpl;
+    private GalleryServiceImpl galleryServiceImpl;
     private FileStorageServiceImpl fileStorageService;
 
     @Autowired
-    public StoryBoardMediaController(StoryBoardRepository storyBoardRepository,GalleryImpl galleryImpl, FileStorageServiceImpl fileStorageService) {
+    public StoryBoardMediaController(StoryBoardRepository storyBoardRepository, GalleryServiceImpl galleryServiceImpl, FileStorageServiceImpl fileStorageService) {
         this.storyBoardRepository = storyBoardRepository;
-        this.galleryImpl = galleryImpl;;
+        this.galleryServiceImpl = galleryServiceImpl;;
         this.fileStorageService = fileStorageService;
     }
 
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile( MultipartFile file, @PathVariable("id")  long id) {
         long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
-        FileUpload fileUpload = galleryImpl.uploadFile(file, galleryId);
+        FileUpload fileUpload = galleryServiceImpl.uploadFile(file, galleryId);
         String downloadUrl = buildDownloadUri(id, fileUpload.getFileId());
         return new UploadFileResponse(fileUpload.getFileName(), downloadUrl,
                 fileUpload.getFileType(), file.getSize());
@@ -60,7 +60,8 @@ public class StoryBoardMediaController {
     }
 
     @GetMapping("/fileInfo")
-    public List<DownloadFileResponse> getAllFilesInfo(long id, long galleryId){
+    public List<DownloadFileResponse> getAllFilesInfo(@PathVariable("id") long id){
+        long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
         ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(galleryId);
         ArrayList<DownloadFileResponse> result = new ArrayList<>();
         for (String fileId : filesId) {
@@ -72,7 +73,7 @@ public class StoryBoardMediaController {
     @GetMapping("/downloadFile/{fileId:.+}")
     public ResponseEntity<Resource> getResource(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileId) {
         long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
-        return galleryImpl.getResource(request, fileId, galleryId);
+        return galleryServiceImpl.getResource(request, fileId, galleryId);
     }
 
     @GetMapping("/getUrl")
@@ -96,7 +97,7 @@ public class StoryBoardMediaController {
     @DeleteMapping("/deleteFile/{fileName:.+}")
     public ResponseEntity<List<String>> deleteFile(@PathVariable("id") long id, @PathVariable String fileName) {
         long galleryId = storyBoardRepository.getOne(id).getGallery().getId();
-        ArrayList<String> filesId = galleryImpl.deleteFile(id, fileName, galleryId);
+        ArrayList<String> filesId = galleryServiceImpl.deleteFile(id, fileName, galleryId);
         ArrayList<String> result = new ArrayList<>();
         for (String fileId : filesId) {
             result.add(buildDownloadUri(id, fileId));
