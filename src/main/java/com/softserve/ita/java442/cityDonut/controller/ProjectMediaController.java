@@ -36,7 +36,7 @@ public class ProjectMediaController {
     }
 
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(MultipartFile file, @PathVariable("id") long id) {
+    public UploadFileResponse uploadFile(@RequestParam("file")MultipartFile file, @PathVariable("id") long id) {
         long galleryId = projectRepository.getById(id).getGallery().getId();
         FileUpload fileUpload = galleryServiceImpl.uploadFile(file, galleryId);
         String downloadUrl = buildDownloadUri(id, fileUpload.getFileId());
