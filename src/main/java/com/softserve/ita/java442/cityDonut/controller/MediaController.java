@@ -28,14 +28,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/gallery/{id}")
 public class MediaController {
 
-    private ProjectRepository projectRepository;
-    private FileStorageServiceImpl fileStorageService;
-
     @Autowired
-    public MediaController(ProjectRepository projectRepository, FileStorageServiceImpl fileStorageService) {
-        this.projectRepository = projectRepository;
-        this.fileStorageService = fileStorageService;
-    }
+    private FileStorageServiceImpl fileStorageService;
 
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("id") long id) {

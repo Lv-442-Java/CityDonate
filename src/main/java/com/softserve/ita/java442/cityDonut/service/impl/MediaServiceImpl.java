@@ -7,9 +7,7 @@ import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Extension;
 import com.softserve.ita.java442.cityDonut.model.Media;
 import com.softserve.ita.java442.cityDonut.model.MediaType;
-import com.softserve.ita.java442.cityDonut.repository.ExtensionRepository;
-import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
-import com.softserve.ita.java442.cityDonut.repository.MediaTypeRepository;
+import com.softserve.ita.java442.cityDonut.repository.*;
 import com.softserve.ita.java442.cityDonut.service.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,14 +26,19 @@ public class MediaServiceImpl implements MediaService {
     private MediaRepository mediaRepository;
     private ExtensionRepository extensionRepository;
     private MediaMapper mediaMapper;
+    private ProjectRepository projectRepository;
+    private StoryBoardRepository storyBoardRepository;
 
     @Autowired
     public MediaServiceImpl(MediaTypeRepository mediaTypeRepository, MediaRepository mediaRepository,
-                            ExtensionRepository extensionRepository, MediaMapper mediaMapper) {
+                            ExtensionRepository extensionRepository, MediaMapper mediaMapper,
+                            ProjectRepository projectRepository, StoryBoardRepository storyBoardRepository) {
         this.mediaTypeRepository = mediaTypeRepository;
         this.mediaRepository = mediaRepository;
         this.extensionRepository = extensionRepository;
         this.mediaMapper = mediaMapper;
+        this.projectRepository = projectRepository;
+        this.storyBoardRepository = storyBoardRepository;
     }
 
     @Transactional
@@ -99,5 +102,15 @@ public class MediaServiceImpl implements MediaService {
     void deleteInDB(MediaDto dto) {
         Media mediaToDelete = mediaMapper.convertToModel(dto);
         mediaRepository.delete(mediaToDelete);
+    }
+
+    public long getProjectGalleryId(long projectId){
+        long galleryId = projectRepository.getById(projectId).getGallery().getId();
+        return galleryId;
+    }
+
+   public long getStoryBoardGalleryId(long storyBoardId){
+        long galleryId = storyBoardRepository.getOne(storyBoardId).getGallery().getId();
+        return galleryId;
     }
 }
