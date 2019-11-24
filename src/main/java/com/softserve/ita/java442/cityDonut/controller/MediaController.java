@@ -107,16 +107,16 @@ public class MediaController {
         return ResponseEntity.status(HttpStatus.OK).body(buildDownloadUri(id, fileName));
     }
 
-    @DeleteMapping("/deleteFile/{fileName:.+}")
-    public ResponseEntity<List<String>> deleteFile(@PathVariable("id") long id, @PathVariable String fileName) {
-        boolean isRemoved = fileStorageService.delete(id, fileName);
+    @DeleteMapping("/deleteFile/{fileId:.+}")
+    public ResponseEntity<List<String>> deleteFile(@PathVariable("id") long id, @PathVariable String fileId) {
+        boolean isRemoved = fileStorageService.delete(id, fileId);
         if (!isRemoved) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(id);
         ArrayList<String> result = new ArrayList<>();
-        for (String fileId : filesId) {
-            result.add(buildDownloadUri(id, fileId));
+        for (String newFileId : filesId) {
+            result.add(buildDownloadUri(id, newFileId));
         }
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
