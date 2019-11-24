@@ -104,12 +104,12 @@ public class MediaServiceImpl implements MediaService {
         mediaRepository.delete(mediaToDelete);
     }
 
-    public long getProjectGalleryId(long projectId){
+    public long getProjectGalleryId(long projectId) {
         long galleryId = projectRepository.getById(projectId).getGallery().getId();
         return galleryId;
     }
 
-   public long getStoryBoardGalleryId(long storyBoardId){
+    public long getStoryBoardGalleryId(long storyBoardId) {
         long galleryId = storyBoardRepository.getOne(storyBoardId).getGallery().getId();
         return galleryId;
     }

@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 public class GalleryController {
 
-   @Autowired
    private MediaServiceImpl mediaService;
+
+    @Autowired
+    public GalleryController(MediaServiceImpl mediaService) {
+        this.mediaService = mediaService;
+    }
 
     @GetMapping("/project/{id}/gallery")
     public long getProjectGalleryId(@PathVariable long id) {
