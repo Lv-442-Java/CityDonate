@@ -146,7 +146,7 @@ public class ProjectServiceImpl implements ProjectService {
         gallery.setProject(resultOfQuery);
         resultOfQuery.setGallery(galleryRepository.saveAndFlush(gallery));
         NewProjectDto result = newProjectMapper.convertToDto(resultOfQuery);
-        projectRepository.flush();  //pa
+        projectRepository.flush();
         return result;
     }
 

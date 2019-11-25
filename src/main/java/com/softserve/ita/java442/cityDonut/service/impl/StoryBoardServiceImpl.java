@@ -19,17 +19,22 @@ import java.util.List;
 @Service
 public class StoryBoardServiceImpl implements StoryBoardService {
 
-    @Autowired
     private StoryBoardRepository storyBoardRepository;
-    @Autowired
     private ProjectRepository projectRepository;
-    @Autowired
     private StoryBoardMapper mapper;
+    private GalleryMapper galleryMapper;
+    private GalleryRepository galleryRepository;
 
     @Autowired
-    private GalleryMapper galleryMapper;
-    @Autowired
-    private GalleryRepository galleryRepository;
+    public StoryBoardServiceImpl(StoryBoardRepository storyBoardRepository, ProjectRepository projectRepository,
+                                 StoryBoardMapper mapper, GalleryMapper galleryMapper,
+                                 GalleryRepository galleryRepository) {
+        this.storyBoardRepository = storyBoardRepository;
+        this.projectRepository = projectRepository;
+        this.mapper = mapper;
+        this.galleryMapper = galleryMapper;
+        this.galleryRepository = galleryRepository;
+    }
 
 
     @Override
