@@ -96,11 +96,6 @@ public class FileStorageServiceImpl implements FileStorageService {
         return fileResponse;
     }
 
-    public List<String> getPhotosId(long galleryId) {
-        List<MediaDto> mediaDtoList = mediaService.getListOfPhotoDto(galleryId);
-        return getFilesId(mediaDtoList);
-    }
-
     public List<String> getListOfFilesId(long galleryId) {
         List<MediaDto> mediaDtoList = mediaService.getDtoList(galleryId);
         return getFilesId(mediaDtoList);

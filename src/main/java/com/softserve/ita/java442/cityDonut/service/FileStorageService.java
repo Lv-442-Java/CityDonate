@@ -15,8 +15,6 @@ public interface FileStorageService {
 
     DownloadFileResponse getFile(String fileId);
 
-    List<String> getPhotosId(long galleryId);
-
     List<String> getListOfFilesId(long galleryId);
 
     String getAvatarName(long galleryId);
