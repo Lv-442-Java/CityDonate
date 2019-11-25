@@ -30,7 +30,7 @@ public class MediaController {
     @Autowired
     private FileStorageServiceImpl fileStorageService;
 
-    private UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("id") long id) {
+    private UploadFileResponse uploadFile(MultipartFile file, long id) {
         MediaDto responseDto = fileStorageService.storeFile(file, id);
         String fileId = responseDto.getFileId();
         String fileName = responseDto.getName();
