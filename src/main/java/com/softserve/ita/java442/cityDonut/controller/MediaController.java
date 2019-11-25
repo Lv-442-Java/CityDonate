@@ -30,8 +30,7 @@ public class MediaController {
     @Autowired
     private FileStorageServiceImpl fileStorageService;
 
-    @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("id") long id) {
+    private UploadFileResponse uploadFile(MultipartFile file, long id) {
         MediaDto responseDto = fileStorageService.storeFile(file, id);
         String fileId = responseDto.getFileId();
         String fileName = responseDto.getName();
@@ -41,10 +40,9 @@ public class MediaController {
                 mediaType, file.getSize());
     }
 
-    @PostMapping("/uploadMultipleFiles")
+    @PostMapping("/")
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @PathVariable("id") long id) {
-        return Arrays.asList(files)
-                .stream()
+        return Arrays.stream(files)
                 .map(file -> uploadFile(file, id))
                 .collect(Collectors.toList());
     }
@@ -56,7 +54,7 @@ public class MediaController {
         return fileResponse;
     }
 
-    @GetMapping("/fileInfo")
+    @GetMapping("/")
     public List<DownloadFileResponse> getAllFilesInfo(@PathVariable("id") long id){
         ArrayList<String> filesId = (ArrayList<String>) fileStorageService.getListOfFilesId(id);
         ArrayList<DownloadFileResponse> result = new ArrayList<>();
@@ -66,7 +64,7 @@ public class MediaController {
         return result;
     }
 
-    @GetMapping("/downloadFile/{fileId:.+}")
+    @GetMapping("/{fileId:.+}")
     public ResponseEntity<Resource> getResource(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileId) {
         Resource resource = fileStorageService.loadFileAsResource(fileId, id);
         String contentType = null;
@@ -84,23 +82,13 @@ public class MediaController {
                 .body(resource);
     }
 
-    @GetMapping("/getPhotoUrl")
-    public ResponseEntity<List<String>> photoLinks(@PathVariable("id") long id) {
-        ArrayList<String> photoNames = (ArrayList<String>) fileStorageService.getPhotosId(id);
-        ArrayList<String> result = new ArrayList<>();
-        for (String name : photoNames) {
-            result.add(buildDownloadUri(id, name));
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(result);
-    }
-
     @GetMapping("/getAvatar")
     public ResponseEntity<String> avatarLink(@PathVariable("id") long id) {
         String fileName = fileStorageService.getAvatarName(id);
         return ResponseEntity.status(HttpStatus.OK).body(buildDownloadUri(id, fileName));
     }
 
-    @DeleteMapping("/deleteFile/{fileId:.+}")
+    @DeleteMapping("/{fileId:.+}")
     public ResponseEntity<List<String>> deleteFile(@PathVariable("id") long id, @PathVariable String fileId) {
         boolean isRemoved = fileStorageService.delete(id, fileId);
         if (!isRemoved) {
@@ -114,12 +102,12 @@ public class MediaController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    private String buildDownloadUri(long id, String fileName) {
+    private String buildDownloadUri(long id, String fileId) {
         return ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/v1/gallery/")
                 .path(String.valueOf(id))
-                .path("/downloadFile/")
-                .path(fileName)
+                .path("/")
+                .path(fileId)
                 .toUriString();
     }
 }
