@@ -29,8 +29,8 @@ public class StoryBoardController {
     }
 
     @PostMapping()
-    public ResponseEntity<StoryBoardDto> createStoryBoard(@RequestBody StoryBoardDto storyBoardDto) {
-        StoryBoardDto storyBoard = service.createStoryBoard(storyBoardDto);
+    public ResponseEntity<StoryBoardDto> createStoryBoard(@PathVariable("id") long projectId,@RequestBody StoryBoardDto storyBoardDto) {
+        StoryBoardDto storyBoard = service.createStoryBoard(storyBoardDto,projectId);
         return new ResponseEntity<>(storyBoard, HttpStatus.OK);
     }
 

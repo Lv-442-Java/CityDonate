@@ -9,7 +9,7 @@ public interface StoryBoardService {
 
     List<StoryBoardDto> getVerifiedStoryBoardsByProject(long projectId);
 
-    StoryBoardDto createStoryBoard(StoryBoardDto storyBoard);
+    StoryBoardDto createStoryBoard(StoryBoardDto storyBoard, long projectId);
 
     StoryBoardDto editStoryBoard(StoryBoardDto storyBoardDto);
 }
