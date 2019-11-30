@@ -82,13 +82,13 @@ public class StoryBoardServiceImpl implements StoryBoardService {
         } else {
             throw new NotFoundException(ErrorMessage.STORYBOARD_NOT_FOUND_BY_ID);
         }
+        model.setId(storyBoardDto.getId());
         model.setDate(storyBoardDto.getDate());
         model.setDescription(storyBoardDto.getDescription());
         model.setMoneySpent(storyBoardDto.getMoneySpent());
         model.setVerified(storyBoardDto.isVerified());
         model.setProject(projectRepository.getById(storyBoardDto.getProjectId()));
-        GalleryDto galleryDto = new GalleryDto();
-        model.setGallery(galleryRepository.save(galleryMapper.convertToModel(galleryDto)));
+        model.setGallery(galleryMapper.convertToModel(storyBoardDto.getGalleryDto()));
 
         return mapper.convertToDto(storyBoardRepository.save(model));
     }
