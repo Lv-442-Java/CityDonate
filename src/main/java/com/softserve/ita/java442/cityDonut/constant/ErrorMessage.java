@@ -30,5 +30,8 @@ public class ErrorMessage {
     public static final String ROLE_NOT_FOUND = "Role not found:  ";
     public static final String USER_HAS_NOT_ACCESS_TO_COMMENT = "You can not modify comment with id: ";
     public static final String INVALID_USER_PASSWORD = "Пароль недостатньо захищений. Пароль повинен містити від 4 до 15 цифр або літер";
+    public static final String USER_NOT_FOUND_WITH_THIS_EMAIL = "The user does not exists by this EMAIL: ";
+    public static final String INVALID_EMAIL_OR_PASSWORD = "INVALID email or password ";
+    public static final String JWT_TOKEN_IS_EXPIRED = "JWT token is expired";
 
 }

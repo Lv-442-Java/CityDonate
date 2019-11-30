@@ -61,7 +61,7 @@ public class FacebookController {
             if (userDataBase == null){
                 throw new UserPrincipalNotFoundException("User with email " + userSocial.getEmail().toUpperCase() + "not found!");
             }else
-                response.addCookie(cookieProvider.createCookie(jwtTokenProvider.generateToken(userDataBase)));
+                response.addCookie(cookieProvider.createCookie(jwtTokenProvider.generateAccessToken(userDataBase)));
         } catch (UserPrincipalNotFoundException e) {
             throw new BadCredentialsException("Invalid email or password");
         }
