@@ -12,4 +12,6 @@ public interface StoryBoardService {
     StoryBoardDto createStoryBoard(StoryBoardDto storyBoard, long projectId);
 
     StoryBoardDto editStoryBoard(StoryBoardDto storyBoardDto);
+
+    Boolean deleteStoryBoard(long storyBoardId);
 }

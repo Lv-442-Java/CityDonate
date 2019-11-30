@@ -1,13 +1,11 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
-import com.softserve.ita.java442.cityDonut.dto.gallery.GalleryDto;
 import com.softserve.ita.java442.cityDonut.dto.storyBoard.StoryBoardDto;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.gallery.GalleryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.storyBoard.StoryBoardMapper;
 import com.softserve.ita.java442.cityDonut.model.Gallery;
-import com.softserve.ita.java442.cityDonut.model.Project;
 import com.softserve.ita.java442.cityDonut.model.StoryBoard;
 import com.softserve.ita.java442.cityDonut.repository.GalleryRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
@@ -55,7 +53,7 @@ public class StoryBoardServiceImpl implements StoryBoardService {
     }
 
     @Override
-    public StoryBoardDto createStoryBoard(StoryBoardDto storyBoard,long projectId) {
+    public StoryBoardDto createStoryBoard(StoryBoardDto storyBoard, long projectId) {
         StoryBoard storyBoardModel = new StoryBoard();
         storyBoardModel.setProject(projectRepository.getById(projectId));
         storyBoardModel.setDescription(storyBoard.getDescription());
@@ -91,5 +89,11 @@ public class StoryBoardServiceImpl implements StoryBoardService {
         model.setGallery(galleryMapper.convertToModel(storyBoardDto.getGalleryDto()));
 
         return mapper.convertToDto(storyBoardRepository.save(model));
+    }
+
+    @Override
+    public Boolean deleteStoryBoard(long storyBoardId) {
+        storyBoardRepository.delete(storyBoardRepository.getOne(storyBoardId));
+        return true;
     }
 }
