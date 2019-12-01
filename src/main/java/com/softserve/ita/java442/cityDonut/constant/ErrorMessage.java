@@ -33,5 +33,7 @@ public class ErrorMessage {
     public static final String USER_NOT_FOUND_WITH_THIS_EMAIL = "The user does not exists by this EMAIL: ";
     public static final String INVALID_EMAIL_OR_PASSWORD = "INVALID email or password ";
     public static final String JWT_TOKEN_IS_EXPIRED = "JWT token is expired";
+    public static final String DOESNT_AUTHENTICATED = "User doesn't authenticated by thia email: ";
+    public static final String ALL_TOKENS_ARE_EXPIRED = "All tokens are expired.";
 
 }

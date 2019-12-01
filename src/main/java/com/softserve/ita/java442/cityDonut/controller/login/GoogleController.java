@@ -20,49 +20,49 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 @Controller
 public class GoogleController {
 
-    private JWTTokenProvider jwtTokenProvider;
-    private UserServiceImpl userService;
-    private CookieProvider cookieProvider;
-    private GoogleServiceImpl googleService;
-
-    @Autowired
-    public GoogleController(JWTTokenProvider jwtTokenProvider, UserServiceImpl userService,
-                            CookieProvider cookieProvider, GoogleServiceImpl googleService) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
-        this.cookieProvider = cookieProvider;
-        this.googleService = googleService;
-    }
-
-    @GetMapping(value = "/googlelogin")
-    public RedirectView googleLogin() {
-        RedirectView redirectView = new RedirectView();
-        String url = googleService.getLogin();
-        redirectView.setUrl(url);
-        return redirectView;
-    }
-
-    @GetMapping(value = "/google")
-    public String google(@RequestParam("code") String code) {
-        String accessToken = googleService.getAccessToken(code);
-        return "redirect:/googleProfileData/" + accessToken;
-    }
-
-    @GetMapping(value = "/googleProfileData/{accessToken:.+}")
-    public void googleProfileData(@PathVariable String accessToken, HttpServletResponse response) {
-        try {
-
-            UserInfo userSocial = googleService.getUserProfile(accessToken);
-            User userDataBase = userService.findUserByEmail(userSocial.getEmail());
-            System.out.println(userSocial.getEmail());
-
-            if (userDataBase == null){
-                throw new UserPrincipalNotFoundException("User with email " + userSocial.getEmail().toUpperCase() + "not found!");
-            }else
-                response.addCookie(cookieProvider.createCookie(jwtTokenProvider.generateAccessToken(userDataBase)));
-
-        } catch (UserPrincipalNotFoundException e) {
-            throw new BadCredentialsException("Invalid email or password");
-        }
-    }
+//    private JWTTokenProvider jwtTokenProvider;
+//    private UserServiceImpl userService;
+//    private CookieProvider cookieProvider;
+//    private GoogleServiceImpl googleService;
+//
+//    @Autowired
+//    public GoogleController(JWTTokenProvider jwtTokenProvider, UserServiceImpl userService,
+//                            CookieProvider cookieProvider, GoogleServiceImpl googleService) {
+//        this.jwtTokenProvider = jwtTokenProvider;
+//        this.userService = userService;
+//        this.cookieProvider = cookieProvider;
+//        this.googleService = googleService;
+//    }
+//
+//    @GetMapping(value = "/googlelogin")
+//    public RedirectView googleLogin() {
+//        RedirectView redirectView = new RedirectView();
+//        String url = googleService.getLogin();
+//        redirectView.setUrl(url);
+//        return redirectView;
+//    }
+//
+//    @GetMapping(value = "/google")
+//    public String google(@RequestParam("code") String code) {
+//        String accessToken = googleService.getAccessToken(code);
+//        return "redirect:/googleProfileData/" + accessToken;
+//    }
+//
+//    @GetMapping(value = "/googleProfileData/{accessToken:.+}")
+//    public void googleProfileData(@PathVariable String accessToken, HttpServletResponse response) {
+////        try {
+////
+////            UserInfo userSocial = googleService.getUserProfile(accessToken);
+////            User userDataBase = userService.findUserByEmail(userSocial.getEmail());
+////            System.out.println(userSocial.getEmail());
+////
+//////            if (userDataBase == null){
+//////                throw new UserPrincipalNotFoundException("User with email " + userSocial.getEmail().toUpperCase() + "not found!");
+//////            }else
+//////                response.addCookie(cookieProvider.createCookie(jwtTokenProvider.generateAccessToken(userDataBase)));
+////
+////        } catch (UserPrincipalNotFoundException e) {
+////            throw new BadCredentialsException("Invalid email or password");
+////        }
+//    }
 }

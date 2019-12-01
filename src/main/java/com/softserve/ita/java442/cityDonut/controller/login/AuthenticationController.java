@@ -4,6 +4,7 @@ import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.authentication.AuthenticationRequestDto;
 import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
 import com.softserve.ita.java442.cityDonut.exception.UserNotFoundByEmail;
+import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.security.CookieProvider;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
 import com.softserve.ita.java442.cityDonut.service.impl.UserServiceImpl;
@@ -11,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class AuthenticationController {
@@ -49,14 +50,32 @@ public class AuthenticationController {
                     authenticationManager
                             .authenticate(new UsernamePasswordAuthenticationToken(userEmail, requestDto.getPassword()));
                 }
-                response.addCookie(cookieProvider.createCookie(jwtTokenProvider
-                        .generateAccessToken(userService.findUserByEmail(userEmail))));
+                User user = userService.findUserByEmail(userEmail);
+                System.out.println(user);
+                List<Cookie> cookieList = createList(
+                        cookieProvider.createCookie("JWT", jwtTokenProvider.generateAccessToken(user)),
+                        cookieProvider.createCookie("jwt", jwtTokenProvider.generateRefreshToken())
+                );
 
+                for (Cookie k : cookieList)
+                    response.addCookie(k);
             }
         } catch (UserNotFoundByEmail ex) {
             response.sendError(404, ErrorMessage.USER_NOT_FOUND_WITH_THIS_EMAIL + userEmail);
         } catch (IncorrectPasswordException ex) {
             response.sendError(400, ErrorMessage.INVALID_EMAIL_OR_PASSWORD);
         }
+    }
+
+    private List<Cookie> createList(Cookie... cookies) {
+        List<Cookie> list = new ArrayList<>();
+        for (Cookie k : cookies) {
+            list.add(k);
+        }
+        return list;
+    }
+    @GetMapping("/home")
+    public String getHome() {
+        return ("Welcome  dear guest!");
     }
 }

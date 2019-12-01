@@ -12,18 +12,18 @@ public class CookieProvider {
     @Value("${expired.time.for.cookie}")
     private int EXPIRED_TIME_FOR_COOKIE;
 
-    public List<Cookie> createCookie(String key,String token) {
+    public Cookie createCookie(String key,String token) {
         Cookie cookie = new Cookie(key, token);
         cookie.setMaxAge(EXPIRED_TIME_FOR_COOKIE);
         return cookie;
     }
 
-    public String readCookie(HttpServletRequest request) {
+    public String readCookie(HttpServletRequest request, String key) {
         Cookie[] cookies = request.getCookies();
         String token = null;
         if (cookies != null) {
             for (Cookie c : cookies) {
-                if (c.getName().equals("JWT"))
+                if (c.getName().equals(key))
                     token = c.getValue();
             }
         }
@@ -34,12 +34,5 @@ public class CookieProvider {
         Cookie cookie = new Cookie("JWT", "");
         cookie.setMaxAge(0);
         return cookie;
-    }
-    private List<Cookie> createList(Cookie ...k){
-        List<Cookie> list = new ArrayList<>();
-        for(Cookie cookies : k){
-            list.add(cookies);
-        }
-        return list;
     }
 }

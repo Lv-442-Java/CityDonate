@@ -66,6 +66,7 @@ public class JWTTokenProvider {
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(getUserEmail(token));
+        System.out.println("Auth "+userDetails.getAuthorities());
         return new UsernamePasswordAuthenticationToken(userDetails,
                 "", userDetails.getAuthorities());
     }
@@ -74,8 +75,8 @@ public class JWTTokenProvider {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String resolveToken(HttpServletRequest request) {
-        return cookieProvider.readCookie(request);
+    public String resolveToken(HttpServletRequest request, String key) {
+        return cookieProvider.readCookie(request, key);
     }
 
     public boolean validateToken(String token) {
