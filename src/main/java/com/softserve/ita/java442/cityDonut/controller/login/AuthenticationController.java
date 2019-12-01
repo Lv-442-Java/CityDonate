@@ -51,7 +51,7 @@ public class AuthenticationController {
                             .authenticate(new UsernamePasswordAuthenticationToken(userEmail, requestDto.getPassword()));
                 }
                 User user = userService.findUserByEmail(userEmail);
-                System.out.println(user);
+
                 List<Cookie> cookieList = createList(
                         cookieProvider.createCookie("JWT", jwtTokenProvider.generateAccessToken(user)),
                         cookieProvider.createCookie("jwt", jwtTokenProvider.generateRefreshToken())
@@ -59,6 +59,7 @@ public class AuthenticationController {
 
                 for (Cookie k : cookieList)
                     response.addCookie(k);
+
             }
         } catch (UserNotFoundByEmail ex) {
             response.sendError(404, ErrorMessage.USER_NOT_FOUND_WITH_THIS_EMAIL + userEmail);
@@ -79,3 +80,10 @@ public class AuthenticationController {
         return ("Welcome  dear guest!");
     }
 }
+/*
+secret.key.for.token=CityDonut
+expired.time.access.token=120000
+expired.time.refresh.token=3600000
+expired.time.for.cookie=-1
+server.port=8091
+ */

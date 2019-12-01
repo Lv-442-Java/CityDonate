@@ -15,6 +15,7 @@ public class CookieProvider {
     public Cookie createCookie(String key,String token) {
         Cookie cookie = new Cookie(key, token);
         cookie.setMaxAge(EXPIRED_TIME_FOR_COOKIE);
+        cookie.setPath("/");
         return cookie;
     }
 

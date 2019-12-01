@@ -37,18 +37,14 @@ public class JWTTokenFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String refreshToken = jwtTokenProvider.resolveToken((HttpServletRequest) servletRequest, "jwt");
         String accessToken = jwtTokenProvider.resolveToken((HttpServletRequest) servletRequest, "JWT");
-
         try{
             if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-                System.out.println(authentication);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }else{
                 if(refreshToken != null && jwtTokenProvider.validateToken(refreshToken)){
                     User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(accessToken));
-                    System.out.println("in filter: ");
-                    System.out.println(user);
-//                    ((HttpServletResponse) servletResponse).addCookie(cookieProvider.createCookie("JWT",jwtTokenProvider.generateAccessToken(user)));
+                    ((HttpServletResponse) servletResponse).addCookie(cookieProvider.createCookie("JWT",jwtTokenProvider.generateAccessToken(user)));
                 }else{
                     throw  new JwtAuthenticationExeption(ErrorMessage.ALL_TOKENS_ARE_EXPIRED);
                 }

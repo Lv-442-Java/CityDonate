@@ -1,6 +1,5 @@
 package com.softserve.ita.java442.cityDonut.security.confiquration;
 
-import com.softserve.ita.java442.cityDonut.security.JWTConfiguration;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenFilter;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/sign-in").permitAll()
-                .antMatchers("/home").permitAll()
+                .antMatchers("/home").hasAuthority("user")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JWTTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

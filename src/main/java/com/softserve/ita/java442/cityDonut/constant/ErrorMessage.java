@@ -35,5 +35,6 @@ public class ErrorMessage {
     public static final String JWT_TOKEN_IS_EXPIRED = "JWT token is expired";
     public static final String DOESNT_AUTHENTICATED = "User doesn't authenticated by thia email: ";
     public static final String ALL_TOKENS_ARE_EXPIRED = "All tokens are expired.";
+    public static final String UNAUTHORIZED = "User doesn't authorized";
 
 }
