@@ -168,31 +168,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ProjectInfoDto> getProjects() {
-        User user = getCurrentUser();
-        List<Project> projects;
-        List<ProjectInfoDto> list = new ArrayList<>();
-        if (user.getRole().equals(roleRepository.findByRole("user"))) {
-            projects = projectRepository.getAllByOwner(user);
-        } else {
-            List<User> moderators = new ArrayList<>();
-            moderators.add(user);
-            projects = projectRepository.findAllByModeratorsIn(moderators);
-        }
-        for (Project project : projects) {
-            ProjectInfoDto projectInfoDto = ProjectInfoDto.builder()
-                    .id(project.getId())
-                    .name(project.getName())
-                    .creationDate(project.getCreationDate())
-                    .ownerFirstName(project.getOwner().getFirstName())
-                    .ownerLastName(project.getOwner().getLastName())
-                    .build();
-            list.add(projectInfoDto);
-        }
-        return list;
-    }
-
-    @Override
     public UserRoleDto getUserRoleDto(long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundById(ErrorMessage.USER_NOT_FOUND_BY_ID));
