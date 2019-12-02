@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Builder
@@ -29,11 +29,11 @@ public class MainProjectInfoDto {
 
     private double locationLongitude;
 
-    private LocalDateTime publicationDate;
+    private Timestamp publicationDate;
 
-    private LocalDateTime donationEndDate;
+    private Timestamp donationEndDate;
 
-    private LocalDateTime realizationEndDate;
+    private Timestamp realizationEndDate;
 
     private ProjectStatusDto projectStatus;
 

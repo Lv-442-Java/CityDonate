@@ -3,26 +3,21 @@ package com.softserve.ita.java442.cityDonut.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"description"})
-@Table(name = "comment")
-public class Comment {
+@ToString(exclude = {"project", "user"})
+@EqualsAndHashCode(exclude = {"project", "user"})
+
+public class CommentSubscription {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(length = 500)
-    private String description;
-
-    @Column(name = "date")
-    private Timestamp date;
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
@@ -35,4 +30,5 @@ public class Comment {
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
 }

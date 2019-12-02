@@ -5,13 +5,11 @@ import com.softserve.ita.java442.cityDonut.dto.project.*;
 import com.softserve.ita.java442.cityDonut.security.UserPrincipal;
 import com.softserve.ita.java442.cityDonut.service.FieldsCheckService;
 import com.softserve.ita.java442.cityDonut.service.ProjectService;
-
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +24,7 @@ public class ProjectController {
     private UserService userService;
     private FieldsCheckService fieldsCheckService;
 
-@Autowired
+    @Autowired
     public ProjectController(ProjectService projectService, UserService userService, FieldsCheckService fieldsCheckService) {
         this.projectService = projectService;
         this.userService = userService;
@@ -41,9 +39,9 @@ public class ProjectController {
     @GetMapping("/project/filter")
     public ResponseEntity<List<PreviewProjectDto>> filter(
             @RequestParam(value = "categories", required = false) List<Long> categories,
-            @RequestParam(value = "status",required = false) Long status,
-            @RequestParam(value = "moneyFrom",required = false) Long moneyFrom,
-            @RequestParam(value = "moneyTo",required = false) Long moneyTo,
+            @RequestParam(value = "status", required = false) Long status,
+            @RequestParam(value = "moneyFrom", required = false) Long moneyFrom,
+            @RequestParam(value = "moneyTo", required = false) Long moneyTo,
             Pageable pageable) {
         return new ResponseEntity<>(
                 projectService.getFilteredProjects(categories, status, moneyFrom, moneyTo, pageable), HttpStatus.OK);
@@ -70,10 +68,8 @@ public class ProjectController {
     }
 
     @PostMapping("/project")
-    public ResponseEntity<NewProjectDto> createProject( @RequestBody NewProjectDto project) {
-        System.out.println(userService.getCurrentUser());
-        return
-                new ResponseEntity<>(
+    public ResponseEntity<NewProjectDto> createProject(@Valid @RequestBody NewProjectDto project) {
+        return new ResponseEntity<>(
                 projectService.saveProject(project, userService.getCurrentUser().getId()),
                 HttpStatus.OK
         );
@@ -82,7 +78,7 @@ public class ProjectController {
     @PutMapping("/project/{projectId}")
     public ResponseEntity<EditedProjectDto> editProject(@Valid @RequestBody EditedProjectDto project, @PathVariable long projectId, Authentication auth) {
         return new ResponseEntity<>(
-                projectService.editProject(project, projectId, ((UserPrincipal)auth.getPrincipal()).getUser().getId()),
+                projectService.editProject(project, projectId, ((UserPrincipal) auth.getPrincipal()).getUser().getId()),
                 HttpStatus.OK
         );
     }

@@ -26,4 +26,25 @@ public class CommentController {
     public ResponseEntity<CommentDto> sendComment(@RequestBody CommentDto comment, @PathVariable("id") long id){
         return ResponseEntity.status(HttpStatus.OK).body(service.sendComment(comment, id));
    }
+
+   @DeleteMapping("/{commentId}")
+   public ResponseEntity<CommentDto> deleteComment(@PathVariable long commentId) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.deleteComment(commentId));
+   }
+
+   @PutMapping("/{commentId}")
+   public ResponseEntity<CommentDto> editComment(@RequestBody CommentDto commentText, @PathVariable long commentId) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.editComment(commentId, commentText));
+   }
+
+
+    @PatchMapping("/{commentId}/notify")
+    public ResponseEntity notifyUsers(@PathVariable long commentId) {
+        return ResponseEntity.ok(service.notifyUsers(commentId));
+    }
+
+    @PatchMapping("/denotify")
+    public ResponseEntity denotifyUsers(@PathVariable long id) {
+        return ResponseEntity.ok(service.denotifyUsers(id));
+    }
 }

@@ -9,8 +9,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"moderatorProjects", "userProjects", "comments", "donates"})
-@EqualsAndHashCode(exclude = {"firstName", "lastName", "password", "moderatorProjects", "userProjects", "users", "comments", "donates"})
+@ToString(exclude = {"moderatorProjects", "userProjects", "comments", "donates", "subscribedProjects"})
+@EqualsAndHashCode(exclude = {"firstName", "lastName", "password", "moderatorProjects", "userProjects", "users", "comments", "donates", "subscribedProjects"})
 @Entity
 public class User {
     public enum UserStatus{
@@ -48,6 +48,12 @@ public class User {
             joinColumns = @JoinColumn(name = "moderator_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id"))
     private List<Project> moderatorProjects;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_subscribed_to_project",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id"))
+    private List<Project> subscribedProjects;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private List<Project> userProjects;

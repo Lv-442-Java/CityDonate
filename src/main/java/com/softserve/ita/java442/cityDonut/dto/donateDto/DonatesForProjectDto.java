@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class DonatesForProjectDto {
     private long id;
-    private LocalDateTime date;
+    private Timestamp date;
     private double sum;
     private String userFirstName;
     private String userLastName;

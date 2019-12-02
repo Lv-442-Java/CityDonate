@@ -50,21 +50,21 @@ public class FacebookController {
     @GetMapping(value = "/facebookProfileData/{accessToken:.+}")
     public String googleProfileData(@PathVariable String accessToken, HttpServletResponse response) {
         System.out.println(accessToken);
-        try {
-            User userSocial = facebookService.getUserProfile(accessToken);
-            if(userSocial.getEmail() == null){
-               return "Please add email to your facebook account";
-            }
-
-            com.softserve.ita.java442.cityDonut.model.User userDataBase = userService.findUserByEmail(userSocial.getEmail());
-
-            if (userDataBase == null){
-                throw new UserPrincipalNotFoundException("User with email " + userSocial.getEmail().toUpperCase() + "not found!");
-            }else
-                response.addCookie(cookieProvider.createCookie(jwtTokenProvider.generateToken(userDataBase)));
-        } catch (UserPrincipalNotFoundException e) {
-            throw new BadCredentialsException("Invalid email or password");
-        }
+//        try {
+//            User userSocial = facebookService.getUserProfile(accessToken);
+//            if(userSocial.getEmail() == null){
+//               return "Please add email to your facebook account";
+//            }
+//
+//            com.softserve.ita.java442.cityDonut.model.User userDataBase = userService.findUserByEmail(userSocial.getEmail());
+//
+//            if (userDataBase == null){
+//                throw new UserPrincipalNotFoundException("User with email " + userSocial.getEmail().toUpperCase() + "not found!");
+//            }else
+//                response.addCookie(cookieProvider.createCookie(jwtTokenProvider.generateAccessToken(userDataBase)));
+//        } catch (UserPrincipalNotFoundException e) {
+//            throw new BadCredentialsException("Invalid email or password");
+//        }
         return null;
     }
 }

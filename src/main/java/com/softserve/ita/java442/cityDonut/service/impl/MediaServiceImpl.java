@@ -7,40 +7,45 @@ import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Extension;
 import com.softserve.ita.java442.cityDonut.model.Media;
 import com.softserve.ita.java442.cityDonut.model.MediaType;
-import com.softserve.ita.java442.cityDonut.repository.ExtensionRepository;
-import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
-import com.softserve.ita.java442.cityDonut.repository.MediaTypeRepository;
+import com.softserve.ita.java442.cityDonut.repository.*;
 import com.softserve.ita.java442.cityDonut.service.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class MediaServiceImpl implements MediaService {
 
-    @Autowired
-    MediaTypeRepository mediaTypeRepository;
+    private MediaTypeRepository mediaTypeRepository;
+    private MediaRepository mediaRepository;
+    private ExtensionRepository extensionRepository;
+    private MediaMapper mediaMapper;
+    private ProjectRepository projectRepository;
+    private StoryBoardRepository storyBoardRepository;
 
     @Autowired
-    MediaRepository mediaRepository;
-
-    @Autowired
-    ExtensionRepository extensionRepository;
-
-    @Autowired
-    MediaMapper mediaMapper;
+    public MediaServiceImpl(MediaTypeRepository mediaTypeRepository, MediaRepository mediaRepository,
+                            ExtensionRepository extensionRepository, MediaMapper mediaMapper,
+                            ProjectRepository projectRepository, StoryBoardRepository storyBoardRepository) {
+        this.mediaTypeRepository = mediaTypeRepository;
+        this.mediaRepository = mediaRepository;
+        this.extensionRepository = extensionRepository;
+        this.mediaMapper = mediaMapper;
+        this.projectRepository = projectRepository;
+        this.storyBoardRepository = storyBoardRepository;
+    }
 
     @Transactional
     public MediaDto saveMedia(MediaDto mediaDto, String fileName) {
         Media mediaModel = createMediaModelFromDtoData(mediaDto, fileName);
         mediaRepository.save(mediaModel);
-        System.out.println(mediaRepository.findByFileId(mediaModel.getFileId()));
-        MediaDto savedMediaDto = mediaMapper.convertToDto(mediaRepository.findByFileId(mediaModel.getFileId()));
+        MediaDto savedMediaDto = mediaMapper.convertToDto(mediaRepository.getByFileId(mediaModel.getFileId()));
         return savedMediaDto;
     }
 
@@ -53,7 +58,7 @@ public class MediaServiceImpl implements MediaService {
         MediaType mediaType = extension.getMediaType();
         mediaDto.setMediaType(mediaType);
         Media mediaModel = mediaMapper.convertToModel(mediaDto);
-        mediaModel.setCreationDate(LocalDateTime.now());
+        mediaModel.setCreationDate(new Timestamp(new Date().getTime()));
         return mediaModel;
     }
 
@@ -73,29 +78,39 @@ public class MediaServiceImpl implements MediaService {
         return uuid.toString();
     }
 
-    Media getFileByNameAndProjectId(String fileName, long projectId) {
-        Media media = mediaRepository.findByNameAndProjectId(fileName, projectId);
+    Media getFileByFileIdAndGalleryId(String fileName, long galleryId) {
+        Media media = mediaRepository.getFileByFileIdAndGalleryId(fileName, galleryId);
         if (media == null) {
-            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + projectId);
+            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND_BY_NAME_AND_PROJECT_ID + fileName + ", id " + galleryId);
         }
         return media;
     }
 
-    List<MediaDto> getListOfPhotoDto(long projectId) {
+    List<MediaDto> getListOfPhotoDto(long galleryId) {
         MediaType mediaType = mediaTypeRepository.findByType("photo");
-        return mediaMapper.convertListToDto(mediaRepository.getPhotosByProjectIdAndMediaTypeAndStoryBoard_IdNull(projectId, mediaType));
+        return mediaMapper.convertListToDto(mediaRepository.getPhotosByGalleryIdAndMediaType(galleryId, mediaType));
     }
 
-    public List<MediaDto> getDtoList(long projectId) {
-        return mediaMapper.convertListToDto(mediaRepository.getFilesByProjectId(projectId));
+    List<MediaDto> getDtoList(long galleryId) {
+        return mediaMapper.convertListToDto(mediaRepository.getFilesByGalleryId(galleryId));
     }
 
-    public MediaDto getDtoForFile(String fileId) {
-        return mediaMapper.convertToDto(mediaRepository.findByFileId(fileId));
+    MediaDto getDtoForFile(String fileId) {
+        return mediaMapper.convertToDto(mediaRepository.getByFileId(fileId));
     }
 
     void deleteInDB(MediaDto dto) {
         Media mediaToDelete = mediaMapper.convertToModel(dto);
         mediaRepository.delete(mediaToDelete);
+    }
+
+    public long getProjectGalleryId(long projectId) {
+        long galleryId = projectRepository.getById(projectId).getGallery().getId();
+        return galleryId;
+    }
+
+    public long getStoryBoardGalleryId(long storyBoardId) {
+        long galleryId = storyBoardRepository.getOne(storyBoardId).getGallery().getId();
+        return galleryId;
     }
 }

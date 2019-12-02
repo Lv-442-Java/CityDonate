@@ -1,11 +1,13 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.dto.gallery.GalleryDto;
 import com.softserve.ita.java442.cityDonut.dto.storyBoard.StoryBoardDto;
 import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
-import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
+import com.softserve.ita.java442.cityDonut.mapper.gallery.GalleryMapper;
 import com.softserve.ita.java442.cityDonut.mapper.storyBoard.StoryBoardMapper;
 import com.softserve.ita.java442.cityDonut.model.StoryBoard;
+import com.softserve.ita.java442.cityDonut.repository.GalleryRepository;
 import com.softserve.ita.java442.cityDonut.repository.ProjectRepository;
 import com.softserve.ita.java442.cityDonut.repository.StoryBoardRepository;
 import com.softserve.ita.java442.cityDonut.service.StoryBoardService;
@@ -17,29 +19,47 @@ import java.util.List;
 @Service
 public class StoryBoardServiceImpl implements StoryBoardService {
 
-    @Autowired
     private StoryBoardRepository storyBoardRepository;
-    @Autowired
     private ProjectRepository projectRepository;
-    @Autowired
     private StoryBoardMapper mapper;
+    private GalleryMapper galleryMapper;
+    private GalleryRepository galleryRepository;
+
     @Autowired
-    private MediaMapper mediaMapper;
+    public StoryBoardServiceImpl(StoryBoardRepository storyBoardRepository, ProjectRepository projectRepository,
+                                 StoryBoardMapper mapper, GalleryMapper galleryMapper,
+                                 GalleryRepository galleryRepository) {
+        this.storyBoardRepository = storyBoardRepository;
+        this.projectRepository = projectRepository;
+        this.mapper = mapper;
+        this.galleryMapper = galleryMapper;
+        this.galleryRepository = galleryRepository;
+    }
 
 
-    public List<StoryBoardDto> getStoryBoardsByProject(long projectId){
+    @Override
+    public List<StoryBoardDto> getStoryBoardsByProject(long projectId) {
         List<StoryBoardDto> storyBoardDtos;
-        storyBoardDtos =  mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_Id(projectId));
+        storyBoardDtos = mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_Id(projectId));
         return storyBoardDtos;
     }
 
-    public StoryBoardDto createStoryBoard(StoryBoardDto storyBoard){
-        StoryBoardDto newStoryBoard;
-        newStoryBoard = mapper.convertToDto(storyBoardRepository.save(mapper.convertToModel(storyBoard)));
-        return  newStoryBoard;
+    @Override
+    public List<StoryBoardDto> getVerifiedStoryBoardsByProject(long projectId) {
+        List<StoryBoardDto> storyBoardDtos;
+        storyBoardDtos = mapper.convertListToDto(storyBoardRepository.getStoryBoardsByProject_IdAndIsVerifiedIsTrueOrderByDateDesc(projectId));
+        return storyBoardDtos;
     }
 
-    public StoryBoardDto editStoryBoard(StoryBoardDto storyBoardDto){
+    @Override
+    public StoryBoardDto createStoryBoard(StoryBoardDto storyBoard) {
+        StoryBoardDto newStoryBoard;
+        newStoryBoard = mapper.convertToDto(storyBoardRepository.save(mapper.convertToModel(storyBoard)));
+        return newStoryBoard;
+    }
+
+    @Override
+    public StoryBoardDto editStoryBoard(StoryBoardDto storyBoardDto) {
 
         StoryBoard model;
         if (storyBoardDto != null) {
@@ -51,10 +71,11 @@ public class StoryBoardServiceImpl implements StoryBoardService {
         }
         model.setDate(storyBoardDto.getDate());
         model.setDescription(storyBoardDto.getDescription());
-        model.setMedia(mediaMapper.convertListToModel(storyBoardDto.getMedia()));
         model.setMoneySpent(storyBoardDto.getMoneySpent());
         model.setVerified(storyBoardDto.isVerified());
         model.setProject(projectRepository.getById(storyBoardDto.getProjectId()));
+        GalleryDto galleryDto = new GalleryDto();
+        model.setGallery(galleryRepository.save(galleryMapper.convertToModel(galleryDto)));
 
         return mapper.convertToDto(storyBoardRepository.save(model));
     }

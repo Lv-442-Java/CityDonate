@@ -1,6 +1,7 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.dto.authentication.AuthenticationRequestDto;
 import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
@@ -12,6 +13,7 @@ import com.softserve.ita.java442.cityDonut.dto.user.UserRoleDto;
 import com.softserve.ita.java442.cityDonut.exception.*;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
+import com.softserve.ita.java442.cityDonut.mapper.user.UserRoleMapper;
 import com.softserve.ita.java442.cityDonut.model.Project;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.model.UserActivationRequest;
@@ -26,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private UserEditMapper userEditMapper;
     private ProjectRepository projectRepository;
     private RoleRepository roleRepository;
+    private UserRoleMapper userRoleMapper;
 
     @Autowired
     public UserServiceImpl(MailSenderImpl mailSender,
@@ -53,7 +57,8 @@ public class UserServiceImpl implements UserService {
                            Validator validator,
                            UserRepository userRepository, RoleRepository roleRepository,
                            UserEditMapper userEditMapper,
-                           ProjectRepository projectRepository) {
+                           ProjectRepository projectRepository,
+                           UserRoleMapper userRoleMapper ) {
         this.mailSender = mailSender;
         this.userActivationRequestRepository = userActivationRequestRepository;
         this.userRegistrationMapper = userRegistrationMapper;
@@ -62,6 +67,7 @@ public class UserServiceImpl implements UserService {
         this.userEditMapper = userEditMapper;
         this.projectRepository = projectRepository;
         this.roleRepository = roleRepository;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
@@ -150,7 +156,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -191,5 +197,31 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundById(ErrorMessage.USER_NOT_FOUND_BY_ID));
         String role = user.getRole().getRole();
         return new UserRoleDto(userId, user.getFirstName(), user.getLastName(), role);
+    }
+
+    @Override
+    public List<UserRoleDto> getUsersRoleDto(long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException());
+        List<User> userList = project.getModerators();
+        //List<User> userList = new ArrayList<>();
+        userList.add(project.getOwner());
+        return userRoleMapper.converListToDto(userList);
+    }
+
+    @Override
+    public boolean existsUserByEmail(String email) {
+        if(!userRepository.existsUserByEmail(email)){
+            throw  new UserNotFoundByEmail(ErrorMessage.USER_NOT_FOUND_WITH_THIS_EMAIL + email);
+        }else
+            return true;
+    }
+
+    @Override
+    public boolean comparePasswordLogin(AuthenticationRequestDto requestDto, PasswordEncoder passwordEncoder) {
+        if(!passwordEncoder.matches(requestDto.getPassword(), findUserByEmail(requestDto.getUserEmail()).getPassword())){
+            throw  new IncorrectPasswordException(ErrorMessage.INVALID_EMAIL_OR_PASSWORD);
+        }
+        return true;
     }
 }
