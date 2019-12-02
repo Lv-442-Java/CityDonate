@@ -39,11 +39,6 @@ public class UserController {
         return new ResponseEntity<>(userEditPasswordDto, HttpStatus.OK);
     }
 
-    @GetMapping("/projects")
-    public ResponseEntity<List<ProjectInfoDto>> getMyProject(){
-        return new ResponseEntity<>(userService.getProjects(),HttpStatus.OK);
-    }
-
     @GetMapping("/{userId}/role")
     public ResponseEntity<UserRoleDto> getUserWithRole(@PathVariable long userId) {
         return new ResponseEntity<>(userService.getUserRoleDto(userId), HttpStatus.OK);
