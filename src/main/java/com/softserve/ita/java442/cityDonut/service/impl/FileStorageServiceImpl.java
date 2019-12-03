@@ -1,5 +1,10 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.*;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.cloud.StorageClient;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
 import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
@@ -16,7 +21,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,9 +32,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
-
+  //  private final Storage storage;
     private final Path fileStorageLocation;
     @Autowired
     FileStorageServiceImpl fileStorage;
@@ -40,6 +49,8 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Autowired
     MediaMapper mediaMapper;
+
+
 
     @Autowired
     public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
@@ -64,6 +75,25 @@ public class FileStorageServiceImpl implements FileStorageService {
             MediaDto savedMediaDto = mediaService.saveMedia(mediaDto, fileName);
             String fileIdWithExt = mediaService.fileIDWithExtension(savedMediaDto);
             Path targetLocation = this.fileStorageLocation.resolve(fileIdWithExt);
+
+
+            FileInputStream serviceAccount =
+                    new FileInputStream("C:\\Users\\Marta\\firebaseConfig.json");
+
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setStorageBucket("city-donut-app.appspot.com")
+                    .build();
+
+            FirebaseApp fireApp = FirebaseApp.initializeApp(options);
+
+
+            StorageClient storageClient = StorageClient.getInstance(fireApp);
+            String blobString = "test/" + "FILE_NAME.EXT";
+
+            storageClient.bucket().create(blobString, file.getInputStream() , Bucket.BlobWriteOption.userProject("city-donut-app"));
+
+
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return savedMediaDto;
         } catch (IOException ex) {
