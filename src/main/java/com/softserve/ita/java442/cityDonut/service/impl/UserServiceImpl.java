@@ -181,4 +181,66 @@ public class UserServiceImpl implements UserService {
         userList.add(project.getOwner());
         return userRoleMapper.converListToDto(userList);
     }
+
+    @Override
+    public UserRoleDto getCurrentUserSubscribedToProject(long projectId) {
+        //TODO ВИПРАВИТИ ЦЕ
+        User user;
+        try {
+            user = getCurrentUser();
+        }
+        catch (Exception exc) {
+            user = userRepository.getUserById(2);
+        }
+        //
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException());
+        List<User> userList = project.getSubscribedUsers();
+        if (userList.contains(user)) return userRoleMapper.convertToDto(user);
+        return null;
+    }
+
+    @Override
+    public UserRoleDto subscribeCurrentUserToProject(long projectId) {
+        //TODO ВИПРАВИТИ ЦЕ
+        User user;
+        try {
+            user = getCurrentUser();
+        }
+        catch (Exception exc) {
+            user = userRepository.getUserById(2);
+        }
+        //
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException());
+        List<User> userList = project.getSubscribedUsers();
+        if (!userList.contains(user)) {
+            userList.add(user);
+            project.setSubscribedUsers(userList);
+            projectRepository.save(project);
+        }
+        return userRoleMapper.convertToDto(user);
+    }
+
+    @Override
+    public UserRoleDto unsubscribeCurrentUserFromProject(long projectId) {
+        //TODO ВИПРАВИТИ ЦЕ
+        User user;
+        try {
+            user = getCurrentUser();
+        }
+        catch (Exception exc) {
+            user = userRepository.getUserById(2);
+        }
+        //
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException());
+        List<User> userList = project.getSubscribedUsers();
+        if (userList.contains(user)) {
+            userList.remove(user);
+            project.setSubscribedUsers(userList);
+            projectRepository.save(project);
+        }
+        return userRoleMapper.convertToDto(user);
+    }
 }

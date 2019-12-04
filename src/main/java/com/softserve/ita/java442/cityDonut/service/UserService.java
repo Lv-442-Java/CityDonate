@@ -29,4 +29,10 @@ public interface UserService {
     UserRoleDto getUserRoleDto(long userId);
 
     List<UserRoleDto> getUsersRoleDto(long projectId);
+
+    UserRoleDto getCurrentUserSubscribedToProject(long projectId);
+
+    UserRoleDto subscribeCurrentUserToProject(long projectId);
+
+    UserRoleDto unsubscribeCurrentUserFromProject(long projectId);
 }
