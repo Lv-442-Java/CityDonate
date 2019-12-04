@@ -88,7 +88,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         return FirebaseApp.initializeApp(options);
     }
 
-    public String loadFileAsResource(String fileId) {
+    public String formDownloadUrl(String fileId) {
         MediaDto mediaDto = mediaService.getDtoForFile(fileId);
         String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
         String url = "https://firebasestorage.googleapis.com/v0/b/city-donut-app.appspot.com/o/test%2F";
