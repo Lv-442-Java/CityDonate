@@ -29,8 +29,6 @@ public interface UserService {
 
     User activateUserByCode(String activationCode);
 
-    List<ProjectInfoDto> getProjects();
-
     UserRoleDto getUserRoleDto(long userId);
 
     List<UserRoleDto> getUsersRoleDto(long projectId);
