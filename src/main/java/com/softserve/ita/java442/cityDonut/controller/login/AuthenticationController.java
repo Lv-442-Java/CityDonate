@@ -52,15 +52,11 @@ public class AuthenticationController {
                     authenticationManager
                             .authenticate(new UsernamePasswordAuthenticationToken(userEmail, requestDto.getPassword()));
                 }
+               System.out.println(userService.getCurrentUser());
                 User user = userService.findUserByEmail(userEmail);
 
-                List<Cookie> cookieList = createList(
-                        cookieProvider.createCookie("JWT", jwtTokenProvider.generateAccessToken(user)),
-                        cookieProvider.createCookie("jwt", jwtTokenProvider.generateRefreshToken())
-                );
 
-                for (Cookie k : cookieList)
-                    response.addCookie(k);
+                response.addCookie(cookieProvider.createCookie("JWT", jwtTokenProvider.generateAccessToken(user)));
 
             }
         } catch (UserNotFoundByEmail ex) {

@@ -32,8 +32,8 @@ public class CookieProvider {
         return token;
     }
 
-    public Cookie deleteCookie() {
-        Cookie cookie = new Cookie("JWT", "");
+    public Cookie deleteCookie(String key) {
+        Cookie cookie = new Cookie(key, "");
         cookie.setMaxAge(0);
         return cookie;
     }
