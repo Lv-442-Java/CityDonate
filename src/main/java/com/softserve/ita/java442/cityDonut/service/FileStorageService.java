@@ -11,7 +11,7 @@ public interface FileStorageService {
 
     MediaDto storeFile(MultipartFile file, long projectId);
 
-    Resource loadFileAsResource(String fileName, long fileId);
+    //Resource loadFileAsResource(String fileName, long fileId);
 
     DownloadFileResponse getFile(String fileId);
 

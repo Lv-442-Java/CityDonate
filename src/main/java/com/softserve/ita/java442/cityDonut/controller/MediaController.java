@@ -65,21 +65,9 @@ public class MediaController {
     }
 
     @GetMapping("/{fileId:.+}")
-    public ResponseEntity<Resource> getResource(@PathVariable("id") long id, HttpServletRequest request, @PathVariable String fileId) {
-        Resource resource = fileStorageService.loadFileAsResource(fileId, id);
-        String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex) {
-            throw new NotFoundException(ErrorMessage.NOT_DETERMINED_FILE_TYPE);
-        }
-        if (contentType == null) {
-            contentType = "application/octet-stream";
-        }
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
+    public ResponseEntity<String> getResource(@PathVariable("id") long id, @PathVariable String fileId)  {
+       String response = fileStorageService.loadFileAsResource(fileId);
+       return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/getAvatar")
