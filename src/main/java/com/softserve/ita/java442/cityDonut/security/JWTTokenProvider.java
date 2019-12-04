@@ -29,7 +29,6 @@ public class JWTTokenProvider {
 
     private JWTUserDetailsService jwtUserDetailsService;
     private CookieProvider cookieProvider;
-    private Date CURRENT_DATE = new Date();
 
     public JWTTokenProvider() {}
 
@@ -51,8 +50,8 @@ public class JWTTokenProvider {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(CURRENT_DATE)
-                .setExpiration(new Date(CURRENT_DATE.getTime() + EXPIRED_TIME_ACCESS_TOKEN))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + EXPIRED_TIME_ACCESS_TOKEN))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
@@ -64,16 +63,16 @@ public class JWTTokenProvider {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(CURRENT_DATE)
-                .setExpiration(new Date(CURRENT_DATE.getTime() + EXPIRED_TIME_ACCESS_TOKEN))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + 6000000))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
     public String generateRefreshToken() {
         return Jwts.builder()
-                .setIssuedAt(CURRENT_DATE)
-                .setExpiration(new Date(CURRENT_DATE.getTime() + EXPIRED_TIME_ACCESS_TOKEN))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + EXPIRED_TIME_REFRESH_TOKEN))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
@@ -92,7 +91,8 @@ public class JWTTokenProvider {
         return JwtToken.builder()
                 .email(Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject())
                 .role( (String) Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().get("roles"))
-                .id((int) Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().get("id")).build();
+                .id((int) Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().get("id"))
+                .build();
     }
 
     public String resolveToken(HttpServletRequest request, String key) {

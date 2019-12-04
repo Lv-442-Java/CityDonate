@@ -2,16 +2,11 @@ package com.softserve.ita.java442.cityDonut.security;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.exception.JwtAuthenticationExeption;
-import com.softserve.ita.java442.cityDonut.service.UserService;
-import com.softserve.ita.java442.cityDonut.service.impl.UserServiceImpl;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -20,11 +15,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Base64;
+
 
 public class JWTTokenFilter extends GenericFilterBean {
-    @Value("${expired.time.for.cookie}")
-    private int EXPIRED_TIME_FOR_COOKIE;
+    private int EXPIRED_TIME_FOR_COOKIE = 9000000;
     private JWTTokenProvider jwtTokenProvider;
 
     @Autowired
@@ -42,20 +36,23 @@ public class JWTTokenFilter extends GenericFilterBean {
                     Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {
-                    if (!jwtTokenProvider.validateToken(refreshToken)) {
-                       JwtToken jwtToken = jwtTokenProvider.UserData(accessToken);
+                    if (jwtTokenProvider.validateToken(refreshToken)) {
+                        JwtToken jwtToken = jwtTokenProvider.UserData(accessToken);
 
-                        Cookie cookie = new Cookie("JWT",jwtTokenProvider
-                                .generateAccessToken(jwtToken.getId(),jwtToken.getRole(),jwtToken.getEmail()));
+                        Cookie cookie = new Cookie("JWT", jwtTokenProvider
+                                .generateAccessToken(jwtToken.getId(), jwtToken.getEmail(), jwtToken.getRole()));
                         cookie.setMaxAge(EXPIRED_TIME_FOR_COOKIE);
                         cookie.setDomain("localhost");
                         cookie.setPath("/");
+
+                        ((HttpServletResponse) servletResponse).addCookie(cookie);
+
                     } else {
                         ((HttpServletResponse) servletResponse).sendError(403, ErrorMessage.JWT_TOKEN_IS_EXPIRED);
                     }
                 }
             } catch (JwtAuthenticationExeption e) {
-
+                ((HttpServletResponse) servletResponse).sendError(400);
             }
         }
         filterChain.doFilter(servletRequest, servletResponse);

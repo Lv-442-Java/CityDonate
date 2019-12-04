@@ -5,18 +5,18 @@ import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
 import com.softserve.ita.java442.cityDonut.security.facebook.FacebookServiceImpl;
 import com.softserve.ita.java442.cityDonut.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.social.facebook.api.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+
 
 @Controller
+@RequestMapping("/api/v1")
 public class FacebookController {
 
     private FacebookServiceImpl facebookService;
@@ -26,7 +26,7 @@ public class FacebookController {
 
     @Autowired
     public FacebookController(FacebookServiceImpl facebookService, UserServiceImpl userService,
-                              CookieProvider cookieProvider,JWTTokenProvider jwtTokenProvider) {
+                              CookieProvider cookieProvider, JWTTokenProvider jwtTokenProvider) {
         this.facebookService = facebookService;
         this.userService = userService;
         this.cookieProvider = cookieProvider;
@@ -44,7 +44,7 @@ public class FacebookController {
     @GetMapping(value = "/facebook")
     public String google(@RequestParam("code") String code) {
         String accessToken = facebookService.getAccessToken(code);
-        return "redirect:/facebookProfileData/" + accessToken;
+        return "redirect:api/v1/facebookProfileData/" + accessToken;
     }
 
     @GetMapping(value = "/facebookProfileData/{accessToken:.+}")

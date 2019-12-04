@@ -32,9 +32,8 @@ public class ErrorMessage {
     public static final String INVALID_USER_PASSWORD = "Пароль недостатньо захищений. Пароль повинен містити від 4 до 15 цифр або літер";
     public static final String USER_NOT_FOUND_WITH_THIS_EMAIL = "The user does not exists by this EMAIL: ";
     public static final String INVALID_EMAIL_OR_PASSWORD = "INVALID email or password ";
-    public static final String JWT_TOKEN_IS_EXPIRED = "JWT token is expired";
+    public static final String JWT_TOKEN_IS_EXPIRED = "Please try to login in your account again!";
     public static final String DOESNT_AUTHENTICATED = "User doesn't authenticated by thia email: ";
-    public static final String ALL_TOKENS_ARE_EXPIRED = "All tokens are expired.";
-    public static final String UNAUTHORIZED = "User doesn't authorized";
-
+    public static final String USER_DOESNT_REGISTERED = "User with this email not found. Try to create an account!";
+    public static final String CANNOT_ENTRY_WITH_GOOGLE_SERVICES = "Google service couldn't find your account, please try to use other services for login";
 }

@@ -57,8 +57,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/sign-in").permitAll()
-                .antMatchers("/home").hasAuthority("user")
+                .antMatchers("/api/v1/sign-in",
+                        "/api/v1/googlelogin",
+                        "/api/v1/google",
+                        "/api/v1/googleProfileData/{accessToken:.+}",
+                        "/api/v1/facebooklogin",
+                        "api/v1/facebook",
+                        "api/v1/facebookProfileData/{accessToken:.+}").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JWTTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
