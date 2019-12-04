@@ -1,6 +1,6 @@
 package com.softserve.ita.java442.cityDonut.security.confiquration;
 
-import com.softserve.ita.java442.cityDonut.security.JWTConfiguration;
+import com.softserve.ita.java442.cityDonut.security.JWTTokenFilter;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -56,11 +57,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/sign-in").permitAll()
-                .antMatchers("/admin").hasAuthority("ADMIN")
-                .antMatchers("/user").hasAnyAuthority("USER", "MODERATOR")
+                .antMatchers("/api/v1/sign-in",
+                        "/api/v1/googlelogin",
+                        "/api/v1/google",
+                        "/api/v1/googleProfileData/{accessToken:.+}",
+                        "/api/v1/facebooklogin",
+                        "api/v1/facebook",
+                        "api/v1/facebookProfileData/{accessToken:.+}").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .apply(new JWTConfiguration(jwtTokenProvider));
+                .addFilterBefore(new JWTTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 
 }

@@ -24,14 +24,14 @@ public class FacebookServiceImpl implements SocialService<User> {
     @Override
     public String getLogin() {
         OAuth2Parameters oAuth2Parameters = new OAuth2Parameters();
-        oAuth2Parameters.setRedirectUri("http://localhost:"+serverPort+"/facebook");
+        oAuth2Parameters.setRedirectUri("http://localhost:"+serverPort+"/api/v1/facebook");
         oAuth2Parameters.setScope("email");
         return createFacebookConnection().getOAuthOperations().buildAuthenticateUrl(oAuth2Parameters);
     }
 
     @Override
     public String getAccessToken(String code) {
-        return createFacebookConnection().getOAuthOperations().exchangeForAccess(code,"http://localhost:"+serverPort+"/facebook",null).getAccessToken();
+        return createFacebookConnection().getOAuthOperations().exchangeForAccess(code,"http://localhost:"+serverPort+"/api/v1/facebook",null).getAccessToken();
     }
 
     @Override

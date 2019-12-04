@@ -1,73 +1,74 @@
 package com.softserve.ita.java442.cityDonut.controller.login;
 
+import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.authentication.AuthenticationRequestDto;
 import com.softserve.ita.java442.cityDonut.exception.IncorrectPasswordException;
+import com.softserve.ita.java442.cityDonut.exception.UserNotFoundByEmail;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.security.CookieProvider;
+import com.softserve.ita.java442.cityDonut.security.Helper;
 import com.softserve.ita.java442.cityDonut.security.JWTTokenProvider;
 import com.softserve.ita.java442.cityDonut.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class AuthenticationController {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
     private AuthenticationManager authenticationManager;
     private JWTTokenProvider jwtTokenProvider;
     private UserServiceImpl userService;
     private CookieProvider cookieProvider;
+    private PasswordEncoder passwordEncoder;
 
+    @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider,
-                                    UserServiceImpl userService, CookieProvider cookieProvider) {
+                                    UserServiceImpl userService, CookieProvider cookieProvider, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.cookieProvider = cookieProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
-    @RequestMapping(value = "/sign-in")
-    public void login(@RequestBody AuthenticationRequestDto requestDto, HttpServletResponse response) {
+    @RequestMapping(value = "/api/v1/sign-in")
+    public void login(@RequestBody AuthenticationRequestDto requestDto, HttpServletResponse response) throws IOException {
+        String userEmail = requestDto.getUserEmail();
         try {
-            String userEmail = requestDto.getUserEmail();
-            User user = userService.findUserByEmail(userEmail);
+            if (userService.existsUserByEmail(userEmail)) {
 
-            if (user == null) {
-                throw new UserPrincipalNotFoundException("User with email " + userEmail.toUpperCase() + "not found!");
-            } else if (passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail,
-                        requestDto.getPassword()));
-            } else
-                throw new IncorrectPasswordException("Incorrect user password!");
+                if (userService.comparePasswordLogin(requestDto, passwordEncoder)) {
+                    authenticationManager
+                            .authenticate(new UsernamePasswordAuthenticationToken(userEmail, requestDto.getPassword()));
+                }
 
-            response.addCookie(cookieProvider.createCookie(jwtTokenProvider.generateToken(user)));
+                User user = userService.findUserByEmail(userEmail);
 
-        } catch (AuthenticationException | UserPrincipalNotFoundException e) {
-            throw new BadCredentialsException("Invalid email or password");
+                List<Cookie> list = Helper.createList(
+                        cookieProvider.createCookie("JWT", jwtTokenProvider.generateAccessToken(user)),
+                        cookieProvider.createCookie("jwt", jwtTokenProvider.generateRefreshToken())
+                );
+
+                for (Cookie cookie : list) {
+                    response.addCookie(cookie);
+                }
+            }
+        } catch (UserNotFoundByEmail ex) {
+            response.sendError(404, ErrorMessage.USER_NOT_FOUND_WITH_THIS_EMAIL + userEmail);
+        } catch (IncorrectPasswordException ex) {
+            response.sendError(400, ErrorMessage.INVALID_EMAIL_OR_PASSWORD);
         }
-    }
-
-
-    @GetMapping("/")
-    public String getHome() {
-        return ("Welcome  dear guest!");
-    }
-
-    @GetMapping("/user")
-    public String getUser() {
-        return ("Hello User");
-    }
-
-    @GetMapping("/admin")
-    public String getAdmin() {
-        return ("Hello Admin");
     }
 }
