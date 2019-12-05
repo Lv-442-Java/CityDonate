@@ -49,6 +49,7 @@ public class ProjectServiceImpl implements ProjectService {
     private UserService userService;
     private EntityManagerFactory entityManagerFactory;
     private GalleryRepository galleryRepository;
+    private UserRepository userRepository;
 
     @Autowired
     public ProjectServiceImpl(ProjectRepository projectRepository,
@@ -58,7 +59,8 @@ public class ProjectServiceImpl implements ProjectService {
                               ProjectStatusRepository projectStatusRepository, CategoryRepository categoryRepository,
                               ProjectByUserDonateMapper projectByUserDonateMapper, NewProjectMapper newProjectMapper,
                               EditedProjectMapper editedProjectMapper, RoleRepository roleRepository,
-                              UserService userService, EntityManagerFactory entityManagerFactory,GalleryRepository galleryRepository) {
+                              UserService userService, EntityManagerFactory entityManagerFactory, GalleryRepository galleryRepository,
+                              UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.categoryService = categoryService;
         this.previewProjectMapper = previewProjectMapper;
@@ -73,6 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.userService = userService;
         this.entityManagerFactory = entityManagerFactory;
         this.galleryRepository = galleryRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -88,7 +91,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<PreviewProjectDto> getFilteredProjects
-            (List<Long> categoryIds, Long statusId, Long moneyFrom, Long moneyTo, Pageable pageable) {
+            (List<Long> categoryIds, Long statusId, Long moneyFrom, Long moneyTo, Long ownerId, Long moderatorId, Pageable pageable) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -109,6 +112,12 @@ public class ProjectServiceImpl implements ProjectService {
         if (categoryIds != null) {
             categoryService.getCategoriesByIds(categoryIds).forEach(category ->
                     predicates.add(builder.isMember(category, root.get("categories"))));
+        }
+        if (ownerId != null) {
+            predicates.add(builder.equal(root.get("owner").get("id"), ownerId));
+        }
+        if (moderatorId != null) {
+            predicates.add(builder.isMember(userRepository.getOne(moderatorId), root.get("moderators")));
         }
 
         projectCriteria.select(root).where(predicates.toArray(new Predicate[]{}));

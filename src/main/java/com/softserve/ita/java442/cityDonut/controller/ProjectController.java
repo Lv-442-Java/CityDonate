@@ -42,9 +42,12 @@ public class ProjectController {
             @RequestParam(value = "status", required = false) Long status,
             @RequestParam(value = "moneyFrom", required = false) Long moneyFrom,
             @RequestParam(value = "moneyTo", required = false) Long moneyTo,
+            @RequestParam(value = "ownerId", required = false) Long ownerId,
+            @RequestParam(value = "moderatorId", required = false) Long moderatorId,
             Pageable pageable) {
         return new ResponseEntity<>(
-                projectService.getFilteredProjects(categories, status, moneyFrom, moneyTo, pageable), HttpStatus.OK);
+                projectService.getFilteredProjects(categories, status, moneyFrom, moneyTo, ownerId, moderatorId, pageable),
+                HttpStatus.OK);
     }
 
     @GetMapping("/maxMoney")
