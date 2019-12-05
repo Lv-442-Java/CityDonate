@@ -1,5 +1,7 @@
 package com.softserve.ita.java442.cityDonut.security;
 
+import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.exception.JwtAuthenticationExeption;
 import com.softserve.ita.java442.cityDonut.model.User;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ public class JWTUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
         User user = userService.findUserByEmail(userEmail);
         if (user == null)
-            throw new UsernameNotFoundException("User with this email " + userEmail + " not found!");
+            throw new JwtAuthenticationExeption(ErrorMessage.DOESNT_AUTHENTICATED + userEmail);
         return new UserPrincipal(user);
     }
 }

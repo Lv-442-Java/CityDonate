@@ -1,5 +1,7 @@
 package com.softserve.ita.java442.cityDonut.security.google;
 
+import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.exception.JwtAuthenticationExeption;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
@@ -29,19 +31,22 @@ public class GoogleServiceImpl implements SocialService<UserInfo> {
     @Override
     public String getLogin() {
         OAuth2Parameters oAuth2Parameters = new OAuth2Parameters();
-        oAuth2Parameters.setRedirectUri("http://localhost:"+serverPort+"/google");
+        oAuth2Parameters.setRedirectUri("http://localhost:"+serverPort+"/api/v1/google");
         oAuth2Parameters.setScope("email openid profile");
         return createGoogleConnection().getOAuthOperations().buildAuthenticateUrl(oAuth2Parameters);
     }
 
     @Override
     public String getAccessToken(String code) {
-        return createGoogleConnection().getOAuthOperations().exchangeForAccess(code,"http://localhost:"+serverPort+"/google",null).getAccessToken();
+        return createGoogleConnection().getOAuthOperations().exchangeForAccess(code,"http://localhost:"+serverPort+"/api/v1/google",null).getAccessToken();
     }
 
     @Override
     public UserInfo getUserProfile(String accessToken) {
         UserInfo user = oauth2Template().getUserInfo(accessToken);
-        return user;
+        if (user == null){
+            throw  new JwtAuthenticationExeption(ErrorMessage.CANNOT_ENTRY_WITH_GOOGLE_SERVICES );
+        }else
+            return user;
     }
 }
