@@ -9,8 +9,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"moderatorProjects", "userProjects", "comments", "donates", "subscribedProjects"})
-@EqualsAndHashCode(exclude = {"firstName", "lastName", "password", "moderatorProjects", "userProjects", "users", "comments", "donates", "subscribedProjects"})
+@ToString(exclude = {"moderatorProjects", "userProjects", "comments", "donates", "subscribedProjects", "lastChatUpdatedTimes"})
+@EqualsAndHashCode(exclude = {"firstName", "lastName", "password", "moderatorProjects", "userProjects", "users", "comments", "donates", "subscribedProjects", "lastChatUpdatedTimes"})
 @Entity
 public class User {
     public enum UserStatus{
@@ -60,6 +60,11 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {
+            CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.REFRESH})
+    private List<LastChatUpdated> lastChatUpdatedTimes;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Donate> donates;
