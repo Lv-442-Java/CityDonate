@@ -32,7 +32,7 @@ public class MediaController {
                 mediaType, file.getSize());
     }
 
-    @PostMapping("/")
+    @PostMapping("/{id}/")
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @PathVariable("id") long id) {
         return Arrays.stream(files)
                 .map(file -> uploadFile(file, id))
