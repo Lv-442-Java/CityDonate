@@ -8,55 +8,37 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.StorageClient;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.DownloadFileResponse;
-import com.softserve.ita.java442.cityDonut.dto.media.FileStorageProperties;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
+import com.softserve.ita.java442.cityDonut.exception.FailedToSetCredentialsException;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
-import com.softserve.ita.java442.cityDonut.repository.MediaRepository;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
-    private final Path fileStorageLocation;
-    @Autowired
-    FileStorageServiceImpl fileStorage;
+
+    private static final String BUCKET_NAME = "city-donut-app.appspot.com";
+    private static final String DIR = "test/";
+    private MediaServiceImpl mediaService;
+    private MediaMapper mediaMapper;
 
     @Autowired
-    MediaServiceImpl mediaService;
-
-    @Autowired
-    MediaRepository mediaRepository;
-
-    @Autowired
-    MediaMapper mediaMapper;
-
-    @Autowired
-    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
-
-        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
-                .toAbsolutePath().normalize();
-        try {
-            Files.createDirectories(this.fileStorageLocation);
-        } catch (Exception ex) {
-            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND);
-        }
+    public FileStorageServiceImpl(MediaServiceImpl mediaService, MediaMapper mediaMapper) {
+        this.mediaService = mediaService;
+        this.mediaMapper = mediaMapper;
     }
 
     public MediaDto storeFile(MultipartFile file, long Id) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = file.getOriginalFilename();
         MediaDto mediaDto = new MediaDto();
         try {
             if (fileName.contains("..")) {
@@ -77,18 +59,23 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    private FirebaseApp initFirebase() throws IOException {
-        FileInputStream serviceAccount = null;
+    private FirebaseApp initFirebase() {
+        FileInputStream serviceAccount;
         try {
             serviceAccount = new FileInputStream("C:\\Users\\Marta\\firebaseConfig.json");
-        } catch (FileStorageException e) {
+        } catch (FileNotFoundException e) {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + "firebaseConfig.json");
         }
-        String BUCKET_NAME = "city-donut-app.appspot.com";
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setStorageBucket(BUCKET_NAME)
-                .build();
+        FirebaseOptions options;
+        try {
+            options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setStorageBucket(BUCKET_NAME)
+                    .build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new FailedToSetCredentialsException(ErrorMessage.COULD_NOT_SET_CREDENTIALS);
+        }
 
         return FirebaseApp.initializeApp(options);
     }
@@ -123,15 +110,15 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     public boolean delete(long galleryId, String fileName) {
         MediaDto mediaDto = mediaMapper.convertToDto(mediaService.getFileByFileIdAndGalleryId(fileName, galleryId));
-        String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
-        Path filePath = this.fileStorageLocation.resolve(FileIdWithExt).normalize();
-        File file = new File(String.valueOf(filePath));
-        if (file.delete()) {
+        StorageClient storageClient = StorageClient.getInstance(initFirebase());
+        String blobString = DIR + fileName + "." + mediaDto.getExtension().getName();
+        Bucket bucket = storageClient.bucket(BUCKET_NAME);
+        Blob blob = bucket.get(blobString);
+        boolean result = blob.delete();
+        if (result) {
             mediaService.deleteInDB(mediaDto);
-            return true;
-        } else {
-            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + fileName);
         }
+        return result;
     }
 
     private ArrayList<String> getFilesId(List<MediaDto> mediaDtoList){
