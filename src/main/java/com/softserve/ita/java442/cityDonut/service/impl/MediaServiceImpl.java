@@ -28,17 +28,20 @@ public class MediaServiceImpl implements MediaService {
     private MediaMapper mediaMapper;
     private ProjectRepository projectRepository;
     private StoryBoardRepository storyBoardRepository;
+    private GalleryRepository galleryRepository;
 
     @Autowired
     public MediaServiceImpl(MediaTypeRepository mediaTypeRepository, MediaRepository mediaRepository,
                             ExtensionRepository extensionRepository, MediaMapper mediaMapper,
-                            ProjectRepository projectRepository, StoryBoardRepository storyBoardRepository) {
+                            ProjectRepository projectRepository, StoryBoardRepository storyBoardRepository,
+                            GalleryRepository galleryRepository) {
         this.mediaTypeRepository = mediaTypeRepository;
         this.mediaRepository = mediaRepository;
         this.extensionRepository = extensionRepository;
         this.mediaMapper = mediaMapper;
         this.projectRepository = projectRepository;
         this.storyBoardRepository = storyBoardRepository;
+        this.galleryRepository = galleryRepository;
     }
 
     @Transactional
@@ -112,5 +115,10 @@ public class MediaServiceImpl implements MediaService {
     public long getStoryBoardGalleryId(long storyBoardId) {
         long galleryId = storyBoardRepository.getOne(storyBoardId).getGallery().getId();
         return galleryId;
+    }
+
+    public boolean deleteGallery(long galleryId) {
+        galleryRepository.delete(galleryRepository.getOne(galleryId));
+        return true;
     }
 }
