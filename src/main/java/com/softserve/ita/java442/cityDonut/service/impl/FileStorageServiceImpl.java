@@ -78,13 +78,18 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     private FirebaseApp initFirebase() throws IOException {
-        FileInputStream serviceAccount =
-                new FileInputStream("C:\\Users\\Marta\\firebaseConfig.json");
+        FileInputStream serviceAccount = null;
+        try {
+            serviceAccount = new FileInputStream("C:\\Users\\Marta\\firebaseConfig.json");
+        } catch (FileStorageException e) {
+            throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + "firebaseConfig.json");
+        }
         String BUCKET_NAME = "city-donut-app.appspot.com";
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .setStorageBucket(BUCKET_NAME)
                 .build();
+
         return FirebaseApp.initializeApp(options);
     }
 

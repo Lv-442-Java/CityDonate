@@ -30,5 +30,6 @@ public class ErrorMessage {
     public static final String ROLE_NOT_FOUND = "Role not found:  ";
     public static final String USER_HAS_NOT_ACCESS_TO_COMMENT = "You can not modify comment with id: ";
     public static final String INVALID_USER_PASSWORD = "Пароль недостатньо захищений. Пароль повинен містити від 4 до 15 цифр або літер";
+    public static final String COULD_NOT_SET_CREDENTIALS = "Couldn't set Google credentials from firebase configuration file";
 
 }
