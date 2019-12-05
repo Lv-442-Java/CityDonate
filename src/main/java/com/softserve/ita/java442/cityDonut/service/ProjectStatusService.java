@@ -9,4 +9,6 @@ public interface ProjectStatusService {
     ProjectStatus getById(Long id);
 
     List<ProjectStatusDto> getStatusesAfterValidation();
+
+    List<ProjectStatusDto> getAllStatuses();
 }
