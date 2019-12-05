@@ -1,6 +1,7 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
+import com.softserve.ita.java442.cityDonut.dto.authentication.AuthenticationRequestDto;
 import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +59,7 @@ public class UserServiceImpl implements UserService {
                            UserRepository userRepository, RoleRepository roleRepository,
                            UserEditMapper userEditMapper,
                            ProjectRepository projectRepository,
-                           UserRoleMapper userRoleMapper) {
+                           UserRoleMapper userRoleMapper ) {
         this.mailSender = mailSender;
         this.userActivationRequestRepository = userActivationRequestRepository;
         this.userRegistrationMapper = userRegistrationMapper;
@@ -157,7 +159,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -183,5 +185,21 @@ public class UserServiceImpl implements UserService {
         //List<User> userList = new ArrayList<>();
         userList.add(project.getOwner());
         return userRoleMapper.converListToDto(userList);
+    }
+
+    @Override
+    public boolean existsUserByEmail(String email) {
+        if(!userRepository.existsUserByEmail(email)){
+            throw  new UserNotFoundByEmail(ErrorMessage.USER_NOT_FOUND_WITH_THIS_EMAIL + email);
+        }else
+            return true;
+    }
+
+    @Override
+    public boolean comparePasswordLogin(AuthenticationRequestDto requestDto, PasswordEncoder passwordEncoder) {
+        if(!passwordEncoder.matches(requestDto.getPassword(), findUserByEmail(requestDto.getUserEmail()).getPassword())){
+            throw  new IncorrectPasswordException(ErrorMessage.INVALID_EMAIL_OR_PASSWORD);
+        }
+        return true;
     }
 }
