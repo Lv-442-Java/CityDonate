@@ -62,10 +62,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/api/v1/google",
                         "/api/v1/googleProfileData/{accessToken:.+}",
                         "/api/v1/facebooklogin",
-                        "api/v1/facebook",
-                        "api/v1/facebookProfileData/{accessToken:.+}",
-                        "/api/v1/sign-in",
-                        "/api/v1/gallery/*").permitAll()
+                        "/api/v1/facebook",
+                        "/api/v1/facebookProfileData/{accessToken:.+}",
+                        "/api/v1/registration/",
+                        "/api/v1/registration/activationUser",
+                        "/api/v1/status/afterValidation",
+                        "/api/v1/maxMoney",
+                        "/api/v1/category/all",
+                        "/api/v1/project/filter",
+                        "/api/v1/donates/all/projects/*",
+                        "/api/v1/gallery/*/getAvatar",
+                        "/api/v1/gallery/*/*",
+                        "/api/v1/project/*/gallery").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JWTTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
