@@ -1,10 +1,11 @@
 package com.softserve.ita.java442.cityDonut.security;
 
+import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.model.User;
-import com.softserve.ita.java442.cityDonut.service.UserService;
 import com.softserve.ita.java442.cityDonut.exception.JwtAuthenticationExeption;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,40 +20,60 @@ import java.util.Date;
 
 @Component
 public class JWTTokenProvider {
+    @Value("${secret.key.for.token}")
+    private String SECRET_KEY;
+    @Value("${expired.time.access.token}")
+    private long EXPIRED_TIME_ACCESS_TOKEN;
+    @Value("${expired.time.refresh.token}")
+    private long EXPIRED_TIME_REFRESH_TOKEN;
 
-    private String SECRET = "CityDonut";
-    private long VALIDITY_TIME_IN_MILLISECONDS = 3600000;
-    private Date CURRENT_DATE;
-    private Date VALIDITY;
-    private String HEADER = "Authorization";
-
-    @Autowired
     private JWTUserDetailsService jwtUserDetailsService;
-
-    @Autowired
     private CookieProvider cookieProvider;
 
+    public JWTTokenProvider() {}
+
     @Autowired
-    private static UserService u;
+    public JWTTokenProvider(JWTUserDetailsService jwtUserDetailsService, CookieProvider cookieProvider) {
+        this.jwtUserDetailsService = jwtUserDetailsService;
+        this.cookieProvider = cookieProvider;
+    }
 
     @PostConstruct
     protected void init() {
-        SECRET = Base64.getEncoder().encodeToString(SECRET.getBytes());
+        SECRET_KEY = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
     }
 
-    public String generateToken(User user) {
+    public String generateAccessToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
         claims.put("roles", user.getRole().getRole());
         claims.put("id", user.getId());
 
-        CURRENT_DATE = new Date();
-        VALIDITY = new Date(CURRENT_DATE.getTime() + VALIDITY_TIME_IN_MILLISECONDS);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + EXPIRED_TIME_ACCESS_TOKEN))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+
+    public String generateAccessToken(long id, String email, String role) {
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("roles", role);
+        claims.put("id", id);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(CURRENT_DATE)
-                .setExpiration(VALIDITY)
-                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + 6000000))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+
+    public String generateRefreshToken() {
+        return Jwts.builder()
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + EXPIRED_TIME_REFRESH_TOKEN))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
@@ -63,21 +84,30 @@ public class JWTTokenProvider {
     }
 
     public String getUserEmail(String token) {
-        return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String resolveToken(HttpServletRequest request) {
-        return cookieProvider.readCookie(request);
+    public JwtToken UserData(String token) {
+        return JwtToken.builder()
+                .email(Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject())
+                .role( (String) Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().get("roles"))
+                .id((int) Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().get("id"))
+                .build();
+    }
+
+    public String resolveToken(HttpServletRequest request, String key) {
+        return cookieProvider.readCookie(request, key);
     }
 
     public boolean validateToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
-            if (claims.getBody().getExpiration().before(new Date()))
+        try{
+            Jws<Claims> claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            if (claims.getBody().getExpiration().before(new Date())){
                 return false;
+            }
             return true;
-        } catch (JwtException e) {
-            throw new JwtAuthenticationExeption("JWT token is invalid");
+        }catch(JwtException | IllegalArgumentException e){
+            throw new JwtAuthenticationExeption(ErrorMessage.JWT_TOKEN_IS_EXPIRED);
         }
     }
 
