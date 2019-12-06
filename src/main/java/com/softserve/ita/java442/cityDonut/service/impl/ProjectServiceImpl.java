@@ -210,23 +210,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectInfoDto> getFreeProject() {
+    public List<PreviewProjectDto> getFreeProject() {
         String neededStatus = "очікує підтвердження";
         ProjectStatus projectStatus = projectStatusRepository.getProjectStatusByStatus(neededStatus);
         if (projectStatus == null) {
             throw new NotFoundException(ErrorMessage.PROJECT_STATUS_NOT_FOUND + neededStatus);
         }
         List<Project> projects = projectRepository.findProjectsByProjectStatus(projectStatus);
-        List<ProjectInfoDto> list = new ArrayList<>();
+        List<PreviewProjectDto> list = new ArrayList<>();
         for (Project project : projects) {
-            ProjectInfoDto projectInfoDto = ProjectInfoDto.builder()
-                    .id(project.getId())
-                    .name(project.getName())
-                    .creationDate(project.getCreationDate())
-                    .ownerFirstName(project.getOwner().getFirstName())
-                    .ownerLastName(project.getOwner().getLastName())
-                    .build();
-            list.add(projectInfoDto);
+            list.add(previewProjectMapper.convertToDto(project));
         }
         return list;
     }
