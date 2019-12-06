@@ -11,6 +11,7 @@ import com.softserve.ita.java442.cityDonut.repository.CommentRepository;
 import com.softserve.ita.java442.cityDonut.scheduling.ScheduledTaskContainer;
 import com.softserve.ita.java442.cityDonut.scheduling.ScheduledTasksPool;
 import com.softserve.ita.java442.cityDonut.scheduling.SendEmailNotificationTask;
+import com.softserve.ita.java442.cityDonut.scheduling.ThreadPoolTaskSchedulerConfig;
 import com.softserve.ita.java442.cityDonut.service.CommentService;
 import com.softserve.ita.java442.cityDonut.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,28 +82,27 @@ public class CommentServiceImpl implements CommentService {
     public String notifyUsers(long commentId) {
         List<Long> userIdList = new ArrayList<>();
         Map<Long, String> emails = new HashMap<>();
-        //userIdList.add(2L);
-        //userIdList.add(3L);
-        //userIdList.add(4L);
         Comment comment = commentRepository.getOne(commentId);
         long userId = comment.getUser().getId();
         long projectId = comment.getProject().getId();
         List<User> subscribedUsers = comment.getProject().getSubscribedUsers();
-        System.out.println(subscribedUsers);
-        subscribedUsers.forEach((user -> {userIdList.add(user.getId());emails.put(user.getId(), user.getEmail());}));
-        System.out.println(userIdList);
-
+        subscribedUsers.forEach((user -> {
+            if (user.getId() != userId) {
+                userIdList.add(user.getId());
+                emails.put(user.getId(), user.getEmail());
+            }
+        }));
         ScheduledTaskContainer taskContainer = scheduledTasksPool.getScheduledTask(userId, projectId);
         if (taskContainer == null
                 || taskContainer.getScheduledFuture().isDone()
                 || taskContainer.getScheduledFuture().isCancelled()) {
             SendEmailNotificationTask sendTask = context.getBean(SendEmailNotificationTask.class);
             sendTask.setUserList(userIdList);
-            sendTask.setMessageArray(new ArrayList<String>(){{add(comment.getDescription());}});
+            sendTask.setMessageArray(new ArrayList<>(){{add(comment.getDescription());}});
             sendTask.setEmails(emails);
             ScheduledFuture<?> scheduledFuture = threadPoolTaskScheduler.schedule(
                     sendTask,
-                    new Date(System.currentTimeMillis() + 5000)
+                    new Date(System.currentTimeMillis() + ThreadPoolTaskSchedulerConfig.MESSAGE_DELAY_TIME)
             );
             scheduledTasksPool.createScheduledTask(userId, projectId, scheduledFuture, comment.getDescription(), userIdList);
         }
@@ -117,7 +117,7 @@ public class CommentServiceImpl implements CommentService {
                 sendTask.setEmails(emails);
                 ScheduledFuture<?> scheduledFuture = threadPoolTaskScheduler.schedule(
                         sendTask,
-                        new Date(System.currentTimeMillis() + 5000)
+                        new Date(System.currentTimeMillis() + ThreadPoolTaskSchedulerConfig.MESSAGE_DELAY_TIME)
                 );
                 taskContainer.setScheduledFuture(scheduledFuture);
             }
@@ -129,7 +129,6 @@ public class CommentServiceImpl implements CommentService {
     public String denotifyUsers(long projectId) {
         long userId = userService.getCurrentUser().getId();
         ScheduledTaskContainer taskContainer = scheduledTasksPool.getScheduledTask(userId, projectId);
-        //Map<Long, ScheduledTaskContainer> map = scheduledTasksPool.getMap(userId);
         if (taskContainer != null) {
             List<Long> userList = taskContainer.getUserList();
             if (userList == null || userList.size() == 0 || (userList.size() == 1 && userList.get(0) == userId)) {
@@ -137,7 +136,7 @@ public class CommentServiceImpl implements CommentService {
                 scheduledTasksPool.removeTask(userId, projectId);
             }
             else if (userList.size() > 1) {
-                if (userList.contains(userId)) {userList.remove(userId);}
+                userList.remove(userId);
             }
         }
         return "success";

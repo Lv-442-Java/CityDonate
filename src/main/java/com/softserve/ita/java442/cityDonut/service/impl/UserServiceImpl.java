@@ -2,7 +2,6 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.authentication.AuthenticationRequestDto;
-import com.softserve.ita.java442.cityDonut.dto.project.ProjectInfoDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserEditPasswordDto;
 import com.softserve.ita.java442.cityDonut.dto.user.UserRegistrationDto;
@@ -32,7 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,9 +175,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserRoleDto> getUsersRoleDto(long projectId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ProjectNotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID));
         List<User> userList = project.getModerators();
-        //List<User> userList = new ArrayList<>();
         userList.add(project.getOwner());
         return userRoleMapper.converListToDto(userList);
     }
@@ -202,35 +199,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRoleDto getCurrentUserSubscribedToProject(long projectId) {
-        //TODO ВИПРАВИТИ ЦЕ
-        User user;
-        try {
-            user = getCurrentUser();
-        }
-        catch (Exception exc) {
-            user = userRepository.getUserById(2);
-        }
-        //
+        User user = getCurrentUser();
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ProjectNotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID));
         List<User> userList = project.getSubscribedUsers();
+        System.out.println(userList);
+        System.out.println(user);
+        System.out.println(userList.contains(user));
         if (userList.contains(user)) return userRoleMapper.convertToDto(user);
         return null;
     }
 
     @Override
     public UserRoleDto subscribeCurrentUserToProject(long projectId) {
-        //TODO ВИПРАВИТИ ЦЕ
-        User user;
-        try {
-            user = getCurrentUser();
-        }
-        catch (Exception exc) {
-            user = userRepository.getUserById(2);
-        }
-        //
+        User user = getCurrentUser();
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ProjectNotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID));
         List<User> userList = project.getSubscribedUsers();
         if (!userList.contains(user)) {
             userList.add(user);
@@ -242,17 +226,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRoleDto unsubscribeCurrentUserFromProject(long projectId) {
-        //TODO ВИПРАВИТИ ЦЕ
-        User user;
-        try {
-            user = getCurrentUser();
-        }
-        catch (Exception exc) {
-            user = userRepository.getUserById(2);
-        }
-        //
+        User user = getCurrentUser();
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ProjectNotFoundException(ErrorMessage.PROJECT_NOT_FOUND_BY_ID));
         List<User> userList = project.getSubscribedUsers();
         if (userList.contains(user)) {
             userList.remove(user);
