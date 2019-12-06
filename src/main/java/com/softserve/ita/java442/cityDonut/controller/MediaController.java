@@ -56,8 +56,8 @@ public class MediaController {
         return result;
     }
 
-    @GetMapping("/{fileId:.+}")
-    public ResponseEntity<String> getResource(@PathVariable String fileId)  {
+    @GetMapping("/{id}/{fileId:.+}")
+    public ResponseEntity<String> getResource(@PathVariable("id") long id, @PathVariable("fileId") String fileId) {
        String response = fileStorageService.formDownloadUrl(fileId);
        return ResponseEntity.status(HttpStatus.OK).body(response);
     }

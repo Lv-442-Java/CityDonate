@@ -33,4 +33,9 @@ public class ProjectStatusServiceImpl implements ProjectStatusService {
         notNeededStatuses.add("на перевірці");
         return projectStatusMapper.convertListToDto(projectStatusRepository.getByStatusIsNotIn(notNeededStatuses));
     }
+
+    @Override
+    public List<ProjectStatusDto> getAllStatuses() {
+        return projectStatusMapper.convertListToDto(projectStatusRepository.findAll());
+    }
 }

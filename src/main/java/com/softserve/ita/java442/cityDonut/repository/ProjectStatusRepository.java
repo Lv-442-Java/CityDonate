@@ -11,4 +11,6 @@ public interface ProjectStatusRepository extends JpaRepository<ProjectStatus, Lo
     ProjectStatus getProjectStatusByStatus(String status);
 
     List<ProjectStatus> getByStatusIsNotIn(List<String> statusesBeforeCostsGathering);
+
+    List<ProjectStatus> findAll();
 }
