@@ -26,7 +26,7 @@ public class Comment {
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
 

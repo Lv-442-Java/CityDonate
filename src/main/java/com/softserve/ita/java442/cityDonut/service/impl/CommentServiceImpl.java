@@ -88,12 +88,11 @@ public class CommentServiceImpl implements CommentService {
         long userId = comment.getUser().getId();
         long projectId = comment.getProject().getId();
         List<User> subscribedUsers = comment.getProject().getSubscribedUsers();
-        System.out.println(Arrays.toString(subscribedUsers.toArray()));
         System.out.println(subscribedUsers);
         subscribedUsers.forEach((user -> {userIdList.add(user.getId());emails.put(user.getId(), user.getEmail());}));
         System.out.println(userIdList);
 
-        ScheduledTaskContainer taskContainer = scheduledTasksPool.getTask(userId, projectId);
+        ScheduledTaskContainer taskContainer = scheduledTasksPool.getScheduledTask(userId, projectId);
         if (taskContainer == null
                 || taskContainer.getScheduledFuture().isDone()
                 || taskContainer.getScheduledFuture().isCancelled()) {
@@ -105,7 +104,7 @@ public class CommentServiceImpl implements CommentService {
                     sendTask,
                     new Date(System.currentTimeMillis() + 5000)
             );
-            scheduledTasksPool.createTask(userId, projectId, scheduledFuture, comment.getDescription(), userIdList);
+            scheduledTasksPool.createScheduledTask(userId, projectId, scheduledFuture, comment.getDescription(), userIdList);
         }
         else {
             List<String> messageList = taskContainer.getMessages();
@@ -129,29 +128,18 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public String denotifyUsers(long projectId) {
         long userId = userService.getCurrentUser().getId();
-        ScheduledTaskContainer taskContainer = scheduledTasksPool.getTask(userId, projectId);
-        Map<Long, ScheduledTaskContainer> map = scheduledTasksPool.getMap(userId);
-        if (map != null) {
-            if (map.size() == 0) {
-                scheduledTasksPool.removeUserTasks(userId);
+        ScheduledTaskContainer taskContainer = scheduledTasksPool.getScheduledTask(userId, projectId);
+        //Map<Long, ScheduledTaskContainer> map = scheduledTasksPool.getMap(userId);
+        if (taskContainer != null) {
+            List<Long> userList = taskContainer.getUserList();
+            if (userList == null || userList.size() == 0 || (userList.size() == 1 && userList.get(0) == userId)) {
+                taskContainer.getScheduledFuture().cancel(false);
+                scheduledTasksPool.removeTask(userId, projectId);
             }
-            else {
-                if (taskContainer != null) {
-                    List<Long> userList = taskContainer.getUserList();
-                    if (userList == null || userList.size() == 0 || (userList.size() == 1 && userList.get(0) == userId)) {
-                        taskContainer.getScheduledFuture().cancel(false);
-                        scheduledTasksPool.removeUserProjectTask(userId, projectId);
-                    }
-                    else if (userList.size() > 1) {
-                        if (userList.contains(userId)) {userList.remove(userId);}
-                    }
-                }
-                else {
-                    scheduledTasksPool.removeUserTasks(userId);
-                }
+            else if (userList.size() > 1) {
+                if (userList.contains(userId)) {userList.remove(userId);}
             }
         }
-
         return "success";
     }
 }
