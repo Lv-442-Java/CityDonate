@@ -87,7 +87,7 @@ public class ProjectController {
     }
 
     @GetMapping("/projects/free")
-    public ResponseEntity<List<ProjectInfoDto>> getAllFreeProjects() {
+    public ResponseEntity<List<PreviewProjectDto>> getAllFreeProjects() {
         return new ResponseEntity<>(projectService.getFreeProject(), HttpStatus.OK);
     }
 
