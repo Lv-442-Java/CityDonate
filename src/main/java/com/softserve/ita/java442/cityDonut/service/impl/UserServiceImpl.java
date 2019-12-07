@@ -11,6 +11,7 @@ import com.softserve.ita.java442.cityDonut.exception.InvalidEmailException;
 import com.softserve.ita.java442.cityDonut.exception.InvalidUserRegistrationDataException;
 import com.softserve.ita.java442.cityDonut.dto.user.UserRoleDto;
 import com.softserve.ita.java442.cityDonut.exception.*;
+import com.softserve.ita.java442.cityDonut.mapper.project.PreviewProjectMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserEditMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRegistrationMapper;
 import com.softserve.ita.java442.cityDonut.mapper.user.UserRoleMapper;
@@ -68,6 +69,8 @@ public class UserServiceImpl implements UserService {
         this.projectRepository = projectRepository;
         this.roleRepository = roleRepository;
         this.userRoleMapper = userRoleMapper;
+        //this.projectService = projectService;
+        //this.previewProjectMapper = previewProjectMapper;
     }
 
     @Override
@@ -105,7 +108,7 @@ public class UserServiceImpl implements UserService {
     public User activateUserByCode(String activationCode) {
         UserActivationRequest userActivationRequest = userActivationRequestRepository.findByActivationCode(activationCode);
         User user = userRepository.getUserById(userActivationRequest.getUserId());
-        if(user.getStatus() == User.UserStatus.ACTIVATED)
+        if (user.getStatus() == User.UserStatus.ACTIVATED)
             throw new InvalidEmailException(ErrorMessage.INVALID_USER_REGISTRATION_DATA);
         user.setStatus(User.UserStatus.ACTIVATED);
 
@@ -145,9 +148,9 @@ public class UserServiceImpl implements UserService {
         UserActivationRequest userActivationRequest = new UserActivationRequest(user.getId());
         userActivationRequestRepository.save(userActivationRequest);
 
-        String message ="Welcome to CityDonate. To activate your account follow link:  "
-                +"http://localhost:3000/activationUser/"
-                +userActivationRequest.getActivationCode();
+        String message = "Welcome to CityDonate. To activate your account follow link:  "
+                + "http://localhost:3000/activationUser/"
+                + userActivationRequest.getActivationCode();
 
         mailSender.send(user.getEmail(), "Activation Code", message);
 
