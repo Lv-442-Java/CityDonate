@@ -14,6 +14,7 @@ import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,8 +27,19 @@ import java.util.List;
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
 
-    private static final String BUCKET_NAME = "city-donut-app.appspot.com";
-    private static final String DIR = "test/";
+    @Value("${file.config-file-path}")
+    private String fileUploadPath;
+    @Value("${file.bucket-name}")
+    private String BUCKET_NAME;
+    @Value("${file.upload-dir}")
+    private String DIR;
+    @Value("${file.project-id}")
+    private String PROJECT_ID;
+    @Value("${file.download-url}")
+    private String URL;
+    @Value("${file.add-to-url}")
+    private String ADD_URL;
+
     private MediaServiceImpl mediaService;
     private MediaMapper mediaMapper;
 
@@ -48,9 +60,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             MediaDto savedMediaDto = mediaService.saveMedia(mediaDto, fileName);
             String fileIdWithExt = mediaService.fileIDWithExtension(savedMediaDto);
             StorageClient storageClient = StorageClient.getInstance(initFirebase());
-            String DIR = "test/";
             String blobString = DIR + fileIdWithExt;
-            String PROJECT_ID = "city-donut-app";
             Blob blob = storageClient.bucket().create(blobString, file.getInputStream(), Bucket.BlobWriteOption.userProject(PROJECT_ID));
             System.out.println(blob.getMediaLink());
             return savedMediaDto;
@@ -62,7 +72,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     private FirebaseApp initFirebase() {
         FileInputStream serviceAccount;
         try {
-            serviceAccount = new FileInputStream("/Users/nastiamazurak/Desktop/firebaseConfig.json");
+            serviceAccount = new FileInputStream(fileUploadPath);
         } catch (FileNotFoundException e) {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + "firebaseConfig.json");
         }
@@ -83,8 +93,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     public String formDownloadUrl(String fileId) {
         MediaDto mediaDto = mediaService.getDtoForFile(fileId);
         String FileIdWithExt = mediaService.fileIDWithExtension(mediaDto);
-        String url = "https://firebasestorage.googleapis.com/v0/b/city-donut-app.appspot.com/o/test%2F";
-        String downloadUrl = url + FileIdWithExt + "?alt=media";
+        String downloadUrl = URL + FileIdWithExt + ADD_URL;
         return downloadUrl;
     }
 
