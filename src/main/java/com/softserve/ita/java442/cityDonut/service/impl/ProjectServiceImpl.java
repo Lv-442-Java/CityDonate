@@ -100,14 +100,13 @@ public class ProjectServiceImpl implements ProjectService {
         Root<Project> root = projectCriteria.from(Project.class);
         List<Predicate> predicates = new ArrayList<>();
 
-        predicates.add(builder.greaterThan(root.get("projectStatus").get("id"), 3));
         if (moneyFrom != null) {
             predicates.add(builder.greaterThanOrEqualTo(root.get("moneyNeeded"), moneyFrom));
         }
         if (moneyTo != null) {
             predicates.add(builder.lessThanOrEqualTo(root.get("moneyNeeded"), moneyTo));
         }
-        if (statusId != null && statusId > 3) {
+        if (statusId != null) {
             predicates.add(builder.equal(root.get("projectStatus").get("id"), statusId));
         }
         if (categoryIds != null) {
@@ -211,23 +210,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectInfoDto> getFreeProject() {
+    public List<PreviewProjectDto> getFreeProject() {
         String neededStatus = "очікує підтвердження";
         ProjectStatus projectStatus = projectStatusRepository.getProjectStatusByStatus(neededStatus);
         if (projectStatus == null) {
             throw new NotFoundException(ErrorMessage.PROJECT_STATUS_NOT_FOUND + neededStatus);
         }
         List<Project> projects = projectRepository.findProjectsByProjectStatus(projectStatus);
-        List<ProjectInfoDto> list = new ArrayList<>();
+        List<PreviewProjectDto> list = new ArrayList<>();
         for (Project project : projects) {
-            ProjectInfoDto projectInfoDto = ProjectInfoDto.builder()
-                    .id(project.getId())
-                    .name(project.getName())
-                    .creationDate(project.getCreationDate())
-                    .ownerFirstName(project.getOwner().getFirstName())
-                    .ownerLastName(project.getOwner().getLastName())
-                    .build();
-            list.add(projectInfoDto);
+            list.add(previewProjectMapper.convertToDto(project));
         }
         return list;
     }

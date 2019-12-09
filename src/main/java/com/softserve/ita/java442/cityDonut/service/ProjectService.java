@@ -18,7 +18,7 @@ public interface ProjectService {
 
     List<ProjectByUserDonateDto> getDonatedUserProject(long id, Pageable pageable);
 
-    List<ProjectInfoDto> getFreeProject();
+    List<PreviewProjectDto> getFreeProject();
 
     MainProjectInfoDto addModeratorToProject(long projectId);
 

@@ -22,4 +22,9 @@ public class ProjectStatusController {
     public ResponseEntity<List<ProjectStatusDto>> getStatusesAfterValidation() {
         return new ResponseEntity<>(projectStatusService.getStatusesAfterValidation(), HttpStatus.OK);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ProjectStatusDto>> getAllStatuses() {
+        return new ResponseEntity<>(projectStatusService.getAllStatuses(), HttpStatus.OK);
+    }
 }
