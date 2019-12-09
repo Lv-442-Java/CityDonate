@@ -14,6 +14,7 @@ import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,8 +27,13 @@ import java.util.List;
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
 
-    private static final String BUCKET_NAME = "city-donut-app.appspot.com";
-    private static final String DIR = "test/";
+    @Value("${file.config-file-path}")
+    private String fileUploadPath;
+    @Value("${file.bucket-name}")
+    private String BUCKET_NAME;
+    @Value("${file.upload-dir}")
+    private String DIR;
+
     private MediaServiceImpl mediaService;
     private MediaMapper mediaMapper;
 
@@ -62,7 +68,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     private FirebaseApp initFirebase() {
         FileInputStream serviceAccount;
         try {
-            serviceAccount = new FileInputStream("C:\\Users\\Marta\\firebaseConfig.json");
+            serviceAccount = new FileInputStream(fileUploadPath);
         } catch (FileNotFoundException e) {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + "firebaseConfig.json");
         }
