@@ -74,7 +74,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/api/v1/gallery/*/getAvatar",
                         "/api/v1/gallery/*/*",
                         "/api/v1/project/*/gallery",
-                        "/api/v1/status/all").permitAll()
+                        "/api/v1/status/all",
+                        "/sign-out",
+                        "/api/v1/user").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JWTTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
