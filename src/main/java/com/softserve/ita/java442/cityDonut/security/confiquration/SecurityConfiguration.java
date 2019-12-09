@@ -80,7 +80,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/api/v1/user/*/role",
                         "/api/v1/chatupdated/*",
                         "/api/v1/project/*/comment",
-                        "/api/v1/user/subscribe/*").permitAll()
+                        "/api/v1/user/subscribe/*",
+                        "/api/v1/status/all",
+                        "/api/v1/project/*",
+                        "/api/v1/donates/projects/*",
+                        "/api/v1/donates/count/project/*",
+                        "/api/v1/donates/projects/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JWTTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

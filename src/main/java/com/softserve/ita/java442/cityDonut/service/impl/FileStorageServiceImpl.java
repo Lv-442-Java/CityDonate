@@ -62,7 +62,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     private FirebaseApp initFirebase() {
         FileInputStream serviceAccount;
         try {
-            serviceAccount = new FileInputStream("C:\\Users\\Oleg\\Downloads\\Telegram Desktop\\firebaseConfig.json");
+            serviceAccount = new FileInputStream("/Users/nastiamazurak/Desktop/firebaseConfig.json");
         } catch (FileNotFoundException e) {
             throw new FileStorageException(ErrorMessage.FILE_NOT_FOUND + "firebaseConfig.json");
         }
