@@ -27,26 +27,32 @@ import java.util.List;
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
 
-    @Value("${file.config-file-path}")
     private String fileUploadPath;
-    @Value("${file.bucket-name}")
     private String BUCKET_NAME;
-    @Value("${file.upload-dir}")
     private String DIR;
-    @Value("${file.project-id}")
     private String PROJECT_ID;
-    @Value("${file.download-url}")
     private String URL;
-    @Value("${file.add-to-url}")
     private String ADD_URL;
-
     private MediaServiceImpl mediaService;
     private MediaMapper mediaMapper;
 
     @Autowired
-    public FileStorageServiceImpl(MediaServiceImpl mediaService, MediaMapper mediaMapper) {
+    public FileStorageServiceImpl(MediaServiceImpl mediaService, MediaMapper mediaMapper,
+                                  @Value("${file.config-file-path}") String fileUploadPath,
+                                  @Value("${file.bucket-name}") String bucketName,
+                                  @Value("${file.upload-dir}") String dir,
+                                  @Value("${file.project-id}") String projectId,
+                                  @Value("${file.download-url}")String url,
+                                  @Value("${file.add-to-url}")String addUrl) {
         this.mediaService = mediaService;
         this.mediaMapper = mediaMapper;
+        this.fileUploadPath = fileUploadPath;
+        this.BUCKET_NAME = bucketName;
+        this.DIR = dir;
+        this.PROJECT_ID = projectId;
+        this.URL = url;
+        this.ADD_URL = addUrl;
+        this.initFirebase();
     }
 
     public MediaDto storeFile(MultipartFile file, long Id) {
@@ -59,10 +65,9 @@ public class FileStorageServiceImpl implements FileStorageService {
             mediaDto.setGalleryId(Id);
             MediaDto savedMediaDto = mediaService.saveMedia(mediaDto, fileName);
             String fileIdWithExt = mediaService.fileIDWithExtension(savedMediaDto);
-            StorageClient storageClient = StorageClient.getInstance(initFirebase());
+            StorageClient storageClient = StorageClient.getInstance();
             String blobString = DIR + fileIdWithExt;
             Blob blob = storageClient.bucket().create(blobString, file.getInputStream(), Bucket.BlobWriteOption.userProject(PROJECT_ID));
-            System.out.println(blob.getMediaLink());
             return savedMediaDto;
         } catch (IOException ex) {
             throw new FileStorageException(fileName + ErrorMessage.COULD_NOT_STORE_FILE);
