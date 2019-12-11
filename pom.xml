@@ -147,6 +147,11 @@
 			<artifactId>firebase-admin</artifactId>
 			<version>6.10.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.8.jre7</version>
+		</dependency>
 
 	</dependencies>
 

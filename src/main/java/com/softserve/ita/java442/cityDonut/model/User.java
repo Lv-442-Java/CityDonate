@@ -12,6 +12,7 @@ import java.util.List;
 @ToString(exclude = {"moderatorProjects", "userProjects", "comments", "donates", "subscribedProjects", "lastChatUpdatedTimes"})
 @EqualsAndHashCode(exclude = {"firstName", "lastName", "password", "moderatorProjects", "userProjects", "users", "comments", "donates", "subscribedProjects", "lastChatUpdatedTimes"})
 @Entity
+@Table(name = "users")
 public class User {
     public enum UserStatus{
         ACTIVATED, NOT_ACTIVATED
