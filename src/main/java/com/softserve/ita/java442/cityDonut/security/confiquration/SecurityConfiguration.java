@@ -85,7 +85,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/api/v1/project/*",
                         "/api/v1/donates/projects/*",
                         "/api/v1/donates/count/project/*",
-                        "/api/v1/donates/projects/").permitAll()
+                        "/api/v1/donates/projects/",
+                        "/api/v1/project/*/storyboard/verified",
+                        "/api/v1/storyboard/*/gallery").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JWTTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
