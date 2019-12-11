@@ -74,6 +74,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/api/v1/gallery/*/getAvatar",
                         "/api/v1/gallery/*/*",
                         "/api/v1/project/*/gallery",
+                        "/sign-out",
+                        "/api/v1/user",
                         "/api/v1/status/all",
                         "/api/v1/project/*/gallery",
                         "/api/v1/user/*/roles",
