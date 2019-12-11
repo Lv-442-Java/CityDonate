@@ -50,4 +50,19 @@ public class UserController {
     public ResponseEntity<List<UserRoleDto>> getUsersWithRole(@PathVariable long projectId) {
         return new ResponseEntity<>(userService.getUsersRoleDto(projectId), HttpStatus.OK);
     }
+
+    @GetMapping("/subscribe/{projectId}")
+    public ResponseEntity<UserRoleDto> getCurrentProjectSubscribtionStatus(@PathVariable long projectId) {
+        return new ResponseEntity<>(userService.getCurrentUserSubscribedToProject(projectId), HttpStatus.OK);
+    }
+
+    @PostMapping("subscribe/{projectId}")
+    public ResponseEntity<UserRoleDto> subscribeUserToProject(@PathVariable long projectId) {
+        return new ResponseEntity<>(userService.subscribeCurrentUserToProject(projectId), HttpStatus.OK);
+    }
+
+    @DeleteMapping("subscribe/{projectId}")
+    public ResponseEntity<UserRoleDto> unsubscribeUserFromProject(@PathVariable long projectId) {
+        return new ResponseEntity<>(userService.unsubscribeCurrentUserFromProject(projectId), HttpStatus.OK);
+    }
 }

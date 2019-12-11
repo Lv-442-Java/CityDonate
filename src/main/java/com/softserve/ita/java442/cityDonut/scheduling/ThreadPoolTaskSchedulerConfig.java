@@ -10,20 +10,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
         basePackages= "com.softserve.ita.java442.cityDonut.scheduling")
 public class ThreadPoolTaskSchedulerConfig {
 
-    public static int threadPoolSize = 5;
+    public static int MESSAGE_DELAY_TIME = 5000;
 
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler(){
-        ThreadPoolTaskScheduler threadPoolTaskScheduler
-                = new ThreadPoolTaskScheduler();
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+        int threadPoolSize = 5;
         threadPoolTaskScheduler.setPoolSize(threadPoolSize);
-        threadPoolTaskScheduler.setThreadNamePrefix(
-                "MyTaskScheduler");
+        threadPoolTaskScheduler.setThreadNamePrefix("EmailSendTaskScheduler");
         return threadPoolTaskScheduler;
     }
-
-    /*threadPoolTaskScheduler.schedule(
-                new SendEmailNotificationTask("my message"),
-                new Date(System.currentTimeMillis() + 5000)
-     );*/
 }
