@@ -1,5 +1,6 @@
 package com.softserve.ita.java442.cityDonut.scheduling;
 
+import com.softserve.ita.java442.cityDonut.constant.ConstantValue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +16,7 @@ public class ThreadPoolTaskSchedulerConfig {
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler(){
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
-        int threadPoolSize = 20;
-        threadPoolTaskScheduler.setPoolSize(threadPoolSize);
+        threadPoolTaskScheduler.setPoolSize(ConstantValue.EMAIL_SEND_TASK_POOL_SIZE);
         threadPoolTaskScheduler.setThreadNamePrefix("EmailSendTaskScheduler");
         return threadPoolTaskScheduler;
     }
