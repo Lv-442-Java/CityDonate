@@ -1,6 +1,6 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
-import com.softserve.ita.java442.cityDonut.constant.ConstantIds;
+import com.softserve.ita.java442.cityDonut.constant.ConstantValue;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
 import com.softserve.ita.java442.cityDonut.dto.project.*;
@@ -102,7 +102,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<Predicate> predicates = new ArrayList<>();
 
         if (ownerId == null) {
-            predicates.add(builder.greaterThanOrEqualTo(root.get("projectStatus").get("id"), ConstantIds.MONEY_GATHERING_STATUS_ID));
+            predicates.add(builder.greaterThanOrEqualTo(root.get("projectStatus").get("id"), ConstantValue.MONEY_GATHERING_STATUS_ID));
         } else {
             predicates.add(builder.equal(root.get("owner").get("id"), ownerId));
         }
