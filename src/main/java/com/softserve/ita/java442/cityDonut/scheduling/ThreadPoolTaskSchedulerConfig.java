@@ -15,7 +15,7 @@ public class ThreadPoolTaskSchedulerConfig {
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler(){
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
-        int threadPoolSize = 5;
+        int threadPoolSize = 20;
         threadPoolTaskScheduler.setPoolSize(threadPoolSize);
         threadPoolTaskScheduler.setThreadNamePrefix("EmailSendTaskScheduler");
         return threadPoolTaskScheduler;
