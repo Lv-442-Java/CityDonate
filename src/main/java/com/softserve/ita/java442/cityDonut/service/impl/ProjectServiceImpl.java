@@ -100,6 +100,11 @@ public class ProjectServiceImpl implements ProjectService {
         Root<Project> root = projectCriteria.from(Project.class);
         List<Predicate> predicates = new ArrayList<>();
 
+        if (ownerId == null) {
+            predicates.add(builder.greaterThan(root.get("projectStatus").get("id"), 3));
+        } else {
+            predicates.add(builder.equal(root.get("owner").get("id"), ownerId));
+        }
         if (moneyFrom != null) {
             predicates.add(builder.greaterThanOrEqualTo(root.get("moneyNeeded"), moneyFrom));
         }
@@ -112,9 +117,6 @@ public class ProjectServiceImpl implements ProjectService {
         if (categoryIds != null) {
             categoryService.getCategoriesByIds(categoryIds).forEach(category ->
                     predicates.add(builder.isMember(category, root.get("categories"))));
-        }
-        if (ownerId != null) {
-            predicates.add(builder.equal(root.get("owner").get("id"), ownerId));
         }
         if (moderatorId != null) {
             predicates.add(builder.isMember(userRepository.getOne(moderatorId), root.get("moderators")));
