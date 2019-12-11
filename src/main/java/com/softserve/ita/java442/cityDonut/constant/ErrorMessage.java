@@ -37,5 +37,6 @@ public class ErrorMessage {
     public static final String DOESNT_AUTHENTICATED = "User doesn't authenticated by thia email: ";
     public static final String USER_DOESNT_REGISTERED = "User with this email not found. Try to create an account!";
     public static final String CANNOT_ENTRY_WITH_GOOGLE_SERVICES = "Google service couldn't find your account, please try to use other services for login";
+    public static final String SUCH_EXTENSION_IS_NOT_ALLOWED = "Зберігати файли з таким розширенням заборонено";
 
 }

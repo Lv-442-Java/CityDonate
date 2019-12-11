@@ -12,9 +12,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"description", "location", "locationLatitude", "locationLongitude", "creationDate", "publicationDate",
-        "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "gallery", "documents", "moderators", "categories", "subscribedUsers"})
+        "donationEndDate", "realizationEndDate", "projectStatus", "comments", "donates", "storyBoards", "gallery", "documents", "moderators", "categories", "subscribedUsers", "lastChatUpdatedTimes"})
 @NoArgsConstructor
-@ToString(exclude = {"comments", "donates", "storyBoards", "gallery", "documents", "moderators", "categories", "subscribedUsers"})
+@ToString(exclude = {"comments", "donates", "storyBoards", "gallery", "documents", "moderators", "categories", "subscribedUsers", "lastChatUpdatedTimes"})
 @Table(indexes = @Index(columnList = "name, realization_end_date"))
 public class Project {
 
@@ -74,6 +74,10 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<StoryBoard> storyBoards;
+
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH},
+            fetch = FetchType.LAZY)
+    private List<LastChatUpdated> lastChatUpdatedTimes;
 
     @OneToOne
     @JoinColumn(name = "gallery_id", referencedColumnName = "id")

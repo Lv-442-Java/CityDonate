@@ -4,25 +4,21 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"description"})
-@Table(name = "comment")
-public class Comment {
+@EqualsAndHashCode
+@Table(name = "last_chat_updated_time")
+public class LastChatUpdated {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(length = 500)
-    private String description;
-
-    @Column(name = "date")
-    private Timestamp date;
+    @Column(name = "date_time")
+    private Timestamp dateTime;
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
@@ -32,9 +28,8 @@ public class Comment {
 
     @ManyToOne(cascade = {
             CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
 
 }

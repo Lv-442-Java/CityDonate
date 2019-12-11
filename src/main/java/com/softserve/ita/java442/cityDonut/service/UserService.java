@@ -35,4 +35,10 @@ public interface UserService {
     boolean existsUserByEmail(String email);
 
     boolean comparePasswordLogin(AuthenticationRequestDto requestDto, PasswordEncoder passwordEncoder);
+
+    UserRoleDto getCurrentUserSubscribedToProject(long projectId);
+
+    UserRoleDto subscribeCurrentUserToProject(long projectId);
+
+    UserRoleDto unsubscribeCurrentUserFromProject(long projectId);
 }

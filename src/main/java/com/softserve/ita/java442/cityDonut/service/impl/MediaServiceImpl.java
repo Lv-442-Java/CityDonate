@@ -3,6 +3,7 @@ package com.softserve.ita.java442.cityDonut.service.impl;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.media.MediaDto;
 import com.softserve.ita.java442.cityDonut.exception.FileStorageException;
+import com.softserve.ita.java442.cityDonut.exception.NotFoundException;
 import com.softserve.ita.java442.cityDonut.mapper.media.MediaMapper;
 import com.softserve.ita.java442.cityDonut.model.Extension;
 import com.softserve.ita.java442.cityDonut.model.Media;
@@ -58,6 +59,9 @@ public class MediaServiceImpl implements MediaService {
         String ext = getFileExtension(fileName);
         Extension extension = extensionRepository.findByName(ext);
         mediaDto.setExtension(extension);
+        if(mediaDto.getExtension() == null){
+            throw new NotFoundException(ErrorMessage.SUCH_EXTENSION_IS_NOT_ALLOWED);
+        }
         MediaType mediaType = extension.getMediaType();
         mediaDto.setMediaType(mediaType);
         Media mediaModel = mediaMapper.convertToModel(mediaDto);

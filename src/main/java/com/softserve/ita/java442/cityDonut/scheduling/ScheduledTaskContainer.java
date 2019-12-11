@@ -18,7 +18,7 @@ public class ScheduledTaskContainer {
 
     private ScheduledFuture<?> scheduledFuture;
 
-    public ScheduledTaskContainer(String text, List<Long> userList, ScheduledFuture<?> scheduledFuture) {
+    ScheduledTaskContainer(String text, List<Long> userList, ScheduledFuture<?> scheduledFuture) {
         this.messages = new ArrayList<>();
         messages.add(text);
         this.scheduledFuture = scheduledFuture;
