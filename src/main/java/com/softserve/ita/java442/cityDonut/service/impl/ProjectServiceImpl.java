@@ -1,5 +1,6 @@
 package com.softserve.ita.java442.cityDonut.service.impl;
 
+import com.softserve.ita.java442.cityDonut.constant.ConstantValue;
 import com.softserve.ita.java442.cityDonut.constant.ErrorMessage;
 import com.softserve.ita.java442.cityDonut.dto.category.CategoryNameDto;
 import com.softserve.ita.java442.cityDonut.dto.project.*;
@@ -100,6 +101,11 @@ public class ProjectServiceImpl implements ProjectService {
         Root<Project> root = projectCriteria.from(Project.class);
         List<Predicate> predicates = new ArrayList<>();
 
+        if (ownerId == null) {
+            predicates.add(builder.greaterThanOrEqualTo(root.get("projectStatus").get("id"), ConstantValue.MONEY_GATHERING_STATUS_ID));
+        } else {
+            predicates.add(builder.equal(root.get("owner").get("id"), ownerId));
+        }
         if (moneyFrom != null) {
             predicates.add(builder.greaterThanOrEqualTo(root.get("moneyNeeded"), moneyFrom));
         }
@@ -112,9 +118,6 @@ public class ProjectServiceImpl implements ProjectService {
         if (categoryIds != null) {
             categoryService.getCategoriesByIds(categoryIds).forEach(category ->
                     predicates.add(builder.isMember(category, root.get("categories"))));
-        }
-        if (ownerId != null) {
-            predicates.add(builder.equal(root.get("owner").get("id"), ownerId));
         }
         if (moderatorId != null) {
             predicates.add(builder.isMember(userRepository.getOne(moderatorId), root.get("moderators")));
