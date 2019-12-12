@@ -11,10 +11,23 @@ import java.util.concurrent.ScheduledFuture;
 @Component
 public class ScheduledTasksPool {
 
-    private ConcurrentHashMap<TaskPoolKey, ScheduledTaskContainer> emailTaskPool;
+    private final ConcurrentHashMap<TaskPoolKey, ScheduledTaskContainer> emailTaskPool;
 
     {
         emailTaskPool = new ConcurrentHashMap<>();
+    }
+
+    public void clearPool() {
+        for (TaskPoolKey key : emailTaskPool.keySet()) {
+            ScheduledTaskContainer container = emailTaskPool.get(key);
+            if (container != null) {
+                if (container.getScheduledFuture() == null
+                        || container.getScheduledFuture().isCancelled()
+                        || container.getScheduledFuture().isDone()) {
+                    emailTaskPool.remove(key);
+                }
+            }
+        }
     }
 
     public ScheduledTaskContainer getScheduledTask(long userId, long projectId) {
